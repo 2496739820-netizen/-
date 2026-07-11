@@ -4,8 +4,10 @@ import "./globals.css";
 const title = "庄澍凯｜内容运营、视频剪辑与转化增长作品集";
 const description =
   "庄澍凯的个人作品集，展示小红书全链路运营、内容策划、拍摄剪辑、投流复盘与转化增长经验，以及从注意力到行动的内容方法。";
+const siteUrl = "https://zhuang-shukai-portfolio.zsk1a.chatgpt.site";
 
 export const metadata: Metadata = {
+    metadataBase: new URL(siteUrl),
     title,
     description,
     keywords: [
@@ -24,19 +26,21 @@ export const metadata: Metadata = {
     authors: [{ name: "庄澍凯" }],
     creator: "庄澍凯",
     publisher: "庄澍凯",
+    alternates: { canonical: siteUrl },
     openGraph: {
       type: "website",
       locale: "zh_CN",
       siteName: "庄澍凯 Portfolio",
       title,
       description,
-      images: [{ url: "/og.png", width: 1200, height: 630, alt: "庄澍凯｜内容运营 × 视频剪辑 × 转化增长" }],
+      url: siteUrl,
+      images: [{ url: `${siteUrl}/og.png`, width: 1200, height: 630, alt: "庄澍凯｜内容运营 × 视频剪辑 × 转化增长" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [{ url: "/og.png", alt: "庄澍凯｜内容运营 × 视频剪辑 × 转化增长" }],
+      images: [{ url: `${siteUrl}/og.png`, alt: "庄澍凯｜内容运营 × 视频剪辑 × 转化增长" }],
     },
 };
 
