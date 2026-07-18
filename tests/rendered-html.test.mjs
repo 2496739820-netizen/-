@@ -59,6 +59,10 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /CPC 稳定控制在 1 元以内/);
 
   assert.match(html, /2496739820@qq\.com/);
+  assert.match(html, /<button[^>]*class="nav-cta"[^>]*aria-haspopup="dialog"/);
+  assert.match(html, /aria-controls="contact-badge-modal"/);
+  assert.doesNotMatch(html, /<a[^>]*class="nav-cta"[^>]*mailto:/);
+  assert.match(html, /<a href="mailto:2496739820@qq\.com"/);
   assert.match(html, /href="\/zhuang-shukai-resume\.pdf"[^>]*download/);
   assert.match(html, /Zhuang Shukai/);
   assert.match(html, /class="brand-avatar"/);
@@ -83,7 +87,7 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
 });
 
 test("ships the verified portfolio assets and removes the unrelated video experience", async () => {
-  const [page, layout, css, resume, portrait, avatar, og] = await Promise.all([
+  const [page, layout, css, resume, portrait, avatar, og, contactQr] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
@@ -91,6 +95,7 @@ test("ships the verified portfolio assets and removes the unrelated video experi
     readFile(new URL("../public/zhuang-shukai-portrait.jpg", import.meta.url)),
     readFile(new URL("../public/brand-avatar.png", import.meta.url)),
     readFile(new URL("../public/og-clean.png", import.meta.url)),
+    readFile(new URL("../public/contact-qr.png", import.meta.url)),
   ]);
 
   assert.match(page, /高端眼镜门店　新媒体运营/);
@@ -143,11 +148,83 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.deepEqual([...portrait.subarray(0, 3)], [255, 216, 255]);
   assert.deepEqual([...avatar.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.deepEqual([...og.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  assert.deepEqual([...contactQr.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.equal(og.readUInt32BE(16), 1200);
   assert.equal(og.readUInt32BE(20), 630);
 
   await access(new URL("../public/zhuang-shukai-resume.pdf", import.meta.url));
   await access(new URL("../public/zhuang-shukai-portrait.jpg", import.meta.url));
   await access(new URL("../public/brand-avatar.png", import.meta.url));
+  await access(new URL("../public/contact-qr.png", import.meta.url));
   await assert.rejects(access(new URL("../public/hero.mp4", import.meta.url)));
+});
+
+test("implements the accessible, lazy-loaded physical contact badge", async () => {
+  const [page, modal, scene, card, fallback, focusTrap, data, css, packageJson] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/contact-badge/ContactBadgeModal.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/contact-badge/ContactBadgeScene.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/contact-badge/BadgeCard.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/contact-badge/StaticBadgeFallback.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/contact-badge/useFocusTrap.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/contact-badge/contact-data.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(page, /<button[\s\S]*?className="nav-cta"/);
+  assert.match(page, /aria-haspopup="dialog"/);
+  assert.match(page, /<ContactBadgeModal/);
+  assert.match(page, /<a href="mailto:2496739820@qq\.com"/);
+
+  assert.match(modal, /role="dialog"/);
+  assert.match(modal, /aria-modal="true"/);
+  assert.match(modal, /aria-pressed=\{isFlipped\}/);
+  assert.match(modal, /查看联系方式/);
+  assert.match(modal, /返回个人简介/);
+  assert.match(modal, /import\("\.\/ContactBadgeScene"\)/);
+  assert.doesNotMatch(modal, /from "\.\/ContactBadgeScene"/);
+  assert.match(modal, /prefers-reduced-motion: reduce/);
+  assert.match(modal, /supportsWebGL/);
+  assert.match(modal, /isLowPerformanceMobile/);
+
+  assert.match(scene, /useRopeJoint/);
+  assert.match(scene, /useSphericalJoint/);
+  assert.match(scene, /<RigidBody/);
+  assert.match(scene, /angularDamping=\{5\.6\}/);
+  assert.match(scene, /linearDamping=\{4\.8\}/);
+  assert.match(scene, /dpr=\{\[1, 1\.5\]\}/);
+  assert.match(scene, /MeshLineGeometry/);
+  assert.match(scene, /setPointerCapture/);
+  assert.match(scene, /setNextKinematicTranslation/);
+
+  assert.match(card, /document\.fonts\.ready/);
+  assert.match(card, /CanvasTexture/);
+  assert.match(card, /rotation\.y/);
+  assert.match(card, /textures\?\.front/);
+  assert.match(card, /textures\?\.back/);
+  assert.match(card, /dispose\(\)/);
+
+  assert.match(fallback, /data-contact-badge="static"/);
+  assert.match(data, /CONTACT_QR_SOURCE = "\/contact-qr\.png"/);
+  assert.match(data, /CONTACT_QR_FALLBACK_VALUE = CONTACT_MAILTO/);
+  assert.match(data, /width: 768/);
+  assert.match(data, /月均有效客资/);
+  assert.match(data, /月均到店新客 GMV/);
+  assert.match(data, /月度最高 GMV/);
+  assert.match(data, /约贡献门店总业绩/);
+  assert.doesNotMatch(`${data}${card}${fallback}`, /15815347183/);
+
+  assert.match(focusTrap, /event\.key === "Escape"/);
+  assert.match(focusTrap, /event\.key !== "Tab"/);
+  assert.match(focusTrap, /document\.body\.style\.overflow = "hidden"/);
+  assert.match(focusTrap, /returnFocusElement\?\.focus\(\)/);
+  assert.match(css, /\.contact-modal-backdrop/);
+  assert.match(css, /min-height: 50px/);
+  assert.match(css, /touch-action: none/);
+
+  const dependencies = JSON.parse(packageJson).dependencies;
+  for (const dependency of ["three", "@react-three/fiber", "@react-three/drei", "@react-three/rapier", "meshline", "qrcode"]) {
+    assert.ok(dependencies[dependency], `${dependency} should be installed`);
+  }
 });

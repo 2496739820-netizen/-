@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ContactBadgeModal } from "./components/contact-badge/ContactBadgeModal";
 
 const metrics = [
   { value: "3W+", label: "月均到店新客 GMV" },
@@ -168,6 +169,9 @@ function CapabilityRadar() {
 export default function Home() {
   const rootRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const contactTriggerRef = useRef<HTMLButtonElement>(null);
+  const [contactOpen, setContactOpen] = useState(false);
+  const closeContact = useCallback(() => setContactOpen(false), []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -252,7 +256,17 @@ export default function Home() {
               <a key={item.id} href={`#${item.id}`} data-nav={item.id}>{item.label}</a>
             ))}
           </div>
-          <a className="nav-cta" href="mailto:2496739820@qq.com"><i aria-hidden="true" />联系我</a>
+          <button
+            ref={contactTriggerRef}
+            className="nav-cta"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="contact-badge-modal"
+            aria-expanded={contactOpen}
+            onClick={() => { if (!contactOpen) setContactOpen(true); }}
+          >
+            <i aria-hidden="true" />联系我
+          </button>
         </nav>
       </header>
 
@@ -382,6 +396,7 @@ export default function Home() {
           <div className="footer-bottom"><strong>庄澍凯</strong><span>目标地区：粤港澳大湾区</span><span>© {new Date().getFullYear()} Zhuang Shukai</span></div>
         </div>
       </footer>
+      <ContactBadgeModal open={contactOpen} onClose={closeContact} triggerRef={contactTriggerRef} />
     </div>
   );
 }
