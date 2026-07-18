@@ -9,6 +9,36 @@ const metrics = [
   { value: "30%", label: "约贡献门店总业绩" },
 ];
 
+const capabilitySteps = [
+  {
+    number: "01",
+    title: "用户与产品洞察",
+    note: "需求 × 卖点 × 平台趋势",
+  },
+  {
+    number: "02",
+    title: "内容生产",
+    note: "选题脚本 · 拍摄剪辑发布",
+  },
+  {
+    number: "03",
+    title: "账号与流量运营",
+    note: "主号矩阵 · 投流测试",
+  },
+  {
+    number: "04",
+    title: "客资与到店转化",
+    note: "咨询承接 · 到店成交",
+  },
+];
+
+const capabilityProofs = [
+  { value: "60+", label: "月均有效客资" },
+  { value: "3W+", label: "月均到店新客 GMV" },
+  { value: "8W+", label: "月度最高 GMV" },
+  { value: "30%", label: "约贡献门店总业绩" },
+];
+
 const caseStories = [
   {
     number: "01",
@@ -269,14 +299,36 @@ export default function Home() {
                 <p className="eyebrow gold intro" style={{ "--delay": ".16s" } as React.CSSProperties}>
                   高端眼镜门店 · 新媒体运营
                 </p>
-                <h1 className="hero-title" aria-label="既能做内容，也对结果负责。">
-                  <span className="intro" style={{ "--delay": ".22s" } as React.CSSProperties}>
-                    既能做内容
-                  </span>
-                  <span className="intro" style={{ "--delay": ".28s" } as React.CSSProperties}>
-                    也对<strong>结果</strong>负责
-                  </span>
-                </h1>
+
+                <div className="hero-capability intro" style={{ "--delay": ".22s" } as React.CSSProperties}>
+                  <h1 className="hero-system-title">一条可验证的门店运营链路</h1>
+
+                  <div className="capability-map" aria-label="高端眼镜门店新媒体运营能力结构与结果证明">
+                    <ol className="capability-steps">
+                      {capabilitySteps.map((step, index) => (
+                        <li className="capability-step" key={step.number}>
+                          <div className="capability-step-head">
+                            <span>{step.number}</span>
+                            {index < capabilitySteps.length - 1 && (
+                              <i aria-hidden="true">→</i>
+                            )}
+                          </div>
+                          <p className="capability-step-title">{step.title}</p>
+                          <p className="capability-step-note">{step.note}</p>
+                        </li>
+                      ))}
+                    </ol>
+
+                    <div className="capability-proof" aria-label="虎派眼镜核心结果">
+                      {capabilityProofs.map((proof) => (
+                        <div className="capability-proof-item" key={proof.label}>
+                          <strong>{proof.value}</strong>
+                          <span>{proof.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
                 <div className="hero-message-footer intro" style={{ "--delay": ".36s" } as React.CSSProperties}>
                   <div className="hero-support-copy">
