@@ -22,13 +22,16 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   const html = await response.text();
   assert.match(html, /<html lang="zh-CN">/i);
   assert.match(html, /庄澍凯｜高端眼镜门店新媒体运营作品集/);
-  assert.match(html, /一条可验证的门店运营链路/);
-  assert.match(html, /用户与产品洞察/);
-  assert.match(html, /账号与流量运营/);
-  assert.match(html, /客资与到店转化/);
-  assert.match(html, /把眼镜内容做成信任/);
-  assert.match(html, /把线上流量带到门店/);
-  assert.match(html, /我是庄澍凯/);
+  assert.match(html, /把线上内容/);
+  assert.match(html, /接到门店成交/);
+  assert.match(html, /能力处方/);
+  assert.match(html, /内容策划/);
+  assert.match(html, /账号运营/);
+  assert.match(html, /到店转化/);
+  assert.match(html, /影像制作/);
+  assert.match(html, /数据复盘/);
+  assert.match(html, /平台投流/);
+  assert.match(html, /相对能力重心/);
   assert.match(html, /高端眼镜门店/);
   assert.match(html, /粤港澳大湾区/);
   assert.match(html, /求职中/);
@@ -42,7 +45,6 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /月均有效客资/);
   assert.match(html, /30%/);
   assert.match(html, /约贡献门店总业绩/);
-  assert.match(html, /数据说明/);
   assert.match(html, /具体统计口径可在沟通中进一步说明/);
 
   assert.match(html, /种草、测评与门店探店/);
@@ -57,25 +59,26 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
 
   assert.match(html, /2496739820@qq\.com/);
   assert.match(html, /href="\/zhuang-shukai-resume\.pdf"[^>]*download/);
-  assert.match(html, /Profile \/ 01/);
   assert.match(html, /Zhuang Shukai/);
   assert.match(html, /class="brand-avatar"/);
   assert.match(html, /高端眼镜门店新媒体运营/);
-  assert.match(html, /目标地区/);
-  assert.match(html, /\/og\.png/);
+  assert.match(html, /\/og-radar\.png/);
 
   assert.doesNotMatch(html, /15815347183/);
   assert.doesNotMatch(html, /把画面做成|把注意力变成增长/);
   assert.doesNotMatch(html, /Content operator \/ Visual storyteller/);
   assert.doesNotMatch(html, /src="\/zhuang-shukai-portrait\.jpg"/);
   assert.doesNotMatch(html, /class="brand-mark"[^>]*>ZS/);
+  assert.doesNotMatch(html, /一条可验证的门店运营链路/);
+  assert.doesNotMatch(html, /用户与产品洞察|账号与流量运营|客资与到店转化/);
+  assert.doesNotMatch(html, /把眼镜内容做成信任|把线上流量带到门店/);
   assert.doesNotMatch(html, /既能做内容|也对结果负责/);
   assert.doesNotMatch(html, />既能做内容，</);
   assert.doesNotMatch(html, />也对结果负责。</);
   assert.doesNotMatch(html, /<video\b|hero\.mp4/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|SkeletonPreview/);
 
-  assert.ok(html.indexOf("我是庄澍凯") < html.indexOf('id="hupai"'));
+  assert.ok(html.indexOf("能力处方") < html.indexOf('id="hupai"'));
 });
 
 test("ships the verified portfolio assets and removes the unrelated video experience", async () => {
@@ -86,20 +89,21 @@ test("ships the verified portfolio assets and removes the unrelated video experi
     readFile(new URL("../public/zhuang-shukai-resume.pdf", import.meta.url)),
     readFile(new URL("../public/zhuang-shukai-portrait.jpg", import.meta.url)),
     readFile(new URL("../public/brand-avatar.png", import.meta.url)),
-    readFile(new URL("../public/og.png", import.meta.url)),
+    readFile(new URL("../public/og-radar.png", import.meta.url)),
   ]);
 
   assert.match(page, /高端眼镜门店 · 新媒体运营/);
   assert.match(page, /href="\/zhuang-shukai-resume\.pdf"/);
-  assert.match(page, /className="hero-nameplate"/);
+  assert.match(page, /function CapabilityRadar/);
+  assert.match(page, /className="radar-chart"/);
+  assert.match(page, /className="hero-proof/);
   assert.match(page, /className="brand-avatar"/);
   assert.doesNotMatch(page, /src="\/zhuang-shukai-portrait\.jpg"/);
-  assert.match(page, /\{ id: "top", label: "关于我" \}/);
-  assert.match(page, /className="hero-system-title"/);
-  assert.match(page, /className="capability-steps"/);
-  assert.match(page, /className="capability-proof"/);
+  assert.match(page, /\{ id: "top", label: "能力概览" \}/);
+  assert.match(page, /内容策划.{0,30}score: 9/s);
+  assert.match(page, /平台投流.{0,30}score: 7/s);
   assert.match(page, /data-nav=/);
-  assert.match(page, /数据说明/);
+  assert.match(page, /相对能力重心/);
   assert.doesNotMatch(page, /loading="lazy"/);
   assert.doesNotMatch(page, /hero\.mp4|<video\b|currentTime|\.play\(/i);
   assert.doesNotMatch(page, /15815347183/);
@@ -115,22 +119,19 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(css, /\[data-reveal\]/);
   assert.match(css, /aria-current="location"/);
   assert.match(css, /\.hero-main/);
-  assert.match(css, /\.hero-identity/);
-  assert.match(css, /\.hero-nameplate/);
-  assert.match(css, /\.hero-system-title/);
-  assert.match(css, /\.capability-map/);
-  assert.match(css, /\.capability-proof/);
+  assert.match(css, /\.radar-card/);
+  assert.match(css, /\.radar-chart/);
+  assert.match(css, /@keyframes radar-open/);
+  assert.match(css, /\.hero-proof/);
   assert.match(css, /\.brand-avatar/);
   assert.match(css, /url\("\/brand-avatar\.png"\)/);
-  assert.match(css, /--text-body: 0\.94rem/);
-  assert.match(css, /--paper: #f6f3ec/);
-  assert.match(css, /--surface: #fffcf7/);
+  assert.match(css, /--paper: #f4f0e7/);
+  assert.match(css, /--surface: #fffdf8/);
   assert.match(css, /--gold: #8a7349/);
   assert.match(css, /color-scheme: light/);
   assert.match(css, /Warm optical editorial theme/);
   assert.doesNotMatch(css, /\.hero-portrait/);
-  assert.match(css, /white-space: nowrap/);
-  assert.match(css, /\.metrics-note/);
+  assert.doesNotMatch(css, /linear-gradient\(145deg, #090908/);
   assert.doesNotMatch(css, /\.video-bg|\.video-scrim|\.video-vignette/);
 
   assert.equal(resume.subarray(0, 5).toString("ascii"), "%PDF-");

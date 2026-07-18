@@ -4,8 +4,8 @@ import "./globals.css";
 
 const title = "庄澍凯｜高端眼镜门店新媒体运营作品集";
 const description =
-  "庄澍凯的高端眼镜门店新媒体运营作品集，重点呈现虎派眼镜的小红书内容运营、账号矩阵、平台投流与到店转化经验。";
-const fallbackSiteUrl = "https://zhuang-shukai-portfolio.zsk1a.chatgpt.site";
+  "庄澍凯的高端眼镜门店新媒体运营作品集，以能力雷达与真实业务结果呈现虎派眼镜的小红书运营、账号矩阵、平台投流和到店转化经验。";
+const fallbackSiteUrl = "https://zhuang-shukai-eyewear-portfolio.zsk1a.chatgpt.site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: siteUrl,
       images: [
         {
-          url: `${siteUrl}/og.png`,
+          url: `${siteUrl}/og-radar.png`,
           width: 1200,
           height: 630,
           alt: "庄澍凯｜高端眼镜门店新媒体运营",
@@ -57,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: [
         {
-          url: `${siteUrl}/og.png`,
+          url: `${siteUrl}/og-radar.png`,
           alt: "庄澍凯｜高端眼镜门店新媒体运营",
         },
       ],
