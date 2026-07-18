@@ -22,21 +22,21 @@ const caseStories = [
   {
     number: "01",
     kicker: "内容种草",
-    title: "把专业卖点，翻译成用户愿意停留的内容。",
+    title: "把专业卖点翻译成用户愿意停留的内容",
     copy: "围绕产品卖点、用户需求与平台趋势，策划种草、测评与门店探店内容；独立覆盖选题、脚本、拍摄、发布及复盘。",
     tags: ["选题策划", "脚本拍摄", "发布复盘"],
   },
   {
     number: "02",
     kicker: "账号矩阵",
-    title: "让一个主账号，扩展为持续发生的品牌触点。",
+    title: "让一个主账号扩展为持续发生的品牌触点",
     copy: "搭建并维护员工账号矩阵，制定账号内容方向与发布节奏，协同提升品牌内容覆盖率，扩大门店自然曝光与客资来源。",
     tags: ["账号定位", "员工矩阵", "自然获客"],
   },
   {
     number: "03",
     kicker: "到店转化",
-    title: "让线上内容，继续走向咨询与门店成交。",
+    title: "让线上内容继续走向咨询与门店成交",
     copy: "独立负责大众点评、抖音小店与京东等线上平台运营及投流，通过页面优化、活动配置、广告测试和数据分析持续优化转化。",
     tags: ["平台投流", "数据分析", "到店转化"],
   },
@@ -261,9 +261,9 @@ export default function Home() {
           <div className="hero-inner container-wide">
             <div className="hero-main">
               <div className="hero-copy intro" style={{ "--delay": ".04s" } as React.CSSProperties}>
-                <p className="eyebrow">高端眼镜门店 · 新媒体运营</p>
+                <p className="eyebrow">高端眼镜门店　新媒体运营</p>
                 <p className="hero-name">庄澍凯 <span>Zhuang Shukai</span></p>
-                <h1>把线上内容，<br />接到门店成交。</h1>
+                <h1>把线上内容<br />接到门店成交</h1>
                 <p className="hero-summary">
                   从内容策划、拍摄剪辑到账号运营与投流复盘，让每一次曝光都更接近有效咨询与到店。
                 </p>
@@ -271,7 +271,7 @@ export default function Home() {
                   <a className="button button-primary" href="#hupai">查看虎派经历 <span aria-hidden="true">↘</span></a>
                   <a className="button button-secondary" href="/zhuang-shukai-resume.pdf" download>下载简历 <span aria-hidden="true">↓</span></a>
                 </div>
-                <p className="hero-status"><i aria-hidden="true" />粤港澳大湾区 · 求职中</p>
+                <p className="hero-status"><i aria-hidden="true" />粤港澳大湾区　求职中</p>
               </div>
 
               <div className="intro" style={{ "--delay": ".12s" } as React.CSSProperties}>
@@ -322,7 +322,7 @@ export default function Home() {
           <div className="container-wide method-layout">
             <div className="method-heading" data-reveal>
               <p className="eyebrow">02 / Operating method</p>
-              <h2>内容不是终点，<br />到店才是闭环。</h2>
+              <h2>内容不是终点<br />到店才是闭环</h2>
               <p>高客单门店需要用专业表达建立信任，再用运营承接用户的下一步行动。</p>
             </div>
             <ol className="process-list">
@@ -338,7 +338,7 @@ export default function Home() {
         <section id="experience" className="experience-section section-shell">
           <div className="container-wide">
             <div className="experience-heading" data-reveal>
-              <div><p className="eyebrow">03 / Foundation</p><h2>运营之前，<br />先把内容做好。</h2></div>
+              <div><p className="eyebrow">03 / Foundation</p><h2>运营之前<br />先把内容做好</h2></div>
               <p>三段影像与效果素材经历，让内容审美、制作效率和数据意识成为同一套基本功。</p>
             </div>
             <div className="experience-list">
@@ -373,9 +373,9 @@ export default function Home() {
 
       <footer className="site-footer">
         <div className="container-wide footer-layout">
-          <div data-reveal><p className="eyebrow">Open to opportunities</p><h2>期待下一次，<br />把好内容做成好生意。</h2></div>
+          <div data-reveal><p className="eyebrow">Open to opportunities</p><h2>期待下一次<br />把好内容做成好生意</h2></div>
           <div className="footer-contact" data-reveal>
-            <p>高端眼镜门店 · 新媒体运营</p>
+            <p>高端眼镜门店　新媒体运营</p>
             <a href="mailto:2496739820@qq.com">2496739820@qq.com <span aria-hidden="true">↗</span></a>
             <a href="/zhuang-shukai-resume.pdf" download>下载完整简历 <span aria-hidden="true">↓</span></a>
           </div>

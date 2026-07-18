@@ -24,6 +24,7 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /庄澍凯｜高端眼镜门店新媒体运营作品集/);
   assert.match(html, /把线上内容/);
   assert.match(html, /接到门店成交/);
+  assert.doesNotMatch(html, /把线上内容，|接到门店成交。/);
   assert.match(html, /能力处方/);
   assert.match(html, /内容策划/);
   assert.match(html, /账号运营/);
@@ -62,7 +63,7 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /Zhuang Shukai/);
   assert.match(html, /class="brand-avatar"/);
   assert.match(html, /高端眼镜门店新媒体运营/);
-  assert.match(html, /\/og-typography\.png/);
+  assert.match(html, /\/og-clean\.png/);
 
   assert.doesNotMatch(html, /15815347183/);
   assert.doesNotMatch(html, /把画面做成|把注意力变成增长/);
@@ -89,10 +90,11 @@ test("ships the verified portfolio assets and removes the unrelated video experi
     readFile(new URL("../public/zhuang-shukai-resume.pdf", import.meta.url)),
     readFile(new URL("../public/zhuang-shukai-portrait.jpg", import.meta.url)),
     readFile(new URL("../public/brand-avatar.png", import.meta.url)),
-    readFile(new URL("../public/og-typography.png", import.meta.url)),
+    readFile(new URL("../public/og-clean.png", import.meta.url)),
   ]);
 
-  assert.match(page, /高端眼镜门店 · 新媒体运营/);
+  assert.match(page, /高端眼镜门店　新媒体运营/);
+  assert.doesNotMatch(page, /高端眼镜门店 · 新媒体运营/);
   assert.match(page, /href="\/zhuang-shukai-resume\.pdf"/);
   assert.match(page, /function CapabilityRadar/);
   assert.match(page, /className="radar-chart"/);
@@ -121,6 +123,7 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(css, /\.hero-main/);
   assert.match(css, /\.radar-card/);
   assert.match(css, /\.radar-chart/);
+  assert.match(css, /max-width: 480px/);
   assert.match(css, /@keyframes radar-open/);
   assert.match(css, /\.hero-proof/);
   assert.match(css, /\.brand-avatar/);
@@ -128,6 +131,8 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(css, /--paper: #f4f0e7/);
   assert.match(css, /--surface: #fffdf8/);
   assert.match(css, /--gold: #8a7349/);
+  assert.match(css, /\.site-footer \{ background: var\(--paper-deep\)/);
+  assert.doesNotMatch(css, /#dfd7c9/);
   assert.match(css, /color-scheme: light/);
   assert.match(css, /Warm optical editorial theme/);
   assert.doesNotMatch(css, /\.hero-portrait/);
