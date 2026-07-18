@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: siteUrl,
       images: [
         {
-          url: `${siteUrl}/og-radar.png`,
+          url: `${siteUrl}/og-typography.png`,
           width: 1200,
           height: 630,
           alt: "庄澍凯｜高端眼镜门店新媒体运营",
@@ -57,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: [
         {
-          url: `${siteUrl}/og-radar.png`,
+          url: `${siteUrl}/og-typography.png`,
           alt: "庄澍凯｜高端眼镜门店新媒体运营",
         },
       ],

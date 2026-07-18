@@ -62,7 +62,7 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /Zhuang Shukai/);
   assert.match(html, /class="brand-avatar"/);
   assert.match(html, /高端眼镜门店新媒体运营/);
-  assert.match(html, /\/og-radar\.png/);
+  assert.match(html, /\/og-typography\.png/);
 
   assert.doesNotMatch(html, /15815347183/);
   assert.doesNotMatch(html, /把画面做成|把注意力变成增长/);
@@ -89,7 +89,7 @@ test("ships the verified portfolio assets and removes the unrelated video experi
     readFile(new URL("../public/zhuang-shukai-resume.pdf", import.meta.url)),
     readFile(new URL("../public/zhuang-shukai-portrait.jpg", import.meta.url)),
     readFile(new URL("../public/brand-avatar.png", import.meta.url)),
-    readFile(new URL("../public/og-radar.png", import.meta.url)),
+    readFile(new URL("../public/og-typography.png", import.meta.url)),
   ]);
 
   assert.match(page, /高端眼镜门店 · 新媒体运营/);
