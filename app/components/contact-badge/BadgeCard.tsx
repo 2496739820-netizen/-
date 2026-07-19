@@ -288,7 +288,7 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
   const ringPointerX = useRef<number | null>(null);
   const textures = useBadgeTextures(onTextureError);
   const brass = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#9c8153", metalness: 0.72, roughness: 0.28 }),
+    () => new THREE.MeshStandardMaterial({ color: "#aa8953", metalness: 0.86, roughness: 0.24 }),
     [],
   );
 
@@ -322,7 +322,7 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
 
   const handlePointerDown = (event: ThreeEvent<PointerEvent>) => {
     ringPointerX.current = event.nativeEvent.clientX;
-    ringTarget.current += Math.PI * 0.7;
+    ringTarget.current += Math.PI * 0.5;
     onPointerDown(event);
   };
 
@@ -378,10 +378,10 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
       </group>
       <group ref={hardwareRef} position={[0, 2.03, 0]}>
         <mesh material={brass}>
-          <boxGeometry args={[0.78, 0.32, 0.27]} />
+          <boxGeometry args={[0.82, 0.36, 0.3]} />
         </mesh>
         <mesh position={[0, 0.23, 0]} rotation={[Math.PI / 2, 0, 0]} material={brass}>
-          <torusGeometry args={[0.23, 0.065, 20, 40]} />
+          <torusGeometry args={[0.255, 0.072, 20, 40]} />
         </mesh>
         <mesh position={[0.18, 0.05, 0.17]} rotation={[0, 0, Math.PI / 2]} material={brass}>
           <cylinderGeometry args={[0.045, 0.045, 0.44, 18]} />

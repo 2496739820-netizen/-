@@ -201,9 +201,13 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /MeshLineGeometry/);
   assert.match(scene, /setPointerCapture/);
   assert.match(scene, /setNextKinematicTranslation/);
-  assert.match(scene, /onPointerMissed=\{onDismiss\}/);
+  assert.match(scene, /performance\.now\(\) - lastDragAt\.current > 450/);
   assert.match(scene, /anchorXRatio/);
-  assert.match(scene, /lineWidth: 0\.105/);
+  assert.match(scene, /CatmullRomCurve3/);
+  assert.match(scene, /curve\.getPoints/);
+  assert.match(scene, /lineWidth: 0\.12/);
+  assert.match(scene, /lineWidth: 0\.041/);
+  assert.match(scene, /rotation\.z \* 0\.15/);
   assert.match(scene, /anchorY - 0\.08/);
   assert.match(scene, /anchorY - 2\.55/);
 
@@ -216,7 +220,8 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /CONTACT_AVATAR_SOURCE/);
   assert.match(card, /drawCoverImage/);
   assert.match(card, /ringTarget\.current/);
-  assert.match(card, /torusGeometry args=\{\[0\.23, 0\.065/);
+  assert.match(card, /metalness: 0\.86/);
+  assert.match(card, /torusGeometry args=\{\[0\.255, 0\.072/);
 
   assert.match(fallback, /data-contact-badge="static"/);
   assert.match(fallback, /className="badge-avatar"/);
@@ -241,6 +246,7 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /left: var\(--contact-card-x\)/);
   assert.match(css, /var\(--contact-anchor-x\) - var\(--contact-card-x\)/);
   assert.match(css, /@keyframes static-badge-drop/);
+  assert.match(css, /\.badge-drag-hint\.is-hidden/);
 
   const dependencies = JSON.parse(packageJson).dependencies;
   for (const dependency of ["three", "@react-three/fiber", "@react-three/drei", "@react-three/rapier", "meshline", "qrcode"]) {

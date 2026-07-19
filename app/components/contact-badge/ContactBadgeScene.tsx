@@ -51,8 +51,8 @@ function LanyardLine({
   const geometry = useMemo(() => new MeshLineGeometry(), []);
   const outerMaterial = useMemo(
     () => new MeshLineMaterial({
-      color: new THREE.Color("#6f5938"),
-      lineWidth: 0.105,
+      color: new THREE.Color("#5f4b31"),
+      lineWidth: 0.12,
       sizeAttenuation: 1,
       resolution: new THREE.Vector2(1, 1),
     }),
@@ -60,8 +60,8 @@ function LanyardLine({
   );
   const innerMaterial = useMemo(
     () => new MeshLineMaterial({
-      color: new THREE.Color("#b59a67"),
-      lineWidth: 0.038,
+      color: new THREE.Color("#c1a46d"),
+      lineWidth: 0.041,
       sizeAttenuation: 1,
       resolution: new THREE.Vector2(1, 1),
     }),
@@ -69,7 +69,15 @@ function LanyardLine({
   );
   const outerLine = useMemo(() => new THREE.Mesh(geometry, outerMaterial), [geometry, outerMaterial]);
   const innerLine = useMemo(() => new THREE.Mesh(geometry, innerMaterial), [geometry, innerMaterial]);
-  const point = useMemo(() => new THREE.Vector3(), []);
+  const targets = useMemo(() => Array.from({ length: 6 }, () => new THREE.Vector3()), []);
+  const smoothedPoints = useMemo(() => Array.from({ length: 6 }, () => new THREE.Vector3()), []);
+  const cardQuaternion = useMemo(() => new THREE.Quaternion(), []);
+  const cardConnection = useMemo(() => new THREE.Vector3(), []);
+  const curve = useMemo(
+    () => new THREE.CatmullRomCurve3(smoothedPoints, false, "chordal", 0.45),
+    [smoothedPoints],
+  );
+  const initialized = useRef(false);
 
   useEffect(() => {
     outerMaterial.resolution.set(size.width, size.height);
@@ -82,24 +90,44 @@ function LanyardLine({
     innerMaterial.dispose();
   }, [geometry, innerMaterial, outerMaterial]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     const anchorBody = anchor.current;
     const cardBody = card.current;
     if (!anchorBody || !cardBody || nodes.some((node) => !node.current)) return;
-    const points: THREE.Vector3[] = [];
     const anchorTranslation = anchorBody.translation();
-    points.push(new THREE.Vector3(anchorTranslation.x, anchorTranslation.y, anchorTranslation.z));
-    nodes.forEach((node) => {
+    targets[0].set(anchorTranslation.x, anchorTranslation.y, anchorTranslation.z);
+    nodes.forEach((node, index) => {
       const translation = node.current?.translation();
-      if (translation) points.push(new THREE.Vector3(translation.x, translation.y, translation.z));
+      if (translation) targets[index + 1].set(translation.x, translation.y, translation.z);
     });
     const cardTranslation = cardBody.translation();
     const cardRotation = cardBody.rotation();
-    point.set(0, 2.33, 0).applyQuaternion(
-      new THREE.Quaternion(cardRotation.x, cardRotation.y, cardRotation.z, cardRotation.w),
+    cardQuaternion.set(cardRotation.x, cardRotation.y, cardRotation.z, cardRotation.w);
+    cardConnection
+      .set(0, 2.33, 0)
+      .applyQuaternion(cardQuaternion);
+    cardConnection.set(
+      cardConnection.x + cardTranslation.x,
+      cardConnection.y + cardTranslation.y,
+      cardConnection.z + cardTranslation.z,
     );
-    points.push(new THREE.Vector3(cardTranslation.x, cardTranslation.y, cardTranslation.z).add(point));
-    geometry.setPoints(points);
+    targets[5].copy(cardConnection);
+
+    if (!initialized.current) {
+      smoothedPoints.forEach((point, index) => point.copy(targets[index]));
+      initialized.current = true;
+    } else {
+      smoothedPoints[0].copy(targets[0]);
+      smoothedPoints[5].copy(targets[5]);
+      for (let index = 1; index < 5; index += 1) {
+        const distance = smoothedPoints[index].distanceTo(targets[index]);
+        const response = THREE.MathUtils.clamp(7 + distance * 18, 7, 26);
+        const alpha = 1 - Math.exp(-response * delta);
+        smoothedPoints[index].lerp(targets[index], alpha);
+      }
+    }
+
+    geometry.setPoints(curve.getPoints(size.width < 768 ? 18 : 32));
   });
 
   return (
@@ -116,12 +144,16 @@ function SuspendedBadge({
   onSceneError,
   anchorXRatio,
   anchorYRatio,
+  onDragStart,
+  onDragEnd,
 }: {
   isFlipped: boolean;
   onReady: () => void;
   onSceneError: () => void;
   anchorXRatio: number;
   anchorYRatio: number;
+  onDragStart: () => void;
+  onDragEnd: () => void;
 }) {
   const { viewport } = useThree();
   const anchor = useRef<RapierRigidBody>(null!);
@@ -153,7 +185,8 @@ function SuspendedBadge({
       card.current.wakeUp();
     }
     setDragging(false);
-  }, []);
+    onDragEnd();
+  }, [onDragEnd]);
 
   useEffect(() => {
     const release = () => {
@@ -192,7 +225,19 @@ function SuspendedBadge({
       );
       body.setLinvel({ x: 0, y: 0, z: 0 }, true);
       body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      return;
     }
+
+    const angularVelocity = body.angvel();
+    const rotation = body.rotation();
+    body.setAngvel(
+      {
+        x: angularVelocity.x,
+        y: angularVelocity.y,
+        z: angularVelocity.z - rotation.z * 0.15,
+      },
+      true,
+    );
   });
 
   useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 0.46]);
@@ -225,6 +270,7 @@ function SuspendedBadge({
     card.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
     draggingRef.current = true;
     setDragging(true);
+    onDragStart();
     document.body.style.cursor = "grabbing";
   };
 
@@ -288,18 +334,22 @@ function BadgeWorld({
   onSceneError,
   anchorXRatio,
   anchorYRatio,
+  onDragStart,
+  onDragEnd,
 }: {
   isFlipped: boolean;
   onReady: () => void;
   onSceneError: () => void;
   anchorXRatio: number;
   anchorYRatio: number;
+  onDragStart: () => void;
+  onDragEnd: () => void;
 }) {
   return (
     <>
-      <ambientLight intensity={1.8} />
-      <directionalLight position={[4, 6, 7]} intensity={2.2} color="#fff8e9" />
-      <directionalLight position={[-5, 1, 4]} intensity={0.7} color="#dce0d3" />
+      <ambientLight intensity={1.45} />
+      <directionalLight position={[4, 6, 7]} intensity={2.55} color="#fff1d6" />
+      <directionalLight position={[-5, 1, 4]} intensity={0.9} color="#e3e8de" />
       <Physics
         gravity={[0, -8.6, 0]}
         interpolate
@@ -313,6 +363,8 @@ function BadgeWorld({
           onSceneError={onSceneError}
           anchorXRatio={anchorXRatio}
           anchorYRatio={anchorYRatio}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
         />
       </Physics>
     </>
@@ -335,7 +387,16 @@ function WebGLContextGuard({ onSceneError }: { onSceneError: () => void }) {
 
 export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, anchorXRatio, anchorYRatio }: ContactBadgeSceneProps) {
   const [worldReady, setWorldReady] = useState(false);
+  const [hasDragged, setHasDragged] = useState(false);
+  const lastDragAt = useRef(0);
   const markWorldReady = useCallback(() => setWorldReady(true), []);
+  const markDragStart = useCallback(() => {
+    lastDragAt.current = performance.now();
+    setHasDragged(true);
+  }, []);
+  const markDragEnd = useCallback(() => {
+    lastDragAt.current = performance.now();
+  }, []);
 
   useEffect(() => {
     if (worldReady) return;
@@ -353,7 +414,9 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
         dpr={[1, 1.5]}
         camera={{ position: [0, 0.35, 12.4], fov: 36, near: 0.1, far: 40 }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        onPointerMissed={onDismiss}
+        onPointerMissed={() => {
+          if (performance.now() - lastDragAt.current > 450) onDismiss();
+        }}
       >
         <WebGLContextGuard onSceneError={onSceneError} />
         <Suspense fallback={null}>
@@ -363,10 +426,12 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
             onSceneError={onSceneError}
             anchorXRatio={anchorXRatio}
             anchorYRatio={anchorYRatio}
+            onDragStart={markDragStart}
+            onDragEnd={markDragEnd}
           />
         </Suspense>
       </Canvas>
-      <p className="badge-drag-hint">抓住工牌轻轻拖动</p>
+      <p className={`badge-drag-hint ${isFlipped || hasDragged ? "is-hidden" : ""}`}>抓住工牌轻轻拖动</p>
     </div>
   );
 }
