@@ -41,11 +41,9 @@ function supportsPointerCapture(target: EventTarget | null): target is PointerCa
 function LanyardLine({
   anchor,
   nodes,
-  card,
 }: {
   anchor: React.RefObject<RapierRigidBody | null>;
   nodes: React.RefObject<RapierRigidBody | null>[];
-  card: React.RefObject<RapierRigidBody | null>;
 }) {
   const { size } = useThree();
   const geometry = useMemo(() => new MeshLineGeometry(), []);
@@ -69,12 +67,10 @@ function LanyardLine({
   );
   const outerLine = useMemo(() => new THREE.Mesh(geometry, outerMaterial), [geometry, outerMaterial]);
   const innerLine = useMemo(() => new THREE.Mesh(geometry, innerMaterial), [geometry, innerMaterial]);
-  const targets = useMemo(() => Array.from({ length: 6 }, () => new THREE.Vector3()), []);
-  const smoothedPoints = useMemo(() => Array.from({ length: 6 }, () => new THREE.Vector3()), []);
-  const cardQuaternion = useMemo(() => new THREE.Quaternion(), []);
-  const cardConnection = useMemo(() => new THREE.Vector3(), []);
+  const targets = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
+  const smoothedPoints = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
   const curve = useMemo(
-    () => new THREE.CatmullRomCurve3(smoothedPoints, false, "chordal", 0.45),
+    () => new THREE.CatmullRomCurve3(smoothedPoints, false, "chordal"),
     [smoothedPoints],
   );
   const initialized = useRef(false);
@@ -92,42 +88,31 @@ function LanyardLine({
 
   useFrame((_, delta) => {
     const anchorBody = anchor.current;
-    const cardBody = card.current;
-    if (!anchorBody || !cardBody || nodes.some((node) => !node.current)) return;
+    if (!anchorBody || nodes.length !== 3 || nodes.some((node) => !node.current)) return;
     const anchorTranslation = anchorBody.translation();
     targets[0].set(anchorTranslation.x, anchorTranslation.y, anchorTranslation.z);
     nodes.forEach((node, index) => {
       const translation = node.current?.translation();
       if (translation) targets[index + 1].set(translation.x, translation.y, translation.z);
     });
-    const cardTranslation = cardBody.translation();
-    const cardRotation = cardBody.rotation();
-    cardQuaternion.set(cardRotation.x, cardRotation.y, cardRotation.z, cardRotation.w);
-    cardConnection
-      .set(0, 2.33, 0)
-      .applyQuaternion(cardQuaternion);
-    cardConnection.set(
-      cardConnection.x + cardTranslation.x,
-      cardConnection.y + cardTranslation.y,
-      cardConnection.z + cardTranslation.z,
-    );
-    targets[5].copy(cardConnection);
 
     if (!initialized.current) {
       smoothedPoints.forEach((point, index) => point.copy(targets[index]));
       initialized.current = true;
     } else {
       smoothedPoints[0].copy(targets[0]);
-      smoothedPoints[5].copy(targets[5]);
-      for (let index = 1; index < 5; index += 1) {
-        const distance = smoothedPoints[index].distanceTo(targets[index]);
-        const response = THREE.MathUtils.clamp(7 + distance * 18, 7, 26);
-        const alpha = 1 - Math.exp(-response * delta);
-        smoothedPoints[index].lerp(targets[index], alpha);
+      smoothedPoints[3].copy(targets[3]);
+      for (let index = 1; index < 3; index += 1) {
+        const distance = THREE.MathUtils.clamp(
+          smoothedPoints[index].distanceTo(targets[index]),
+          0.1,
+          1,
+        );
+        smoothedPoints[index].lerp(targets[index], delta * distance * 50);
       }
     }
 
-    geometry.setPoints(curve.getPoints(size.width < 768 ? 18 : 32));
+    geometry.setPoints(curve.getPoints(size.width < 768 ? 16 : 32));
   });
 
   return (
@@ -160,26 +145,29 @@ function SuspendedBadge({
   const node1 = useRef<RapierRigidBody>(null!);
   const node2 = useRef<RapierRigidBody>(null!);
   const node3 = useRef<RapierRigidBody>(null!);
-  const node4 = useRef<RapierRigidBody>(null!);
   const card = useRef<RapierRigidBody>(null!);
   const [dragging, setDragging] = useState(false);
   const draggingRef = useRef(false);
-  const dragOffset = useRef(new THREE.Vector3());
+  const dragOffset = useRef<THREE.Vector3 | null>(null);
+  const pointerWorld = useMemo(() => new THREE.Vector3(), []);
+  const pointerDirection = useMemo(() => new THREE.Vector3(), []);
+  const cardPosition = useMemo(() => new THREE.Vector3(), []);
+  const targetPosition = useMemo(() => new THREE.Vector3(), []);
   const anchorX = (anchorXRatio - 0.5) * viewport.width;
   const anchorY = viewport.height / 2 - anchorYRatio * viewport.height;
-  const cardX = THREE.MathUtils.clamp(
-    anchorX,
+  const swingDirection = anchorX >= 0 ? -1 : 1;
+  const initialCardX = THREE.MathUtils.clamp(
+    anchorX + swingDirection * 2,
     -viewport.width / 2 + 1.48,
     viewport.width / 2 - 1.48,
   );
-  const minCardX = -viewport.width / 2 + 1.42;
-  const maxCardX = viewport.width / 2 - 1.42;
 
   useEffect(() => onReady(), [onReady]);
 
   const releaseCard = useCallback(() => {
     document.body.style.cursor = "";
     draggingRef.current = false;
+    dragOffset.current = null;
     if (card.current) {
       card.current.setBodyType(0, true);
       card.current.wakeUp();
@@ -204,21 +192,32 @@ function SuspendedBadge({
     };
   }, [releaseCard]);
 
-  useFrame(() => {
+  useFrame((state) => {
     const body = card.current;
-    if (!body || dragging) return;
+    if (!body) return;
+
+    const offset = dragOffset.current;
+    if (dragging && offset) {
+      pointerWorld.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
+      pointerDirection.copy(pointerWorld).sub(state.camera.position).normalize();
+      pointerWorld.add(pointerDirection.multiplyScalar(state.camera.position.length()));
+      targetPosition.copy(pointerWorld).sub(offset);
+      [anchor, node1, node2, node3, card].forEach((bodyRef) => bodyRef.current?.wakeUp());
+      body.setNextKinematicTranslation(targetPosition);
+      return;
+    }
+
     const position = body.translation();
     if (
-      position.x < minCardX - 0.45 ||
-      position.x > maxCardX + 0.45 ||
-      position.y < -viewport.height / 2 + 1.82 ||
-      position.y > anchorY + 0.5 ||
-      Math.abs(position.z) > 0.05
+      Math.abs(position.x) > viewport.width * 1.5 ||
+      position.y < -viewport.height * 1.5 ||
+      position.y > viewport.height ||
+      Math.abs(position.z) > 8
     ) {
       body.setTranslation(
         {
-          x: THREE.MathUtils.clamp(position.x, minCardX, maxCardX),
-          y: THREE.MathUtils.clamp(position.y, -viewport.height / 2 + 1.92, anchorY - 1.95),
+          x: initialCardX,
+          y: anchorY,
           z: 0,
         },
         true,
@@ -233,30 +232,22 @@ function SuspendedBadge({
     body.setAngvel(
       {
         x: angularVelocity.x,
-        y: angularVelocity.y,
-        z: angularVelocity.z - rotation.z * 0.15,
+        y: angularVelocity.y - rotation.y * 0.25,
+        z: angularVelocity.z,
       },
       true,
     );
   });
 
-  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 0.46]);
-  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 0.46]);
-  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 0.46]);
-  useRopeJoint(node3, node4, [[0, 0, 0], [0, 0, 0], 0.46]);
-  useSphericalJoint(node4, card, [[0, 0, 0], [0, 2.33, 0]]);
-  useRopeJoint(anchor, card, [[0, 0, 0], [0, 2.33, 0], 1.96]);
+  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 1]);
+  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 1]);
+  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 1]);
+  useSphericalJoint(node3, card, [[0, 0, 0], [0, 2.33, 0]]);
 
   useEffect(() => () => { document.body.style.cursor = ""; }, []);
 
   const moveCard = (event: ThreeEvent<PointerEvent>) => {
-    if (!dragging || !card.current) return;
-    event.stopPropagation();
-    const target = event.point.clone().add(dragOffset.current);
-    target.x = THREE.MathUtils.clamp(target.x, minCardX, maxCardX);
-    target.y = THREE.MathUtils.clamp(target.y, -viewport.height / 2 + 1.9, anchorY - 1.6);
-    target.z = THREE.MathUtils.clamp(target.z, -0.55, 0.55);
-    card.current.setNextKinematicTranslation(target);
+    if (dragging) event.stopPropagation();
   };
 
   const startDrag = (event: ThreeEvent<PointerEvent>) => {
@@ -264,7 +255,8 @@ function SuspendedBadge({
     event.stopPropagation();
     if (supportsPointerCapture(event.target)) event.target.setPointerCapture(event.pointerId);
     const current = card.current.translation();
-    dragOffset.current.set(current.x - event.point.x, current.y - event.point.y, current.z - event.point.z);
+    cardPosition.set(current.x, current.y, current.z);
+    dragOffset.current = event.point.clone().sub(cardPosition);
     card.current.setBodyType(2, true);
     card.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
     card.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
@@ -285,34 +277,24 @@ function SuspendedBadge({
 
   const nodeProps = {
     colliders: false as const,
-    linearDamping: 3.2,
+    linearDamping: 4,
     angularDamping: 4,
-    canSleep: false,
-    mass: 0.12,
-    additionalSolverIterations: 20,
-    enabledTranslations: [true, true, false] as [boolean, boolean, boolean],
-    lockRotations: true,
+    canSleep: true,
   };
 
   return (
     <>
       <RigidBody ref={anchor} type="fixed" colliders={false} position={[anchorX, anchorY, 0]} />
-      <RigidBody ref={node1} {...nodeProps} position={[THREE.MathUtils.lerp(anchorX, cardX, 0.25), anchorY - 0.08, 0]}><BallCollider args={[0.075]} /></RigidBody>
-      <RigidBody ref={node2} {...nodeProps} position={[THREE.MathUtils.lerp(anchorX, cardX, 0.5), anchorY - 0.16, 0]}><BallCollider args={[0.075]} /></RigidBody>
-      <RigidBody ref={node3} {...nodeProps} position={[THREE.MathUtils.lerp(anchorX, cardX, 0.75), anchorY - 0.24, 0]}><BallCollider args={[0.075]} /></RigidBody>
-      <RigidBody ref={node4} {...nodeProps} position={[cardX, anchorY - 0.32, 0]}><BallCollider args={[0.075]} /></RigidBody>
+      <RigidBody ref={node1} {...nodeProps} position={[anchorX + swingDirection * 0.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node2} {...nodeProps} position={[anchorX + swingDirection, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node3} {...nodeProps} position={[anchorX + swingDirection * 1.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
       <RigidBody
         ref={card}
         colliders={false}
-        position={[cardX - 0.08, anchorY - 2.55, 0]}
-        rotation={[0, 0, -0.075]}
-        linearDamping={4.8}
-        angularDamping={5.6}
-        canSleep={false}
-        mass={0.52}
-        additionalSolverIterations={24}
-        enabledTranslations={[true, true, false]}
-        enabledRotations={[false, false, true]}
+        position={[initialCardX, anchorY, 0]}
+        linearDamping={4}
+        angularDamping={4}
+        canSleep
       >
         <CuboidCollider args={[1.32, 2.13, 0.11]} />
         <BadgeCard
@@ -323,7 +305,7 @@ function SuspendedBadge({
           onPointerUp={stopDrag}
         />
       </RigidBody>
-      <LanyardLine anchor={anchor} nodes={[node1, node2, node3, node4]} card={card} />
+      <LanyardLine anchor={anchor} nodes={[node1, node2, node3]} />
     </>
   );
 }
@@ -345,18 +327,15 @@ function BadgeWorld({
   onDragStart: () => void;
   onDragEnd: () => void;
 }) {
+  const { size } = useThree();
+  const isMobile = size.width < 768;
+
   return (
     <>
-      <ambientLight intensity={1.45} />
-      <directionalLight position={[4, 6, 7]} intensity={2.55} color="#fff1d6" />
-      <directionalLight position={[-5, 1, 4]} intensity={0.9} color="#e3e8de" />
-      <Physics
-        gravity={[0, -8.6, 0]}
-        interpolate
-        timeStep={1 / 60}
-        numSolverIterations={12}
-        numInternalPgsIterations={4}
-      >
+      <ambientLight intensity={Math.PI} />
+      <directionalLight position={[4, 6, 7]} intensity={1.85} color="#fff1d6" />
+      <directionalLight position={[-5, 1, 4]} intensity={0.55} color="#e3e8de" />
+      <Physics gravity={[0, -40, 0]} timeStep={isMobile ? 1 / 30 : 1 / 60}>
         <SuspendedBadge
           isFlipped={isFlipped}
           onReady={onReady}
@@ -388,6 +367,7 @@ function WebGLContextGuard({ onSceneError }: { onSceneError: () => void }) {
 export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, anchorXRatio, anchorYRatio }: ContactBadgeSceneProps) {
   const [worldReady, setWorldReady] = useState(false);
   const [hasDragged, setHasDragged] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const lastDragAt = useRef(0);
   const markWorldReady = useCallback(() => setWorldReady(true), []);
   const markDragStart = useCallback(() => {
@@ -404,6 +384,12 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
     return () => window.clearTimeout(timeout);
   }, [onSceneError, worldReady]);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div
       className="contact-badge-canvas"
@@ -411,9 +397,9 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
       onPointerDown={(event) => event.stopPropagation()}
     >
       <Canvas
-        dpr={[1, 1.5]}
-        camera={{ position: [0, 0.35, 12.4], fov: 36, near: 0.1, far: 40 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        dpr={[1, isMobile ? 1.5 : 2]}
+        camera={{ position: [0, 0, 30], fov: 20, near: 0.1, far: 100 }}
+        gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true, powerPreference: "high-performance" }}
         onPointerMissed={() => {
           if (performance.now() - lastDragAt.current > 450) onDismiss();
         }}
