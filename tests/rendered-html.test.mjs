@@ -187,6 +187,10 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(modal, /prefers-reduced-motion: reduce/);
   assert.match(modal, /supportsWebGL/);
   assert.match(modal, /isLowPerformanceMobile/);
+  assert.match(modal, /getBoundingClientRect\(\)/);
+  assert.match(modal, /--contact-anchor-x/);
+  assert.match(modal, /anchorXRatio/);
+  assert.match(modal, /onDismiss=\{handleClose\}/);
 
   assert.match(scene, /useRopeJoint/);
   assert.match(scene, /useSphericalJoint/);
@@ -197,6 +201,11 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /MeshLineGeometry/);
   assert.match(scene, /setPointerCapture/);
   assert.match(scene, /setNextKinematicTranslation/);
+  assert.match(scene, /onPointerMissed=\{onDismiss\}/);
+  assert.match(scene, /anchorXRatio/);
+  assert.match(scene, /lineWidth: 0\.105/);
+  assert.match(scene, /anchorY - 0\.08/);
+  assert.match(scene, /anchorY - 2\.55/);
 
   assert.match(card, /document\.fonts\.ready/);
   assert.match(card, /CanvasTexture/);
@@ -204,8 +213,14 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /textures\?\.front/);
   assert.match(card, /textures\?\.back/);
   assert.match(card, /dispose\(\)/);
+  assert.match(card, /CONTACT_AVATAR_SOURCE/);
+  assert.match(card, /drawCoverImage/);
+  assert.match(card, /ringTarget\.current/);
+  assert.match(card, /torusGeometry args=\{\[0\.23, 0\.065/);
 
   assert.match(fallback, /data-contact-badge="static"/);
+  assert.match(fallback, /className="badge-avatar"/);
+  assert.match(fallback, /CONTACT_INTRO/);
   assert.match(data, /CONTACT_QR_SOURCE = "\/contact-qr\.png"/);
   assert.match(data, /CONTACT_QR_FALLBACK_VALUE = CONTACT_MAILTO/);
   assert.match(data, /width: 768/);
@@ -222,6 +237,10 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /\.contact-modal-backdrop/);
   assert.match(css, /min-height: 50px/);
   assert.match(css, /touch-action: none/);
+  assert.match(css, /background: rgba\(46, 42, 35, 0\.1\)/);
+  assert.match(css, /left: var\(--contact-card-x\)/);
+  assert.match(css, /var\(--contact-anchor-x\) - var\(--contact-card-x\)/);
+  assert.match(css, /@keyframes static-badge-drop/);
 
   const dependencies = JSON.parse(packageJson).dependencies;
   for (const dependency of ["three", "@react-three/fiber", "@react-three/drei", "@react-three/rapier", "meshline", "qrcode"]) {

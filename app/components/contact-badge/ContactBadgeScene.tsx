@@ -18,6 +18,9 @@ import { BadgeCard } from "./BadgeCard";
 type ContactBadgeSceneProps = {
   isFlipped: boolean;
   onSceneError: () => void;
+  onDismiss: () => void;
+  anchorXRatio: number;
+  anchorYRatio: number;
 };
 
 type PointerCaptureTarget = EventTarget & {
@@ -46,26 +49,38 @@ function LanyardLine({
 }) {
   const { size } = useThree();
   const geometry = useMemo(() => new MeshLineGeometry(), []);
-  const material = useMemo(
+  const outerMaterial = useMemo(
     () => new MeshLineMaterial({
-      color: new THREE.Color("#8a7349"),
-      lineWidth: 0.055,
+      color: new THREE.Color("#6f5938"),
+      lineWidth: 0.105,
       sizeAttenuation: 1,
       resolution: new THREE.Vector2(1, 1),
     }),
     [],
   );
-  const line = useMemo(() => new THREE.Mesh(geometry, material), [geometry, material]);
+  const innerMaterial = useMemo(
+    () => new MeshLineMaterial({
+      color: new THREE.Color("#b59a67"),
+      lineWidth: 0.038,
+      sizeAttenuation: 1,
+      resolution: new THREE.Vector2(1, 1),
+    }),
+    [],
+  );
+  const outerLine = useMemo(() => new THREE.Mesh(geometry, outerMaterial), [geometry, outerMaterial]);
+  const innerLine = useMemo(() => new THREE.Mesh(geometry, innerMaterial), [geometry, innerMaterial]);
   const point = useMemo(() => new THREE.Vector3(), []);
 
   useEffect(() => {
-    material.resolution.set(size.width, size.height);
-  }, [material, size.height, size.width]);
+    outerMaterial.resolution.set(size.width, size.height);
+    innerMaterial.resolution.set(size.width, size.height);
+  }, [innerMaterial, outerMaterial, size.height, size.width]);
 
   useEffect(() => () => {
     geometry.dispose();
-    material.dispose();
-  }, [geometry, material]);
+    outerMaterial.dispose();
+    innerMaterial.dispose();
+  }, [geometry, innerMaterial, outerMaterial]);
 
   useFrame(() => {
     const anchorBody = anchor.current;
@@ -80,25 +95,35 @@ function LanyardLine({
     });
     const cardTranslation = cardBody.translation();
     const cardRotation = cardBody.rotation();
-    point.set(0, 2.42, 0).applyQuaternion(
+    point.set(0, 2.33, 0).applyQuaternion(
       new THREE.Quaternion(cardRotation.x, cardRotation.y, cardRotation.z, cardRotation.w),
     );
     points.push(new THREE.Vector3(cardTranslation.x, cardTranslation.y, cardTranslation.z).add(point));
     geometry.setPoints(points);
   });
 
-  return <primitive object={line} frustumCulled={false} />;
+  return (
+    <group>
+      <primitive object={outerLine} frustumCulled={false} />
+      <primitive object={innerLine} position-z={0.003} frustumCulled={false} />
+    </group>
+  );
 }
 
 function SuspendedBadge({
   isFlipped,
   onReady,
   onSceneError,
+  anchorXRatio,
+  anchorYRatio,
 }: {
   isFlipped: boolean;
   onReady: () => void;
   onSceneError: () => void;
+  anchorXRatio: number;
+  anchorYRatio: number;
 }) {
+  const { viewport } = useThree();
   const anchor = useRef<RapierRigidBody>(null!);
   const node1 = useRef<RapierRigidBody>(null!);
   const node2 = useRef<RapierRigidBody>(null!);
@@ -106,43 +131,61 @@ function SuspendedBadge({
   const node4 = useRef<RapierRigidBody>(null!);
   const card = useRef<RapierRigidBody>(null!);
   const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
   const dragOffset = useRef(new THREE.Vector3());
+  const anchorX = (anchorXRatio - 0.5) * viewport.width;
+  const anchorY = viewport.height / 2 - anchorYRatio * viewport.height;
+  const cardX = THREE.MathUtils.clamp(
+    anchorX,
+    -viewport.width / 2 + 1.48,
+    viewport.width / 2 - 1.48,
+  );
+  const minCardX = -viewport.width / 2 + 1.42;
+  const maxCardX = viewport.width / 2 - 1.42;
 
   useEffect(() => onReady(), [onReady]);
 
   const releaseCard = useCallback(() => {
-    if (!card.current) return;
-    card.current.setBodyType(0, true);
-    card.current.wakeUp();
-    setDragging(false);
     document.body.style.cursor = "";
+    draggingRef.current = false;
+    if (card.current) {
+      card.current.setBodyType(0, true);
+      card.current.wakeUp();
+    }
+    setDragging(false);
   }, []);
 
   useEffect(() => {
-    if (!dragging) return;
-    const release = () => releaseCard();
-    window.addEventListener("pointerup", release, { once: true });
-    window.addEventListener("pointercancel", release, { once: true });
-    return () => {
-      window.removeEventListener("pointerup", release);
-      window.removeEventListener("pointercancel", release);
+    const release = () => {
+      if (draggingRef.current) releaseCard();
     };
-  }, [dragging, releaseCard]);
+    window.addEventListener("pointerup", release, true);
+    window.addEventListener("pointercancel", release, true);
+    window.addEventListener("mouseup", release, true);
+    window.addEventListener("blur", release);
+    return () => {
+      window.removeEventListener("pointerup", release, true);
+      window.removeEventListener("pointercancel", release, true);
+      window.removeEventListener("mouseup", release, true);
+      window.removeEventListener("blur", release);
+    };
+  }, [releaseCard]);
 
   useFrame(() => {
     const body = card.current;
     if (!body || dragging) return;
     const position = body.translation();
     if (
-      Math.abs(position.x) > 3.25 ||
-      position.y < -1.05 ||
-      position.y > 1.65 ||
+      position.x < minCardX - 0.45 ||
+      position.x > maxCardX + 0.45 ||
+      position.y < -viewport.height / 2 + 1.82 ||
+      position.y > anchorY + 0.5 ||
       Math.abs(position.z) > 0.05
     ) {
       body.setTranslation(
         {
-          x: THREE.MathUtils.clamp(position.x, -2.7, 2.7),
-          y: THREE.MathUtils.clamp(position.y, -0.8, 1.25),
+          x: THREE.MathUtils.clamp(position.x, minCardX, maxCardX),
+          y: THREE.MathUtils.clamp(position.y, -viewport.height / 2 + 1.92, anchorY - 1.95),
           z: 0,
         },
         true,
@@ -152,12 +195,12 @@ function SuspendedBadge({
     }
   });
 
-  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 0.72]);
-  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 0.72]);
-  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 0.72]);
-  useRopeJoint(node3, node4, [[0, 0, 0], [0, 0, 0], 0.72]);
-  useSphericalJoint(node4, card, [[0, 0, 0], [0, 2.42, 0]]);
-  useRopeJoint(anchor, card, [[0, 0, 0], [0, 2.42, 0], 3.06]);
+  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 0.46]);
+  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 0.46]);
+  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 0.46]);
+  useRopeJoint(node3, node4, [[0, 0, 0], [0, 0, 0], 0.46]);
+  useSphericalJoint(node4, card, [[0, 0, 0], [0, 2.33, 0]]);
+  useRopeJoint(anchor, card, [[0, 0, 0], [0, 2.33, 0], 1.96]);
 
   useEffect(() => () => { document.body.style.cursor = ""; }, []);
 
@@ -165,8 +208,8 @@ function SuspendedBadge({
     if (!dragging || !card.current) return;
     event.stopPropagation();
     const target = event.point.clone().add(dragOffset.current);
-    target.x = THREE.MathUtils.clamp(target.x, -3.25, 3.25);
-    target.y = THREE.MathUtils.clamp(target.y, -2.4, 2.6);
+    target.x = THREE.MathUtils.clamp(target.x, minCardX, maxCardX);
+    target.y = THREE.MathUtils.clamp(target.y, -viewport.height / 2 + 1.9, anchorY - 1.6);
     target.z = THREE.MathUtils.clamp(target.z, -0.55, 0.55);
     card.current.setNextKinematicTranslation(target);
   };
@@ -180,6 +223,7 @@ function SuspendedBadge({
     card.current.setBodyType(2, true);
     card.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
     card.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+    draggingRef.current = true;
     setDragging(true);
     document.body.style.cursor = "grabbing";
   };
@@ -206,16 +250,16 @@ function SuspendedBadge({
 
   return (
     <>
-      <RigidBody ref={anchor} type="fixed" colliders={false} position={[0, 4.65, 0]} />
-      <RigidBody ref={node1} {...nodeProps} position={[0, 4.05, 0]}><BallCollider args={[0.075]} /></RigidBody>
-      <RigidBody ref={node2} {...nodeProps} position={[0.02, 3.45, 0]}><BallCollider args={[0.075]} /></RigidBody>
-      <RigidBody ref={node3} {...nodeProps} position={[-0.02, 2.85, 0]}><BallCollider args={[0.075]} /></RigidBody>
-      <RigidBody ref={node4} {...nodeProps} position={[0, 2.25, 0]}><BallCollider args={[0.075]} /></RigidBody>
+      <RigidBody ref={anchor} type="fixed" colliders={false} position={[anchorX, anchorY, 0]} />
+      <RigidBody ref={node1} {...nodeProps} position={[THREE.MathUtils.lerp(anchorX, cardX, 0.25), anchorY - 0.08, 0]}><BallCollider args={[0.075]} /></RigidBody>
+      <RigidBody ref={node2} {...nodeProps} position={[THREE.MathUtils.lerp(anchorX, cardX, 0.5), anchorY - 0.16, 0]}><BallCollider args={[0.075]} /></RigidBody>
+      <RigidBody ref={node3} {...nodeProps} position={[THREE.MathUtils.lerp(anchorX, cardX, 0.75), anchorY - 0.24, 0]}><BallCollider args={[0.075]} /></RigidBody>
+      <RigidBody ref={node4} {...nodeProps} position={[cardX, anchorY - 0.32, 0]}><BallCollider args={[0.075]} /></RigidBody>
       <RigidBody
         ref={card}
         colliders={false}
-        position={[0.18, -0.12, 0]}
-        rotation={[0, 0, -0.05]}
+        position={[cardX - 0.08, anchorY - 2.55, 0]}
+        rotation={[0, 0, -0.075]}
         linearDamping={4.8}
         angularDamping={5.6}
         canSleep={false}
@@ -242,10 +286,14 @@ function BadgeWorld({
   isFlipped,
   onReady,
   onSceneError,
+  anchorXRatio,
+  anchorYRatio,
 }: {
   isFlipped: boolean;
   onReady: () => void;
   onSceneError: () => void;
+  anchorXRatio: number;
+  anchorYRatio: number;
 }) {
   return (
     <>
@@ -259,7 +307,13 @@ function BadgeWorld({
         numSolverIterations={12}
         numInternalPgsIterations={4}
       >
-        <SuspendedBadge isFlipped={isFlipped} onReady={onReady} onSceneError={onSceneError} />
+        <SuspendedBadge
+          isFlipped={isFlipped}
+          onReady={onReady}
+          onSceneError={onSceneError}
+          anchorXRatio={anchorXRatio}
+          anchorYRatio={anchorYRatio}
+        />
       </Physics>
     </>
   );
@@ -279,7 +333,7 @@ function WebGLContextGuard({ onSceneError }: { onSceneError: () => void }) {
   return null;
 }
 
-export default function ContactBadgeScene({ isFlipped, onSceneError }: ContactBadgeSceneProps) {
+export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, anchorXRatio, anchorYRatio }: ContactBadgeSceneProps) {
   const [worldReady, setWorldReady] = useState(false);
   const markWorldReady = useCallback(() => setWorldReady(true), []);
 
@@ -299,10 +353,17 @@ export default function ContactBadgeScene({ isFlipped, onSceneError }: ContactBa
         dpr={[1, 1.5]}
         camera={{ position: [0, 0.35, 12.4], fov: 36, near: 0.1, far: 40 }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        onPointerMissed={onDismiss}
       >
         <WebGLContextGuard onSceneError={onSceneError} />
         <Suspense fallback={null}>
-          <BadgeWorld isFlipped={isFlipped} onReady={markWorldReady} onSceneError={onSceneError} />
+          <BadgeWorld
+            isFlipped={isFlipped}
+            onReady={markWorldReady}
+            onSceneError={onSceneError}
+            anchorXRatio={anchorXRatio}
+            anchorYRatio={anchorYRatio}
+          />
         </Suspense>
       </Canvas>
       <p className="badge-drag-hint">抓住工牌轻轻拖动</p>

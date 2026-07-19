@@ -5,8 +5,10 @@ import { ThreeEvent, useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import {
+  CONTACT_AVATAR_SOURCE,
   CONTACT_CAPABILITIES,
   CONTACT_EMAIL,
+  CONTACT_INTRO,
   CONTACT_QR_SOURCE,
   CONTACT_RESULTS,
   createFallbackQrDataUrl,
@@ -45,7 +47,24 @@ function roundedRect(
   context.roundRect(x, y, width, height, radius);
 }
 
-function drawFront(canvas: HTMLCanvasElement) {
+function drawCoverImage(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  x: number,
+  y: number,
+  size: number,
+) {
+  const sourceSize = Math.min(image.naturalWidth, image.naturalHeight);
+  const sourceX = (image.naturalWidth - sourceSize) / 2;
+  const sourceY = Math.max(0, (image.naturalHeight - sourceSize) * 0.2);
+  context.save();
+  roundedRect(context, x, y, size, size, 44);
+  context.clip();
+  context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, x, y, size, size);
+  context.restore();
+}
+
+async function drawFront(canvas: HTMLCanvasElement) {
   const context = canvas.getContext("2d");
   if (!context) return;
   context.fillStyle = SURFACE;
@@ -68,76 +87,98 @@ function drawFront(canvas: HTMLCanvasElement) {
   context.font = "600 18px Manrope, sans-serif";
   context.fillText("CONTACT / 2026", 940, 112);
 
+  let avatar: HTMLImageElement | null = null;
+  try {
+    avatar = await loadImage(CONTACT_AVATAR_SOURCE);
+  } catch {
+    avatar = null;
+  }
+
+  context.fillStyle = "#f3eee4";
+  roundedRect(context, 72, 196, 306, 306, 46);
+  context.fill();
+  if (avatar) {
+    drawCoverImage(context, avatar, 86, 210, 278);
+  } else {
+    context.fillStyle = GOLD;
+    context.font = "600 72px Manrope, sans-serif";
+    context.textAlign = "center";
+    context.fillText("ZS", 225, 390);
+  }
+
   context.textAlign = "left";
   context.fillStyle = GOLD;
-  context.font = "600 25px 'Noto Sans SC', sans-serif";
-  context.fillText("高端眼镜门店新媒体运营", 72, 236);
+  context.font = "600 24px 'Noto Sans SC', sans-serif";
+  context.fillText("高端眼镜门店新媒体运营", 420, 248);
   context.fillStyle = INK;
-  context.font = "600 92px 'Noto Serif SC', 'Songti SC', serif";
-  context.fillText("庄澍凯", 66, 350);
+  context.font = "600 82px 'Noto Serif SC', 'Songti SC', serif";
+  context.fillText("庄澍凯", 414, 350);
   context.fillStyle = MUTED;
-  context.font = "500 26px 'Noto Sans SC', sans-serif";
-  context.fillText("粤港澳大湾区", 72, 415);
-  context.textAlign = "right";
-  context.fillText("虎派眼镜 2024.05 至今", 940, 415);
+  context.font = "500 24px 'Noto Sans SC', sans-serif";
+  context.fillText("粤港澳大湾区", 420, 411);
+  context.fillText("虎派眼镜 2024.05 至今", 420, 457);
 
   context.strokeStyle = "rgba(38,35,30,.13)";
   context.lineWidth = 2;
   context.beginPath();
-  context.moveTo(72, 468);
-  context.lineTo(952, 468);
+  context.moveTo(72, 550);
+  context.lineTo(952, 550);
   context.stroke();
 
   context.textAlign = "left";
+  context.fillStyle = INK;
+  context.font = "500 32px 'Noto Serif SC', 'Songti SC', serif";
+  context.fillText(CONTACT_INTRO, 72, 624);
   context.fillStyle = MUTED;
   context.font = "600 19px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("CORE RESULTS", 72, 520);
+  context.fillText("擅长能力", 72, 700);
 
-  CONTACT_RESULTS.forEach((result, index) => {
-    const column = index % 2;
-    const row = Math.floor(index / 2);
-    const x = 72 + column * 446;
-    const y = 560 + row * 190;
-    roundedRect(context, x, y, 410, 160, 30);
-    context.fillStyle = index === 0 ? "#e7e9e1" : "#f3eee4";
-    context.fill();
-    context.fillStyle = INK;
-    context.font = "600 60px Manrope, sans-serif";
-    context.fillText(result.value, x + 28, y + 69);
-    context.fillStyle = MUTED;
-    context.font = "500 22px 'Noto Sans SC', sans-serif";
-    context.fillText(result.label, x + 28, y + 119);
-  });
-
-  context.fillStyle = MUTED;
-  context.font = "600 19px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("CORE CAPABILITIES", 72, 982);
   CONTACT_CAPABILITIES.forEach((capability, index) => {
     const column = index % 3;
     const row = Math.floor(index / 3);
     const x = 72 + column * 294;
-    const y = 1022 + row * 84;
-    roundedRect(context, x, y, 266, 62, 31);
-    context.fillStyle = "rgba(138,115,73,.095)";
+    const y = 736 + row * 78;
+    roundedRect(context, x, y, 266, 58, 29);
+    context.fillStyle = index === 4 ? SAGE : "rgba(138,115,73,.095)";
     context.fill();
     context.fillStyle = INK;
-    context.font = "500 24px 'Noto Sans SC', sans-serif";
+    context.font = "500 23px 'Noto Sans SC', sans-serif";
     context.textAlign = "center";
-    context.fillText(capability, x + 133, y + 40);
+    context.fillText(capability, x + 133, y + 38);
+  });
+
+  context.textAlign = "left";
+  context.fillStyle = MUTED;
+  context.font = "600 19px Manrope, 'Noto Sans SC', sans-serif";
+  context.fillText("虎派结果", 72, 944);
+
+  CONTACT_RESULTS.forEach((result, index) => {
+    const x = 72 + index * 222;
+    const y = 980;
+    roundedRect(context, x, y, 202, 142, 26);
+    context.fillStyle = index === 0 ? SAGE : "#f3eee4";
+    context.fill();
+    context.fillStyle = INK;
+    context.font = "600 48px Manrope, sans-serif";
+    context.fillText(result.value, x + 20, y + 57);
+    context.fillStyle = MUTED;
+    context.font = "500 17px 'Noto Sans SC', sans-serif";
+    const label = result.label.replace("月均到店新客 ", "月均到店新客\n").replace("约贡献门店", "约贡献门店\n");
+    label.split("\n").forEach((line, lineIndex) => context.fillText(line, x + 20, y + 92 + lineIndex * 24));
   });
 
   context.textAlign = "left";
   context.strokeStyle = "rgba(38,35,30,.13)";
   context.beginPath();
-  context.moveTo(72, 1246);
-  context.lineTo(952, 1246);
+  context.moveTo(72, 1210);
+  context.lineTo(952, 1210);
   context.stroke();
   context.fillStyle = GOLD;
   context.font = "600 18px Manrope, sans-serif";
-  context.fillText("EMAIL", 72, 1310);
+  context.fillText("EMAIL", 72, 1286);
   context.fillStyle = INK;
   context.font = "500 28px Manrope, sans-serif";
-  context.fillText(CONTACT_EMAIL, 72, 1360);
+  context.fillText(CONTACT_EMAIL, 72, 1340);
 }
 
 function loadImage(source: string): Promise<HTMLImageElement> {
@@ -216,7 +257,7 @@ function useBadgeTextures(onTextureError: () => void) {
       const backCanvas = document.createElement("canvas");
       frontCanvas.width = backCanvas.width = CANVAS_WIDTH;
       frontCanvas.height = backCanvas.height = CANVAS_HEIGHT;
-      drawFront(frontCanvas);
+      await drawFront(frontCanvas);
       await drawBack(backCanvas);
       if (cancelled) return;
 
@@ -242,6 +283,9 @@ function useBadgeTextures(onTextureError: () => void) {
 
 export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerMove, onPointerUp }: BadgeCardProps) {
   const visualRef = useRef<THREE.Group>(null);
+  const hardwareRef = useRef<THREE.Group>(null);
+  const ringTarget = useRef(0);
+  const ringPointerX = useRef<number | null>(null);
   const textures = useBadgeTextures(onTextureError);
   const brass = useMemo(
     () => new THREE.MeshStandardMaterial({ color: "#9c8153", metalness: 0.72, roughness: 0.28 }),
@@ -249,6 +293,15 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
   );
 
   useEffect(() => () => brass.dispose(), [brass]);
+  useEffect(() => {
+    const clearRingPointer = () => { ringPointerX.current = null; };
+    window.addEventListener("pointerup", clearRingPointer, true);
+    window.addEventListener("pointercancel", clearRingPointer, true);
+    return () => {
+      window.removeEventListener("pointerup", clearRingPointer, true);
+      window.removeEventListener("pointercancel", clearRingPointer, true);
+    };
+  }, []);
   useFrame((_, delta) => {
     if (!visualRef.current) return;
     visualRef.current.rotation.y = THREE.MathUtils.damp(
@@ -257,14 +310,42 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
       7,
       delta,
     );
+    if (hardwareRef.current) {
+      hardwareRef.current.rotation.y = THREE.MathUtils.damp(
+        hardwareRef.current.rotation.y,
+        ringTarget.current,
+        5.2,
+        delta,
+      );
+    }
   });
+
+  const handlePointerDown = (event: ThreeEvent<PointerEvent>) => {
+    ringPointerX.current = event.nativeEvent.clientX;
+    ringTarget.current += Math.PI * 0.7;
+    onPointerDown(event);
+  };
+
+  const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
+    if (ringPointerX.current !== null) {
+      const nextX = event.nativeEvent.clientX;
+      ringTarget.current += (nextX - ringPointerX.current) * 0.014;
+      ringPointerX.current = nextX;
+    }
+    onPointerMove(event);
+  };
+
+  const handlePointerUp = (event: ThreeEvent<PointerEvent>) => {
+    ringPointerX.current = null;
+    onPointerUp(event);
+  };
 
   return (
     <group
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
       onPointerOver={() => { document.body.style.cursor = "grab"; }}
       onPointerOut={() => { document.body.style.cursor = ""; }}
     >
@@ -295,12 +376,17 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
           />
         </mesh>
       </group>
-      <mesh position={[0, 2.03, 0]} material={brass}>
-        <boxGeometry args={[0.62, 0.28, 0.24]} />
-      </mesh>
-      <mesh position={[0, 2.24, 0]} rotation={[Math.PI / 2, 0, 0]} material={brass}>
-        <torusGeometry args={[0.18, 0.055, 16, 32]} />
-      </mesh>
+      <group ref={hardwareRef} position={[0, 2.03, 0]}>
+        <mesh material={brass}>
+          <boxGeometry args={[0.78, 0.32, 0.27]} />
+        </mesh>
+        <mesh position={[0, 0.23, 0]} rotation={[Math.PI / 2, 0, 0]} material={brass}>
+          <torusGeometry args={[0.23, 0.065, 20, 40]} />
+        </mesh>
+        <mesh position={[0.18, 0.05, 0.17]} rotation={[0, 0, Math.PI / 2]} material={brass}>
+          <cylinderGeometry args={[0.045, 0.045, 0.44, 18]} />
+        </mesh>
+      </group>
     </group>
   );
 }

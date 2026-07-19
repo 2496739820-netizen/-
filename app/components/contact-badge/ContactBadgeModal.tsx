@@ -3,6 +3,7 @@
 import {
   Component,
   ComponentType,
+  CSSProperties,
   ReactNode,
   RefObject,
   useCallback,
@@ -23,6 +24,9 @@ type ContactBadgeModalProps = {
 type SceneProps = {
   isFlipped: boolean;
   onSceneError: () => void;
+  onDismiss: () => void;
+  anchorXRatio: number;
+  anchorYRatio: number;
 };
 
 type RenderMode = "checking" | "loading" | "3d" | "static";
@@ -74,6 +78,7 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
   const [isFlipped, setIsFlipped] = useState(false);
   const [mode, setMode] = useState<RenderMode>("checking");
   const [Scene, setScene] = useState<ComponentType<SceneProps> | null>(null);
+  const [anchor, setAnchor] = useState({ x: 0, y: 0, cardX: 0 });
   const handleClose = useCallback(() => {
     setIsFlipped(false);
     setMode("checking");
@@ -82,6 +87,26 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
   }, [onClose]);
 
   useFocusTrap(open, dialogRef, closeRef, triggerRef, handleClose);
+
+  useEffect(() => {
+    if (!open) return;
+    const updateAnchor = () => {
+      const trigger = triggerRef.current?.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const x = trigger ? trigger.left + trigger.width / 2 : viewportWidth * 0.82;
+      const y = trigger ? trigger.bottom - 2 : 74;
+      const cardWidth = Math.min(300, viewportWidth * 0.72, viewportHeight * 0.42 * (2.6 / 3.7));
+      const cardX = Math.min(
+        Math.max(x, cardWidth / 2 + 16),
+        viewportWidth - cardWidth / 2 - 16,
+      );
+      setAnchor({ x, y, cardX });
+    };
+    updateAnchor();
+    window.addEventListener("resize", updateAnchor);
+    return () => window.removeEventListener("resize", updateAnchor);
+  }, [open, triggerRef]);
 
   useEffect(() => {
     if (!open) return;
@@ -118,6 +143,12 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
 
   if (!open) return null;
 
+  const modalStyle = {
+    "--contact-anchor-x": `${anchor.x}px`,
+    "--contact-anchor-y": `${anchor.y}px`,
+    "--contact-card-x": `${anchor.cardX}px`,
+  } as CSSProperties;
+
   return createPortal(
     <div
       id="contact-badge-modal"
@@ -129,14 +160,19 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
         if (event.target === event.currentTarget) handleClose();
       }}
     >
-      <div ref={dialogRef} className="contact-modal-shell" tabIndex={-1}>
+      <div ref={dialogRef} className="contact-modal-shell" tabIndex={-1} style={modalStyle}>
         <h2 id="contact-dialog-title" className="sr-only">联系庄澍凯</h2>
         <button ref={closeRef} className="contact-modal-close" type="button" onClick={handleClose} aria-label="关闭联系工牌" autoFocus>
           <span aria-hidden="true" />
           <span aria-hidden="true" />
         </button>
 
-        <div className="contact-modal-stage" onMouseDown={(event) => event.stopPropagation()}>
+        <div
+          className="contact-modal-stage"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) handleClose();
+          }}
+        >
           {(mode === "checking" || mode === "loading") && (
             <div className="badge-loading" role="status">
               <span aria-hidden="true" />
@@ -145,7 +181,13 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
           )}
           {mode === "3d" && Scene && (
             <SceneErrorBoundary onError={useStaticFallback}>
-              <Scene isFlipped={isFlipped} onSceneError={useStaticFallback} />
+              <Scene
+                isFlipped={isFlipped}
+                onSceneError={useStaticFallback}
+                onDismiss={handleClose}
+                anchorXRatio={anchor.x / Math.max(1, window.innerWidth)}
+                anchorYRatio={anchor.y / Math.max(1, window.innerHeight)}
+              />
             </SceneErrorBoundary>
           )}
           {mode === "static" && <StaticBadgeFallback isFlipped={isFlipped} />}
@@ -156,12 +198,15 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
             className="badge-flip-button"
             type="button"
             aria-pressed={isFlipped}
+            disabled={mode === "checking" || mode === "loading"}
             onClick={() => setIsFlipped((current) => !current)}
           >
             <span>{isFlipped ? "返回个人简介" : "查看联系方式"}</span>
             <i aria-hidden="true">↻</i>
           </button>
-          <p>{mode === "static" ? "当前设备使用轻量模式" : "拖动工牌或查看背面二维码"}</p>
+          <p aria-live="polite">
+            {mode === "static" ? "轻点按钮查看联系方式" : isFlipped ? "扫码添加微信或通过邮箱联系" : "拖动工牌或查看背面二维码"}
+          </p>
         </div>
       </div>
     </div>,
