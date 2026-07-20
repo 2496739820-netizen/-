@@ -24,7 +24,7 @@ function BadgeFront({ hidden }: { hidden: boolean }) {
       </div>
       <div className="badge-identity">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="badge-avatar" src={CONTACT_AVATAR_SOURCE} alt="庄澍凯卡通头像" />
+        <img className="badge-avatar" src={CONTACT_AVATAR_SOURCE} alt="庄澍凯个人照片" />
         <div>
           <p>高端眼镜门店新媒体运营</p>
           <h3>庄澍凯</h3>

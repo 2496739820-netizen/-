@@ -50,7 +50,7 @@ function LanyardLine({
   const outerMaterial = useMemo(
     () => new MeshLineMaterial({
       color: new THREE.Color("#5f4b31"),
-      lineWidth: 0.12,
+      lineWidth: 0.17,
       sizeAttenuation: 1,
       resolution: new THREE.Vector2(1, 1),
     }),
@@ -59,7 +59,7 @@ function LanyardLine({
   const innerMaterial = useMemo(
     () => new MeshLineMaterial({
       color: new THREE.Color("#c1a46d"),
-      lineWidth: 0.041,
+      lineWidth: 0.058,
       sizeAttenuation: 1,
       resolution: new THREE.Vector2(1, 1),
     }),
@@ -118,7 +118,7 @@ function LanyardLine({
   return (
     <group>
       <primitive object={outerLine} frustumCulled={false} />
-      <primitive object={innerLine} position-z={0.003} frustumCulled={false} />
+      <primitive object={innerLine} position-z={0.004} frustumCulled={false} />
     </group>
   );
 }
@@ -157,7 +157,7 @@ function SuspendedBadge({
   const anchorY = viewport.height / 2 - anchorYRatio * viewport.height;
   const swingDirection = anchorX >= 0 ? -1 : 1;
   const initialCardX = THREE.MathUtils.clamp(
-    anchorX + swingDirection * 2,
+    anchorX + swingDirection * 1.6,
     -viewport.width / 2 + 1.48,
     viewport.width / 2 - 1.48,
   );
@@ -239,9 +239,9 @@ function SuspendedBadge({
     );
   });
 
-  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 1]);
-  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 1]);
-  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 1]);
+  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 0.8]);
+  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 0.8]);
+  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 0.8]);
   useSphericalJoint(node3, card, [[0, 0, 0], [0, 2.33, 0]]);
 
   useEffect(() => () => { document.body.style.cursor = ""; }, []);
@@ -285,9 +285,9 @@ function SuspendedBadge({
   return (
     <>
       <RigidBody ref={anchor} type="fixed" colliders={false} position={[anchorX, anchorY, 0]} />
-      <RigidBody ref={node1} {...nodeProps} position={[anchorX + swingDirection * 0.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
-      <RigidBody ref={node2} {...nodeProps} position={[anchorX + swingDirection, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
-      <RigidBody ref={node3} {...nodeProps} position={[anchorX + swingDirection * 1.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node1} {...nodeProps} position={[anchorX + swingDirection * 0.4, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node2} {...nodeProps} position={[anchorX + swingDirection * 0.8, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node3} {...nodeProps} position={[anchorX + swingDirection * 1.2, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
       <RigidBody
         ref={card}
         colliders={false}

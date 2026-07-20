@@ -214,11 +214,13 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /anchorXRatio/);
   assert.match(scene, /CatmullRomCurve3/);
   assert.match(scene, /curve\.getPoints/);
-  assert.match(scene, /lineWidth: 0\.12/);
-  assert.match(scene, /lineWidth: 0\.041/);
+  assert.match(scene, /lineWidth: 0\.17/);
+  assert.match(scene, /lineWidth: 0\.058/);
+  assert.equal(scene.match(/\[0, 0, 0\], 0\.8\]\);/g)?.length, 3);
   assert.match(scene, /rotation\.y \* 0\.25/);
-  assert.match(scene, /swingDirection \* 0\.5/);
-  assert.match(scene, /swingDirection \* 1\.5/);
+  assert.match(scene, /swingDirection \* 0\.4/);
+  assert.match(scene, /swingDirection \* 1\.2/);
+  assert.match(scene, /swingDirection \* 1\.6/);
   assert.match(scene, /position=\{\[initialCardX, anchorY, 0\]\}/);
   assert.match(scene, /curve\.getPoints\(size\.width < 768 \? 16 : 32\)/);
 
@@ -232,12 +234,15 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /drawCoverImage/);
   assert.match(card, /ringTarget\.current/);
   assert.match(card, /metalness: 0\.86/);
-  assert.match(card, /torusGeometry args=\{\[0\.255, 0\.072/);
+  assert.match(card, /boxGeometry args=\{\[0\.54, 0\.24, 0\.2\]\}/);
+  assert.match(card, /torusGeometry args=\{\[0\.168, 0\.048/);
 
   assert.match(fallback, /data-contact-badge="static"/);
   assert.match(fallback, /className="badge-avatar"/);
+  assert.match(fallback, /alt="庄澍凯个人照片"/);
   assert.match(fallback, /CONTACT_INTRO/);
   assert.match(data, /CONTACT_QR_SOURCE = "\/contact-qr\.png"/);
+  assert.match(data, /CONTACT_AVATAR_SOURCE = "\/zhuang-shukai-portrait\.jpg"/);
   assert.match(data, /CONTACT_QR_FALLBACK_VALUE = CONTACT_MAILTO/);
   assert.match(data, /width: 768/);
   assert.match(data, /月均有效客资/);

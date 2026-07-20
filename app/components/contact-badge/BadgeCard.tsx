@@ -376,15 +376,15 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
           />
         </mesh>
       </group>
-      <group ref={hardwareRef} position={[0, 2.03, 0]}>
+      <group ref={hardwareRef} position={[0, 2, 0]}>
         <mesh material={brass}>
-          <boxGeometry args={[0.82, 0.36, 0.3]} />
+          <boxGeometry args={[0.54, 0.24, 0.2]} />
         </mesh>
-        <mesh position={[0, 0.23, 0]} rotation={[Math.PI / 2, 0, 0]} material={brass}>
-          <torusGeometry args={[0.255, 0.072, 20, 40]} />
+        <mesh position={[0, 0.155, 0]} rotation={[Math.PI / 2, 0, 0]} material={brass}>
+          <torusGeometry args={[0.168, 0.048, 20, 40]} />
         </mesh>
-        <mesh position={[0.18, 0.05, 0.17]} rotation={[0, 0, Math.PI / 2]} material={brass}>
-          <cylinderGeometry args={[0.045, 0.045, 0.44, 18]} />
+        <mesh position={[0.12, 0.035, 0.115]} rotation={[0, 0, Math.PI / 2]} material={brass}>
+          <cylinderGeometry args={[0.03, 0.03, 0.3, 18]} />
         </mesh>
       </group>
     </group>
