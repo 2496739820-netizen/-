@@ -5,9 +5,10 @@ import {
   CONTACT_AVATAR_SOURCE,
   CONTACT_CAPABILITIES,
   CONTACT_EMAIL,
-  CONTACT_INTRO,
+  CONTACT_MAILTO,
+  CONTACT_PHONE,
   CONTACT_QR_SOURCE,
-  CONTACT_RESULTS,
+  CONTACT_TEL,
   createFallbackQrDataUrl,
 } from "./contact-data";
 
@@ -28,20 +29,18 @@ function BadgeFront({ hidden }: { hidden: boolean }) {
         <div>
           <p>高端眼镜门店新媒体运营</p>
           <h3>庄澍凯</h3>
-          <span>粤港澳大湾区</span>
-          <small>虎派眼镜 2024.05 至今</small>
+          <span>求职区域  粤港澳大湾区</span>
         </div>
       </div>
-      <p className="badge-intro">{CONTACT_INTRO}</p>
+      <div className="badge-contact-grid" aria-label="联系方式">
+        <a href={CONTACT_TEL}><small>PHONE</small><strong>{CONTACT_PHONE}</strong></a>
+        <a href={CONTACT_MAILTO}><small>EMAIL</small><strong>{CONTACT_EMAIL}</strong></a>
+      </div>
+      <p className="badge-section-label">职业技能</p>
       <div className="badge-capabilities" aria-label="核心能力">
         {CONTACT_CAPABILITIES.map((item) => <span key={item}>{item}</span>)}
       </div>
-      <div className="badge-results" aria-label="核心结果">
-        {CONTACT_RESULTS.map((item) => (
-          <div key={item.label}><strong>{item.value}</strong><span>{item.label}</span></div>
-        ))}
-      </div>
-      <p className="badge-email">{CONTACT_EMAIL}</p>
+      <p className="badge-signature"><span>ZHUANG SHUKAI</span><small>NEW MEDIA OPERATOR · 求职中</small></p>
     </div>
   );
 }
@@ -81,7 +80,9 @@ function BadgeBack({ hidden }: { hidden: boolean }) {
 export function StaticBadgeFallback({ isFlipped }: StaticBadgeFallbackProps) {
   return (
     <div className="static-badge-scene" data-contact-badge="static">
-      <div className="static-lanyard" aria-hidden="true"><i /><span /></div>
+      <div className="static-lanyard" aria-hidden="true">
+        <i /><b /><u><em>ZHUANG SHUKAI · ZHUANG SHUKAI · ZHUANG SHUKAI</em></u><span />
+      </div>
       <div className="static-clip" aria-hidden="true"><i /><b /></div>
       <div className={`static-badge ${isFlipped ? "is-flipped" : ""}`} onMouseDown={(event) => event.stopPropagation()}>
         <BadgeFront hidden={isFlipped} />

@@ -38,6 +38,43 @@ function supportsPointerCapture(target: EventTarget | null): target is PointerCa
   );
 }
 
+function createBandTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1024;
+  canvas.height = 256;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Unable to create lanyard texture");
+
+  context.fillStyle = "#4f3f2c";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.strokeStyle = "rgba(255,253,248,.075)";
+  context.lineWidth = 2;
+  for (let y = 24; y < canvas.height - 24; y += 9) {
+    context.beginPath();
+    context.moveTo(0, y);
+    context.lineTo(canvas.width, y + 3);
+    context.stroke();
+  }
+  context.fillStyle = "#30271d";
+  context.fillRect(0, 0, canvas.width, 18);
+  context.fillRect(0, canvas.height - 18, canvas.width, 18);
+  context.fillStyle = "#9d8358";
+  context.fillRect(0, 18, canvas.width, 4);
+  context.fillRect(0, canvas.height - 22, canvas.width, 4);
+  context.fillStyle = "#d2c09b";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.font = "600 76px Manrope, sans-serif";
+  context.fillText("ZHUANG SHUKAI  ·", canvas.width / 2, canvas.height / 2 + 3);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.anisotropy = 4;
+  texture.needsUpdate = true;
+  return texture;
+}
+
 function LanyardLine({
   anchor,
   nodes,
@@ -46,27 +83,25 @@ function LanyardLine({
   nodes: React.RefObject<RapierRigidBody | null>[];
 }) {
   const { size } = useThree();
+  const [bandTexture, setBandTexture] = useState<THREE.CanvasTexture | null>(null);
   const geometry = useMemo(() => new MeshLineGeometry(), []);
-  const outerMaterial = useMemo(
-    () => new MeshLineMaterial({
-      color: new THREE.Color("#5f4b31"),
-      lineWidth: 0.17,
-      sizeAttenuation: 1,
-      resolution: new THREE.Vector2(1, 1),
-    }),
-    [],
+  const bandMaterial = useMemo(
+    () => {
+      const material = new MeshLineMaterial({
+        color: new THREE.Color(bandTexture ? "#ffffff" : "#4f3f2c"),
+        lineWidth: 0.48,
+        map: bandTexture ?? undefined,
+        useMap: bandTexture ? 1 : 0,
+        repeat: new THREE.Vector2(4, 1),
+        sizeAttenuation: 1,
+        resolution: new THREE.Vector2(1, 1),
+      });
+      material.depthTest = false;
+      return material;
+    },
+    [bandTexture],
   );
-  const innerMaterial = useMemo(
-    () => new MeshLineMaterial({
-      color: new THREE.Color("#c1a46d"),
-      lineWidth: 0.058,
-      sizeAttenuation: 1,
-      resolution: new THREE.Vector2(1, 1),
-    }),
-    [],
-  );
-  const outerLine = useMemo(() => new THREE.Mesh(geometry, outerMaterial), [geometry, outerMaterial]);
-  const innerLine = useMemo(() => new THREE.Mesh(geometry, innerMaterial), [geometry, innerMaterial]);
+  const bandLine = useMemo(() => new THREE.Mesh(geometry, bandMaterial), [geometry, bandMaterial]);
   const targets = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
   const smoothedPoints = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
   const curve = useMemo(
@@ -76,15 +111,32 @@ function LanyardLine({
   const initialized = useRef(false);
 
   useEffect(() => {
-    outerMaterial.resolution.set(size.width, size.height);
-    innerMaterial.resolution.set(size.width, size.height);
-  }, [innerMaterial, outerMaterial, size.height, size.width]);
+    let cancelled = false;
+    let texture: THREE.CanvasTexture | null = null;
+    const prepareTexture = async () => {
+      await document.fonts.ready;
+      texture = createBandTexture();
+      if (cancelled) {
+        texture.dispose();
+        return;
+      }
+      setBandTexture(texture);
+    };
+    void prepareTexture().catch(() => {
+      if (!cancelled) setBandTexture(null);
+    });
+    return () => {
+      cancelled = true;
+      texture?.dispose();
+    };
+  }, []);
 
-  useEffect(() => () => {
-    geometry.dispose();
-    outerMaterial.dispose();
-    innerMaterial.dispose();
-  }, [geometry, innerMaterial, outerMaterial]);
+  useEffect(() => {
+    bandMaterial.resolution.set(size.width, size.height);
+  }, [bandMaterial, size.height, size.width]);
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  useEffect(() => () => bandMaterial.dispose(), [bandMaterial]);
 
   useFrame((_, delta) => {
     const anchorBody = anchor.current;
@@ -115,13 +167,13 @@ function LanyardLine({
     geometry.setPoints(curve.getPoints(size.width < 768 ? 16 : 32));
   });
 
-  return (
-    <group>
-      <primitive object={outerLine} frustumCulled={false} />
-      <primitive object={innerLine} position-z={0.004} frustumCulled={false} />
-    </group>
-  );
+  return <primitive object={bandLine} frustumCulled={false} renderOrder={1} />;
 }
+
+/*
+  The physical chain below mirrors the reference interaction. The visible band
+  above is generated locally so the lanyard texture remains original to this site.
+*/
 
 function SuspendedBadge({
   isFlipped,

@@ -1,11 +1,12 @@
 export const CONTACT_EMAIL = "2496739820@qq.com";
 export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}`;
+export const CONTACT_PHONE = "158 1534 7183";
+export const CONTACT_TEL = "tel:15815347183";
 
 // Replace this path with a future WeChat QR asset without touching badge rendering.
 export const CONTACT_QR_SOURCE = "/contact-qr.png";
 export const CONTACT_QR_FALLBACK_VALUE = CONTACT_MAILTO;
 export const CONTACT_AVATAR_SOURCE = "/zhuang-shukai-portrait.jpg";
-export const CONTACT_INTRO = "用内容建立信任 用运营承接到店";
 
 export const CONTACT_CAPABILITIES = [
   "内容策划",
@@ -14,13 +15,6 @@ export const CONTACT_CAPABILITIES = [
   "平台投流",
   "到店转化",
   "数据复盘",
-] as const;
-
-export const CONTACT_RESULTS = [
-  { value: "60+", label: "月均有效客资" },
-  { value: "3W+", label: "月均到店新客 GMV" },
-  { value: "8W+", label: "月度最高 GMV" },
-  { value: "30%", label: "约贡献门店总业绩" },
 ] as const;
 
 export async function createFallbackQrDataUrl(): Promise<string> {

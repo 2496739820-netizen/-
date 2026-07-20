@@ -214,8 +214,12 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /anchorXRatio/);
   assert.match(scene, /CatmullRomCurve3/);
   assert.match(scene, /curve\.getPoints/);
-  assert.match(scene, /lineWidth: 0\.17/);
-  assert.match(scene, /lineWidth: 0\.058/);
+  assert.match(scene, /lineWidth: 0\.48/);
+  assert.match(scene, /createBandTexture/);
+  assert.match(scene, /ZHUANG SHUKAI  ·/);
+  assert.match(scene, /THREE\.RepeatWrapping/);
+  assert.match(scene, /useMap: bandTexture \? 1 : 0/);
+  assert.match(scene, /repeat: new THREE\.Vector2\(4, 1\)/);
   assert.equal(scene.match(/\[0, 0, 0\], 0\.8\]\);/g)?.length, 3);
   assert.match(scene, /rotation\.y \* 0\.25/);
   assert.match(scene, /swingDirection \* 0\.4/);
@@ -236,20 +240,24 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /metalness: 0\.86/);
   assert.match(card, /boxGeometry args=\{\[0\.54, 0\.24, 0\.2\]\}/);
   assert.match(card, /torusGeometry args=\{\[0\.168, 0\.048/);
+  assert.match(card, /CONTACT_PHONE/);
+  assert.doesNotMatch(card, /CONTACT_RESULTS|虎派结果/);
 
   assert.match(fallback, /data-contact-badge="static"/);
   assert.match(fallback, /className="badge-avatar"/);
   assert.match(fallback, /alt="庄澍凯个人照片"/);
-  assert.match(fallback, /CONTACT_INTRO/);
+  assert.match(fallback, /CONTACT_PHONE/);
+  assert.match(fallback, /CONTACT_TEL/);
+  assert.match(fallback, /ZHUANG SHUKAI · ZHUANG SHUKAI/);
+  assert.doesNotMatch(fallback, /CONTACT_RESULTS|badge-results|虎派结果/);
   assert.match(data, /CONTACT_QR_SOURCE = "\/contact-qr\.png"/);
   assert.match(data, /CONTACT_AVATAR_SOURCE = "\/zhuang-shukai-portrait\.jpg"/);
+  assert.match(data, /CONTACT_PHONE = "158 1534 7183"/);
+  assert.match(data, /CONTACT_TEL = "tel:15815347183"/);
   assert.match(data, /CONTACT_QR_FALLBACK_VALUE = CONTACT_MAILTO/);
   assert.match(data, /width: 768/);
-  assert.match(data, /月均有效客资/);
-  assert.match(data, /月均到店新客 GMV/);
-  assert.match(data, /月度最高 GMV/);
-  assert.match(data, /约贡献门店总业绩/);
-  assert.doesNotMatch(`${data}${card}${fallback}`, /15815347183/);
+  assert.doesNotMatch(data, /CONTACT_RESULTS|月均有效客资|月均到店新客 GMV|月度最高 GMV|约贡献门店总业绩/);
+  assert.match(`${data}${card}${fallback}`, /15815347183/);
 
   assert.match(focusTrap, /event\.key === "Escape"/);
   assert.match(focusTrap, /event\.key !== "Tab"/);
@@ -261,6 +269,9 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /background: rgba\(46, 42, 35, 0\.1\)/);
   assert.match(css, /left: var\(--contact-card-x\)/);
   assert.match(css, /var\(--contact-anchor-x\) - var\(--contact-card-x\)/);
+  assert.match(css, /\.static-lanyard em/);
+  assert.match(css, /writing-mode: vertical-rl/);
+  assert.match(css, /\.badge-contact-grid/);
   assert.match(css, /@keyframes static-badge-drop/);
   assert.match(css, /\.badge-drag-hint\.is-hidden/);
 

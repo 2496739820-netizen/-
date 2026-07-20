@@ -8,9 +8,8 @@ import {
   CONTACT_AVATAR_SOURCE,
   CONTACT_CAPABILITIES,
   CONTACT_EMAIL,
-  CONTACT_INTRO,
+  CONTACT_PHONE,
   CONTACT_QR_SOURCE,
-  CONTACT_RESULTS,
   createFallbackQrDataUrl,
 } from "./contact-data";
 
@@ -115,8 +114,7 @@ async function drawFront(canvas: HTMLCanvasElement) {
   context.fillText("庄澍凯", 414, 350);
   context.fillStyle = MUTED;
   context.font = "500 24px 'Noto Sans SC', sans-serif";
-  context.fillText("粤港澳大湾区", 420, 411);
-  context.fillText("虎派眼镜 2024.05 至今", 420, 457);
+  context.fillText("求职区域  粤港澳大湾区", 420, 421);
 
   context.strokeStyle = "rgba(38,35,30,.13)";
   context.lineWidth = 2;
@@ -125,60 +123,51 @@ async function drawFront(canvas: HTMLCanvasElement) {
   context.lineTo(952, 550);
   context.stroke();
 
+  roundedRect(context, 72, 606, 880, 186, 34);
+  context.fillStyle = "#f3eee4";
+  context.fill();
+
   context.textAlign = "left";
+  context.fillStyle = GOLD;
+  context.font = "600 18px Manrope, sans-serif";
+  context.fillText("PHONE", 108, 657);
+  context.fillText("EMAIL", 512, 657);
   context.fillStyle = INK;
-  context.font = "500 32px 'Noto Serif SC', 'Songti SC', serif";
-  context.fillText(CONTACT_INTRO, 72, 624);
+  context.font = "600 38px Manrope, sans-serif";
+  context.fillText(CONTACT_PHONE, 108, 718);
+  context.font = "500 29px Manrope, sans-serif";
+  context.fillText(CONTACT_EMAIL, 512, 716);
+
   context.fillStyle = MUTED;
   context.font = "600 19px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("擅长能力", 72, 700);
+  context.fillText("职业技能", 72, 882);
 
   CONTACT_CAPABILITIES.forEach((capability, index) => {
     const column = index % 3;
     const row = Math.floor(index / 3);
     const x = 72 + column * 294;
-    const y = 736 + row * 78;
-    roundedRect(context, x, y, 266, 58, 29);
-    context.fillStyle = index === 4 ? SAGE : "rgba(138,115,73,.095)";
+    const y = 922 + row * 88;
+    roundedRect(context, x, y, 266, 66, 33);
+    context.fillStyle = "rgba(138,115,73,.095)";
     context.fill();
     context.fillStyle = INK;
     context.font = "500 23px 'Noto Sans SC', sans-serif";
     context.textAlign = "center";
-    context.fillText(capability, x + 133, y + 38);
-  });
-
-  context.textAlign = "left";
-  context.fillStyle = MUTED;
-  context.font = "600 19px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("虎派结果", 72, 944);
-
-  CONTACT_RESULTS.forEach((result, index) => {
-    const x = 72 + index * 222;
-    const y = 980;
-    roundedRect(context, x, y, 202, 142, 26);
-    context.fillStyle = index === 0 ? SAGE : "#f3eee4";
-    context.fill();
-    context.fillStyle = INK;
-    context.font = "600 48px Manrope, sans-serif";
-    context.fillText(result.value, x + 20, y + 57);
-    context.fillStyle = MUTED;
-    context.font = "500 17px 'Noto Sans SC', sans-serif";
-    const label = result.label.replace("月均到店新客 ", "月均到店新客\n").replace("约贡献门店", "约贡献门店\n");
-    label.split("\n").forEach((line, lineIndex) => context.fillText(line, x + 20, y + 92 + lineIndex * 24));
+    context.fillText(capability, x + 133, y + 42);
   });
 
   context.textAlign = "left";
   context.strokeStyle = "rgba(38,35,30,.13)";
   context.beginPath();
-  context.moveTo(72, 1210);
-  context.lineTo(952, 1210);
+  context.moveTo(72, 1192);
+  context.lineTo(952, 1192);
   context.stroke();
-  context.fillStyle = GOLD;
+  context.fillStyle = MUTED;
   context.font = "600 18px Manrope, sans-serif";
-  context.fillText("EMAIL", 72, 1286);
-  context.fillStyle = INK;
-  context.font = "500 28px Manrope, sans-serif";
-  context.fillText(CONTACT_EMAIL, 72, 1340);
+  context.fillText("ZHUANG SHUKAI", 72, 1270);
+  context.fillStyle = GOLD;
+  context.font = "600 17px Manrope, 'Noto Sans SC', sans-serif";
+  context.fillText("NEW MEDIA OPERATOR  ·  求职中", 72, 1325);
 }
 
 function loadImage(source: string): Promise<HTMLImageElement> {
