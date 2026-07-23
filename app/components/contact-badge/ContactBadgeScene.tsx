@@ -386,7 +386,7 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
 
   useEffect(() => {
     if (worldReady) return;
-    const timeout = window.setTimeout(onSceneError, 8000);
+    const timeout = window.setTimeout(onSceneError, 45000);
     return () => window.clearTimeout(timeout);
   }, [onSceneError, worldReady]);
 
@@ -402,6 +402,12 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
       onContextMenu={(event) => event.preventDefault()}
       onPointerDown={(event) => event.stopPropagation()}
     >
+      {!worldReady && (
+        <div className="badge-loading badge-loading-scene" role="status">
+          <span aria-hidden="true" />
+          <p>正在挂上工牌</p>
+        </div>
+      )}
       <Canvas
         dpr={[1, isMobile ? 1.5 : 2]}
         camera={{ position: [0, 0, 20], fov: 20, near: 0.1, far: 100 }}

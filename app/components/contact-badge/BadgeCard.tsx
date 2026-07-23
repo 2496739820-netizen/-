@@ -295,7 +295,6 @@ export function BadgeCard({
         <meshPhysicalMaterial
           map={texture}
           color={texture ? "#ffffff" : "#050505"}
-          map-anisotropy={16}
           clearcoat={isMobile ? 0 : 1}
           clearcoatRoughness={0.15}
           roughness={0.9}

@@ -220,6 +220,8 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /unproject\(state\.camera\)/);
   assert.match(scene, /state\.camera\.position\.length\(\)/);
   assert.match(scene, /performance\.now\(\) - lastDragAt\.current > 450/);
+  assert.match(scene, /window\.setTimeout\(onSceneError, 45000\)/);
+  assert.match(scene, /!worldReady &&/);
   assert.match(scene, /anchorXRatio/);
   assert.match(scene, /CatmullRomCurve3/);
   assert.match(scene, /curve\.getPoints/);
@@ -259,9 +261,10 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /clearcoatRoughness=\{0\.15\}/);
   assert.match(card, /roughness=\{0\.9\}/);
   assert.match(card, /metalness=\{0\.8\}/);
+  assert.match(card, /created\.anisotropy = 16/);
   assert.match(card, /CONTACT_PHONE/);
   assert.match(card, /CONTACT_QR_SOURCE/);
-  assert.doesNotMatch(card, /RoundedBox|ringTarget|boxGeometry|torusGeometry/);
+  assert.doesNotMatch(card, /RoundedBox|ringTarget|boxGeometry|torusGeometry|map-anisotropy/);
   assert.doesNotMatch(card, /CONTACT_RESULTS|虎派结果/);
 
   assert.match(fallback, /data-contact-badge="static"/);
