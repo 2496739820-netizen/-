@@ -1,6 +1,6 @@
 "use client";
 
-import { RoundedBox } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { ThreeEvent, useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -14,26 +14,29 @@ import {
 } from "./contact-data";
 
 type BadgeCardProps = {
-  cardScale: number;
   isFlipped: boolean;
+  isMobile: boolean;
   onTextureError: () => void;
   onPointerDown: (event: ThreeEvent<PointerEvent>) => void;
   onPointerMove: (event: ThreeEvent<PointerEvent>) => void;
   onPointerUp: (event: ThreeEvent<PointerEvent>) => void;
 };
 
-type BadgeTextures = {
-  front: THREE.CanvasTexture;
-  back: THREE.CanvasTexture;
+type CardModel = {
+  nodes: {
+    card: THREE.Mesh;
+    clip: THREE.Mesh;
+    clamp: THREE.Mesh;
+  };
+  materials: {
+    base: THREE.MeshStandardMaterial;
+    metal: THREE.MeshStandardMaterial;
+  };
 };
 
-const CANVAS_WIDTH = 1024;
-const CANVAS_HEIGHT = 1458;
-const INK = "#26231e";
-const MUTED = "#756e62";
-const GOLD = "#8a7349";
-const SAGE = "#e7e9e1";
-const SURFACE = "#fffdf8";
+const CARD_MODEL_SOURCE = "/contact-card.glb";
+const CARD_BASE_SOURCE = "/contact-card-base-dark.png";
+const ATLAS_SIZE = 1376;
 
 function roundedRect(
   context: CanvasRenderingContext2D,
@@ -47,138 +50,6 @@ function roundedRect(
   context.roundRect(x, y, width, height, radius);
 }
 
-function drawCoverImage(
-  context: CanvasRenderingContext2D,
-  image: HTMLImageElement,
-  x: number,
-  y: number,
-  size: number,
-) {
-  const sourceSize = Math.min(image.naturalWidth, image.naturalHeight);
-  const sourceX = (image.naturalWidth - sourceSize) / 2;
-  const sourceY = Math.max(0, (image.naturalHeight - sourceSize) * 0.2);
-  context.save();
-  roundedRect(context, x, y, size, size, 44);
-  context.clip();
-  context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, x, y, size, size);
-  context.restore();
-}
-
-async function drawFront(canvas: HTMLCanvasElement) {
-  const context = canvas.getContext("2d");
-  if (!context) return;
-  context.fillStyle = SURFACE;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-
-  context.fillStyle = SAGE;
-  context.beginPath();
-  context.arc(880, 92, 230, 0, Math.PI * 2);
-  context.fill();
-
-  context.fillStyle = GOLD;
-  roundedRect(context, 72, 70, 72, 72, 36);
-  context.fill();
-  context.fillStyle = SURFACE;
-  context.font = "600 24px Manrope, sans-serif";
-  context.textAlign = "center";
-  context.fillText("ZS", 108, 116);
-  context.textAlign = "right";
-  context.fillStyle = MUTED;
-  context.font = "600 17px Manrope, sans-serif";
-  context.fillText("CONTACT / 2026", 940, 112);
-
-  let avatar: HTMLImageElement | null = null;
-  try {
-    avatar = await loadImage(CONTACT_AVATAR_SOURCE);
-  } catch {
-    avatar = null;
-  }
-
-  context.fillStyle = "#f3eee4";
-  roundedRect(context, 72, 188, 330, 330, 48);
-  context.fill();
-  if (avatar) {
-    drawCoverImage(context, avatar, 86, 202, 302);
-  } else {
-    context.fillStyle = GOLD;
-    context.font = "600 78px Manrope, sans-serif";
-    context.textAlign = "center";
-    context.fillText("ZS", 237, 390);
-  }
-
-  context.textAlign = "left";
-  context.fillStyle = GOLD;
-  context.font = "600 32px 'Noto Sans SC', sans-serif";
-  context.fillText("高端眼镜门店新媒体运营", 440, 248);
-  context.fillStyle = INK;
-  context.font = "600 102px 'Noto Serif SC', 'Songti SC', serif";
-  context.fillText("庄澍凯", 430, 370);
-  context.fillStyle = MUTED;
-  context.font = "500 27px 'Noto Sans SC', sans-serif";
-  context.fillText("求职区域  粤港澳大湾区", 440, 446);
-
-  context.strokeStyle = "rgba(38,35,30,.13)";
-  context.lineWidth = 2;
-  context.beginPath();
-  context.moveTo(72, 566);
-  context.lineTo(952, 566);
-  context.stroke();
-
-  roundedRect(context, 72, 606, 880, 270, 38);
-  context.fillStyle = "#f3eee4";
-  context.fill();
-
-  context.textAlign = "left";
-  context.fillStyle = GOLD;
-  context.font = "600 21px Manrope, sans-serif";
-  context.fillText("PHONE", 108, 652);
-  context.fillStyle = INK;
-  context.font = "600 52px Manrope, sans-serif";
-  context.fillText(CONTACT_PHONE, 108, 714);
-  context.strokeStyle = "rgba(38,35,30,.1)";
-  context.beginPath();
-  context.moveTo(108, 748);
-  context.lineTo(916, 748);
-  context.stroke();
-  context.fillStyle = GOLD;
-  context.font = "600 21px Manrope, sans-serif";
-  context.fillText("EMAIL", 108, 792);
-  context.fillStyle = INK;
-  context.font = "600 41px Manrope, sans-serif";
-  context.fillText(CONTACT_EMAIL, 108, 846);
-
-  context.fillStyle = MUTED;
-  context.font = "600 23px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("职业技能", 72, 936);
-
-  CONTACT_CAPABILITIES.forEach((capability, index) => {
-    const column = index % 3;
-    const row = Math.floor(index / 3);
-    const x = 72 + column * 296;
-    const y = 972 + row * 94;
-    roundedRect(context, x, y, 272, 74, 37);
-    context.fillStyle = "rgba(138,115,73,.13)";
-    context.fill();
-    context.fillStyle = INK;
-    context.font = "500 30px 'Noto Sans SC', sans-serif";
-    context.textAlign = "center";
-    context.fillText(capability, x + 136, y + 48);
-  });
-
-  context.textAlign = "left";
-  context.strokeStyle = "rgba(38,35,30,.13)";
-  context.beginPath();
-  context.moveTo(72, 1194);
-  context.lineTo(952, 1194);
-  context.stroke();
-  context.fillStyle = MUTED;
-  context.font = "600 22px Manrope, sans-serif";
-  context.fillText("ZHUANG SHUKAI", 72, 1280);
-  context.fillStyle = GOLD;
-  context.font = "600 20px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("NEW MEDIA OPERATOR  ·  求职中", 72, 1338);
-}
-
 function loadImage(source: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -188,118 +59,216 @@ function loadImage(source: string): Promise<HTMLImageElement> {
   });
 }
 
-async function drawBack(canvas: HTMLCanvasElement) {
-  const context = canvas.getContext("2d");
-  if (!context) return;
-  context.fillStyle = SURFACE;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+function drawCoverImage(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  const targetRatio = width / height;
+  const sourceRatio = image.naturalWidth / image.naturalHeight;
+  let sourceWidth = image.naturalWidth;
+  let sourceHeight = image.naturalHeight;
+  let sourceX = 0;
+  let sourceY = 0;
 
-  context.fillStyle = SAGE;
-  context.beginPath();
-  context.arc(130, 1340, 260, 0, Math.PI * 2);
-  context.fill();
-  context.fillStyle = GOLD;
-  context.font = "600 21px Manrope, sans-serif";
-  context.fillText("CONTACT", 72, 110);
-  context.fillStyle = "#6f8c67";
-  context.beginPath();
-  context.arc(925, 102, 9, 0, Math.PI * 2);
-  context.fill();
-
-  let qrImage: HTMLImageElement;
-  try {
-    qrImage = await loadImage(CONTACT_QR_SOURCE);
-  } catch {
-    qrImage = await loadImage(await createFallbackQrDataUrl());
-  }
-
-  const qrSize = 720;
-  const qrX = (CANVAS_WIDTH - qrSize) / 2;
-  const qrY = 222;
-  roundedRect(context, qrX - 25, qrY - 25, qrSize + 50, qrSize + 50, 38);
-  context.fillStyle = "#ffffff";
-  context.fill();
-
-  const ratio = qrImage.naturalWidth / qrImage.naturalHeight;
-  if (ratio > 0.9 && ratio < 1.1) {
-    context.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+  if (sourceRatio > targetRatio) {
+    sourceWidth = image.naturalHeight * targetRatio;
+    sourceX = (image.naturalWidth - sourceWidth) / 2;
   } else {
-    const sourceSize = Math.min(qrImage.naturalWidth * 0.71, qrImage.naturalHeight * 0.56);
-    const sourceX = (qrImage.naturalWidth - sourceSize) / 2;
-    const sourceY = qrImage.naturalHeight * 0.285;
-    context.drawImage(qrImage, sourceX, sourceY, sourceSize, sourceSize, qrX, qrY, qrSize, qrSize);
+    sourceHeight = image.naturalWidth / targetRatio;
+    sourceY = Math.max(0, (image.naturalHeight - sourceHeight) * 0.18);
   }
 
-  context.textAlign = "center";
-  context.fillStyle = INK;
-  context.font = "600 60px 'Noto Serif SC', serif";
-  context.fillText("扫码联系我", CANVAS_WIDTH / 2, 1075);
-  context.fillStyle = MUTED;
-  context.font = "500 34px Manrope, sans-serif";
-  context.fillText(CONTACT_EMAIL, CANVAS_WIDTH / 2, 1132);
-  context.fillStyle = GOLD;
-  context.font = "500 28px 'Noto Sans SC', sans-serif";
-  context.fillText("高端眼镜门店新媒体运营", CANVAS_WIDTH / 2, 1322);
+  context.save();
+  roundedRect(context, x, y, width, height, radius);
+  context.clip();
+  context.drawImage(
+    image,
+    sourceX,
+    sourceY,
+    sourceWidth,
+    sourceHeight,
+    x,
+    y,
+    width,
+    height,
+  );
+  context.restore();
 }
 
-function useBadgeTextures(onTextureError: () => void) {
-  const [textures, setTextures] = useState<BadgeTextures | null>(null);
+function drawQrCrop(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  x: number,
+  y: number,
+  size: number,
+) {
+  const ratio = image.naturalWidth / image.naturalHeight;
+  if (ratio > 0.9 && ratio < 1.1) {
+    context.drawImage(image, x, y, size, size);
+    return;
+  }
+
+  const sourceSize = Math.min(image.naturalWidth * 0.71, image.naturalHeight * 0.56);
+  const sourceX = (image.naturalWidth - sourceSize) / 2;
+  const sourceY = image.naturalHeight * 0.285;
+  context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, x, y, size, size);
+}
+
+function drawCapabilities(context: CanvasRenderingContext2D) {
+  const labels = CONTACT_CAPABILITIES.map((item) => item.replace("平台", ""));
+  labels.forEach((label, index) => {
+    const column = index % 3;
+    const row = Math.floor(index / 3);
+    const x = 54 + column * 205;
+    const y = 838 + row * 43;
+    roundedRect(context, x, y, 176, 31, 15.5);
+    context.fillStyle = "rgba(255,255,255,.085)";
+    context.fill();
+    context.fillStyle = "#d6d6d6";
+    context.font = "500 17px 'Noto Sans SC', sans-serif";
+    context.textAlign = "center";
+    context.fillText(label, x + 88, y + 21);
+  });
+}
+
+async function createPersonalAtlas(canvas: HTMLCanvasElement) {
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Unable to create contact badge atlas");
+
+  const [base, avatar] = await Promise.all([
+    loadImage(CARD_BASE_SOURCE),
+    loadImage(CONTACT_AVATAR_SOURCE),
+  ]);
+
+  let qr: HTMLImageElement;
+  try {
+    qr = await loadImage(CONTACT_QR_SOURCE);
+  } catch {
+    qr = await loadImage(await createFallbackQrDataUrl());
+  }
+
+  context.drawImage(base, 0, 0, ATLAS_SIZE, ATLAS_SIZE);
+
+  // Front atlas: preserve the reference card's black field and geometric X,
+  // while replacing its event identity with the portfolio owner's details.
+  context.fillStyle = "#000000";
+  context.fillRect(0, 54, 688, 290);
+  context.fillRect(0, 820, 688, 230);
+
+  drawCoverImage(context, avatar, 54, 72, 150, 150, 18);
+
+  context.textAlign = "left";
+  context.fillStyle = "#ffffff";
+  context.font = "600 48px 'Noto Sans SC', sans-serif";
+  context.fillText("庄澍凯", 232, 120);
+  context.fillStyle = "#a0a0a0";
+  context.font = "500 22px 'Noto Sans SC', sans-serif";
+  context.fillText("高端眼镜门店新媒体运营", 232, 164);
+  context.font = "500 19px Manrope, 'Noto Sans SC', sans-serif";
+  context.fillText("粤港澳大湾区  ·  CONTACT 2026", 232, 204);
+
+  context.fillStyle = "#ffffff";
+  context.font = "500 44px Manrope, 'Noto Sans SC', sans-serif";
+  context.fillText("CONTENT TO CONVERSION", 54, 304);
+
+  drawCapabilities(context);
+
+  context.textAlign = "right";
+  context.fillStyle = "#ffffff";
+  context.font = "500 43px Manrope, sans-serif";
+  context.fillText("ZHUANG SHUKAI", 634, 956);
+  context.fillStyle = "#878787";
+  context.font = "500 18px Manrope, sans-serif";
+  context.fillText(`${CONTACT_PHONE}  ·  ${CONTACT_EMAIL}`, 634, 996);
+
+  // Back atlas: use the same reference panel geometry with the supplied
+  // WeChat QR code and the portfolio contact details.
+  roundedRect(context, 740, 248, 586, 654, 24);
+  context.fillStyle = "#090909";
+  context.fill();
+  context.strokeStyle = "#232323";
+  context.lineWidth = 2;
+  context.stroke();
+
+  roundedRect(context, 784, 292, 498, 498, 7);
+  context.fillStyle = "#ffffff";
+  context.fill();
+  drawQrCrop(context, qr, 800, 308, 466);
+
+  context.textAlign = "left";
+  context.fillStyle = "#ffffff";
+  context.font = "600 28px 'Noto Sans SC', sans-serif";
+  context.fillText("扫码添加微信", 784, 836);
+  context.fillStyle = "#878787";
+  context.font = "500 18px Manrope, sans-serif";
+  context.fillText(CONTACT_EMAIL, 784, 871);
+  context.textAlign = "right";
+  context.fillText(CONTACT_PHONE, 1282, 871);
+}
+
+function usePersonalAtlas(onTextureError: () => void) {
+  const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    let created: BadgeTextures | null = null;
+    let created: THREE.CanvasTexture | null = null;
 
     const create = async () => {
       await document.fonts.ready;
-      const frontCanvas = document.createElement("canvas");
-      const backCanvas = document.createElement("canvas");
-      frontCanvas.width = backCanvas.width = CANVAS_WIDTH;
-      frontCanvas.height = backCanvas.height = CANVAS_HEIGHT;
-      await drawFront(frontCanvas);
-      await drawBack(backCanvas);
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = ATLAS_SIZE;
+      await createPersonalAtlas(canvas);
       if (cancelled) return;
 
-      const front = new THREE.CanvasTexture(frontCanvas);
-      const back = new THREE.CanvasTexture(backCanvas);
-      front.colorSpace = back.colorSpace = THREE.SRGBColorSpace;
-      front.anisotropy = back.anisotropy = 4;
-      front.needsUpdate = back.needsUpdate = true;
-      created = { front, back };
-      setTextures(created);
+      created = new THREE.CanvasTexture(canvas);
+      created.flipY = false;
+      created.colorSpace = THREE.SRGBColorSpace;
+      created.anisotropy = 16;
+      created.needsUpdate = true;
+      setTexture(created);
     };
 
-    void create().catch(() => { if (!cancelled) onTextureError(); });
+    void create().catch(() => {
+      if (!cancelled) onTextureError();
+    });
+
     return () => {
       cancelled = true;
-      created?.front.dispose();
-      created?.back.dispose();
+      created?.dispose();
     };
   }, [onTextureError]);
 
-  return textures;
+  return texture;
 }
 
-export function BadgeCard({ cardScale, isFlipped, onTextureError, onPointerDown, onPointerMove, onPointerUp }: BadgeCardProps) {
+export function BadgeCard({
+  isFlipped,
+  isMobile,
+  onTextureError,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+}: BadgeCardProps) {
   const visualRef = useRef<THREE.Group>(null);
-  const hardwareRef = useRef<THREE.Group>(null);
-  const ringTarget = useRef(0);
-  const ringPointerX = useRef<number | null>(null);
-  const textures = useBadgeTextures(onTextureError);
-  const brass = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#aa8953", metalness: 0.86, roughness: 0.24 }),
-    [],
-  );
+  const texture = usePersonalAtlas(onTextureError);
+  const model = useGLTF(CARD_MODEL_SOURCE) as unknown as CardModel;
+  const clipMaterial = useMemo(() => {
+    const material = model.materials.metal.clone();
+    material.roughness = 0.3;
+    return material;
+  }, [model.materials.metal]);
+  const clampMaterial = useMemo(() => model.materials.metal.clone(), [model.materials.metal]);
 
-  useEffect(() => () => brass.dispose(), [brass]);
-  useEffect(() => {
-    const clearRingPointer = () => { ringPointerX.current = null; };
-    window.addEventListener("pointerup", clearRingPointer, true);
-    window.addEventListener("pointercancel", clearRingPointer, true);
-    return () => {
-      window.removeEventListener("pointerup", clearRingPointer, true);
-      window.removeEventListener("pointercancel", clearRingPointer, true);
-    };
-  }, []);
+  useEffect(() => () => {
+    clipMaterial.dispose();
+    clampMaterial.dispose();
+  }, [clampMaterial, clipMaterial]);
+
   useFrame((_, delta) => {
     if (!visualRef.current) return;
     visualRef.current.rotation.y = THREE.MathUtils.damp(
@@ -308,83 +277,35 @@ export function BadgeCard({ cardScale, isFlipped, onTextureError, onPointerDown,
       7,
       delta,
     );
-    if (hardwareRef.current) {
-      hardwareRef.current.rotation.y = THREE.MathUtils.damp(
-        hardwareRef.current.rotation.y,
-        ringTarget.current,
-        5.2,
-        delta,
-      );
-    }
   });
-
-  const handlePointerDown = (event: ThreeEvent<PointerEvent>) => {
-    ringPointerX.current = event.nativeEvent.clientX;
-    ringTarget.current += Math.PI * 0.5;
-    onPointerDown(event);
-  };
-
-  const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
-    if (ringPointerX.current !== null) {
-      const nextX = event.nativeEvent.clientX;
-      ringTarget.current += (nextX - ringPointerX.current) * 0.014;
-      ringPointerX.current = nextX;
-    }
-    onPointerMove(event);
-  };
-
-  const handlePointerUp = (event: ThreeEvent<PointerEvent>) => {
-    ringPointerX.current = null;
-    onPointerUp(event);
-  };
 
   return (
     <group
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
+      ref={visualRef}
+      scale={2.25}
+      position={[0, -1.2, -0.05]}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
       onPointerOver={() => { document.body.style.cursor = "grab"; }}
       onPointerOut={() => { document.body.style.cursor = ""; }}
     >
-      <group ref={visualRef} scale={cardScale}>
-        <RoundedBox args={[2.6, 3.7, 0.13]} radius={0.16} smoothness={6}>
-          <meshStandardMaterial color="#f8f3e9" roughness={0.66} metalness={0.02} />
-        </RoundedBox>
-        <mesh position={[0, 0, 0.082]} renderOrder={2}>
-          <planeGeometry args={[2.52, 3.62]} />
-          <meshBasicMaterial
-            key={textures ? "front-textured" : "front-placeholder"}
-            map={textures?.front ?? null}
-            color={textures ? "#ffffff" : "#f3eee4"}
-            side={THREE.DoubleSide}
-            polygonOffset
-            polygonOffsetFactor={-2}
-          />
-        </mesh>
-        <mesh position={[0, 0, -0.082]} rotation={[0, Math.PI, 0]} renderOrder={2}>
-          <planeGeometry args={[2.52, 3.62]} />
-          <meshBasicMaterial
-            key={textures ? "back-textured" : "back-placeholder"}
-            map={textures?.back ?? null}
-            color={textures ? "#ffffff" : "#e7e9e1"}
-            side={THREE.DoubleSide}
-            polygonOffset
-            polygonOffsetFactor={-2}
-          />
-        </mesh>
-      </group>
-      <group ref={hardwareRef} position={[0, 1.85 * cardScale + 0.15, 0]}>
-        <mesh material={brass}>
-          <boxGeometry args={[0.54, 0.24, 0.2]} />
-        </mesh>
-        <mesh position={[0, 0.155, 0]} rotation={[Math.PI / 2, 0, 0]} material={brass}>
-          <torusGeometry args={[0.168, 0.048, 20, 40]} />
-        </mesh>
-        <mesh position={[0.12, 0.035, 0.115]} rotation={[0, 0, Math.PI / 2]} material={brass}>
-          <cylinderGeometry args={[0.03, 0.03, 0.3, 18]} />
-        </mesh>
-      </group>
+      <mesh geometry={model.nodes.card.geometry}>
+        <meshPhysicalMaterial
+          map={texture}
+          color={texture ? "#ffffff" : "#050505"}
+          map-anisotropy={16}
+          clearcoat={isMobile ? 0 : 1}
+          clearcoatRoughness={0.15}
+          roughness={0.9}
+          metalness={0.8}
+        />
+      </mesh>
+      <mesh geometry={model.nodes.clip.geometry} material={clipMaterial} />
+      <mesh geometry={model.nodes.clamp.geometry} material={clampMaterial} />
     </group>
   );
 }
+
+useGLTF.preload(CARD_MODEL_SOURCE);

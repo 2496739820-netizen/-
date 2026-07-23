@@ -87,7 +87,7 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
 });
 
 test("ships the verified portfolio assets and removes the unrelated video experience", async () => {
-  const [page, layout, css, resume, portrait, avatar, og, contactQr] = await Promise.all([
+  const [page, layout, css, resume, portrait, avatar, og, contactQr, cardModel, lanyardTexture, cardBase] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
@@ -96,6 +96,9 @@ test("ships the verified portfolio assets and removes the unrelated video experi
     readFile(new URL("../public/brand-avatar.png", import.meta.url)),
     readFile(new URL("../public/og-clean.png", import.meta.url)),
     readFile(new URL("../public/contact-qr.png", import.meta.url)),
+    readFile(new URL("../public/contact-card.glb", import.meta.url)),
+    readFile(new URL("../public/contact-lanyard.png", import.meta.url)),
+    readFile(new URL("../public/contact-card-base-dark.png", import.meta.url)),
   ]);
 
   assert.match(page, /高端眼镜门店　新媒体运营/);
@@ -149,6 +152,9 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.deepEqual([...avatar.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.deepEqual([...og.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.deepEqual([...contactQr.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  assert.equal(cardModel.subarray(0, 4).toString("ascii"), "glTF");
+  assert.deepEqual([...lanyardTexture.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  assert.deepEqual([...cardBase.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.equal(og.readUInt32BE(16), 1200);
   assert.equal(og.readUInt32BE(20), 630);
 
@@ -156,6 +162,9 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   await access(new URL("../public/zhuang-shukai-portrait.jpg", import.meta.url));
   await access(new URL("../public/brand-avatar.png", import.meta.url));
   await access(new URL("../public/contact-qr.png", import.meta.url));
+  await access(new URL("../public/contact-card.glb", import.meta.url));
+  await access(new URL("../public/contact-lanyard.png", import.meta.url));
+  await access(new URL("../public/contact-card-base-dark.png", import.meta.url));
   await assert.rejects(access(new URL("../public/hero.mp4", import.meta.url)));
 });
 
@@ -201,7 +210,7 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /linearDamping: 4/);
   assert.match(scene, /canSleep: true/);
   assert.match(scene, /dpr=\{\[1, isMobile \? 1\.5 : 2\]\}/);
-  assert.match(scene, /camera=\{\{ position: \[0, 0, 30\], fov: 20/);
+  assert.match(scene, /camera=\{\{ position: \[0, 0, 20\], fov: 20/);
   assert.match(scene, /gravity=\{\[0, -40, 0\]\}/);
   assert.match(scene, /timeStep=\{isMobile \? 1 \/ 30 : 1 \/ 60\}/);
   assert.match(scene, /MeshLineGeometry/);
@@ -214,40 +223,45 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /anchorXRatio/);
   assert.match(scene, /CatmullRomCurve3/);
   assert.match(scene, /curve\.getPoints/);
-  assert.match(scene, /lineWidth: 0\.48/);
-  assert.match(scene, /createBandTexture/);
-  assert.match(scene, /ZHUANG SHUKAI  ·/);
+  assert.match(scene, /lineWidth: 1/);
+  assert.match(scene, /useTexture\("\/contact-lanyard\.png"\)/);
+  assert.doesNotMatch(scene, /createBandTexture/);
   assert.match(scene, /THREE\.RepeatWrapping/);
-  assert.match(scene, /useMap: bandTexture \? 1 : 0/);
-  assert.match(scene, /repeat: new THREE\.Vector2\(4, 1\)/);
-  assert.equal(scene.match(/\[0, 0, 0\], 0\.8\]\);/g)?.length, 3);
+  assert.match(scene, /useMap: 1/);
+  assert.match(scene, /repeat: new THREE\.Vector2\(-4, 1\)/);
+  assert.equal(scene.match(/\[0, 0, 0\], 1\]\);/g)?.length, 3);
+  assert.match(scene, /useSphericalJoint\(node3, card, \[\[0, 0, 0\], \[0, 1\.45, 0\]\]\)/);
   assert.match(scene, /rotation\.y \* 0\.25/);
-  assert.match(scene, /swingDirection \* 0\.4/);
-  assert.match(scene, /swingDirection \* 1\.2/);
-  assert.match(scene, /swingDirection \* 1\.6/);
+  assert.match(scene, /swingDirection \* 0\.5/);
+  assert.match(scene, /swingDirection \* 1\.5/);
+  assert.match(scene, /swingDirection \* 2/);
   assert.match(scene, /position=\{\[initialCardX, anchorY, 0\]\}/);
   assert.match(scene, /curve\.getPoints\(size\.width < 768 \? 16 : 32\)/);
-  assert.match(scene, /const cardScale = viewport\.width < 8 \? 1\.06 : 1\.28/);
-  assert.match(scene, /cardJointY = 1\.85 \* cardScale \+ 0\.48/);
-  assert.match(scene, /1\.32 \* cardScale, 2\.13 \* cardScale, 0\.11 \* cardScale/);
+  assert.match(scene, /CuboidCollider args=\{\[0\.8, 1\.125, 0\.01\]\}/);
+  assert.match(scene, /<Environment blur=\{0\.75\}>/);
+  assert.equal(scene.match(/<Lightformer/g)?.length, 4);
 
   assert.match(card, /document\.fonts\.ready/);
   assert.match(card, /CanvasTexture/);
   assert.match(card, /rotation\.y/);
-  assert.match(card, /textures\?\.front/);
-  assert.match(card, /textures\?\.back/);
   assert.match(card, /dispose\(\)/);
   assert.match(card, /CONTACT_AVATAR_SOURCE/);
   assert.match(card, /drawCoverImage/);
-  assert.match(card, /ringTarget\.current/);
-  assert.match(card, /metalness: 0\.86/);
-  assert.match(card, /boxGeometry args=\{\[0\.54, 0\.24, 0\.2\]\}/);
-  assert.match(card, /torusGeometry args=\{\[0\.168, 0\.048/);
+  assert.match(card, /useGLTF\(CARD_MODEL_SOURCE\)/);
+  assert.match(card, /CARD_MODEL_SOURCE = "\/contact-card\.glb"/);
+  assert.match(card, /CARD_BASE_SOURCE = "\/contact-card-base-dark\.png"/);
+  assert.match(card, /scale=\{2\.25\}/);
+  assert.match(card, /position=\{\[0, -1\.2, -0\.05\]\}/);
+  assert.match(card, /model\.nodes\.card\.geometry/);
+  assert.match(card, /model\.nodes\.clip\.geometry/);
+  assert.match(card, /model\.nodes\.clamp\.geometry/);
+  assert.match(card, /clearcoat=\{isMobile \? 0 : 1\}/);
+  assert.match(card, /clearcoatRoughness=\{0\.15\}/);
+  assert.match(card, /roughness=\{0\.9\}/);
+  assert.match(card, /metalness=\{0\.8\}/);
   assert.match(card, /CONTACT_PHONE/);
-  assert.match(card, /600 52px Manrope/);
-  assert.match(card, /600 41px Manrope/);
-  assert.match(card, /500 30px 'Noto Sans SC'/);
-  assert.match(card, /scale=\{cardScale\}/);
+  assert.match(card, /CONTACT_QR_SOURCE/);
+  assert.doesNotMatch(card, /RoundedBox|ringTarget|boxGeometry|torusGeometry/);
   assert.doesNotMatch(card, /CONTACT_RESULTS|虎派结果/);
 
   assert.match(fallback, /data-contact-badge="static"/);
@@ -277,11 +291,12 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /left: var\(--contact-card-x\)/);
   assert.match(css, /var\(--contact-anchor-x\) - var\(--contact-card-x\)/);
   assert.match(css, /\.static-lanyard em/);
-  assert.match(css, /writing-mode: vertical-rl/);
+  assert.match(css, /url\("\/contact-lanyard\.png"\)/);
   assert.match(css, /\.badge-contact-grid/);
-  assert.match(css, /width: min\(34vw, 400px, 52vh\)/);
-  assert.match(css, /\.badge-contact-grid \{ display: grid; grid-template-columns: 1fr/);
+  assert.match(css, /width: min\(28vw, 330px, 48vh\)/);
+  assert.match(css, /\.badge-contact-grid \{[^}]*grid-template-columns: 1fr/);
   assert.match(css, /\.badge-capabilities span \{[^}]*font-size: 0\.7rem/);
+  assert.match(css, /\.badge-face \{[^}]*background: #050505/);
   assert.match(css, /@keyframes static-badge-drop/);
   assert.match(css, /\.badge-drag-hint\.is-hidden/);
 

@@ -436,10 +436,11 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   bottom: 100px;
   z-index: 2;
   margin: 0;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.68);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   transform: translateX(-50%);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   transition: opacity 0.28s ease, transform 0.28s ease;
 }
@@ -458,7 +459,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   transform: translateX(-50%);
   pointer-events: none;
 }
-.contact-modal-controls p { margin: 10px 0 0; color: rgba(38, 35, 30, 0.56); font-size: 0.68rem; letter-spacing: 0.04em; }
+.contact-modal-controls p { margin: 10px 0 0; color: rgba(255, 255, 255, 0.66); font-size: 0.68rem; letter-spacing: 0.04em; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.42); }
 .badge-flip-button {
   display: inline-flex;
   align-items: center;
@@ -466,21 +467,21 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   gap: 25px;
   min-width: 188px;
   min-height: 50px;
-  border: 1px solid rgba(105, 85, 56, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 999px;
-  background: rgba(255, 253, 248, 0.94);
+  background: rgba(8, 8, 8, 0.94);
   padding: 0 21px;
-  color: var(--ink);
+  color: #ffffff;
   font: 500 0.82rem/1 "Noto Sans SC", sans-serif;
   cursor: pointer;
-  box-shadow: 0 12px 30px rgba(38, 35, 30, 0.1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
   pointer-events: auto;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
-.badge-flip-button:hover { background: var(--gold-wash); transform: translateY(-1px); }
-.badge-flip-button[aria-pressed="true"] { border-color: rgba(105, 85, 56, 0.4); background: rgba(138, 115, 73, 0.14); }
+.badge-flip-button:hover { background: #181818; transform: translateY(-1px); }
+.badge-flip-button[aria-pressed="true"] { border-color: rgba(255, 255, 255, 0.42); background: #202020; }
 .badge-flip-button:disabled { cursor: wait; opacity: 0.56; transform: none; }
-.badge-flip-button i { color: var(--gold-deep); font-style: normal; font-size: 1rem; }
+.badge-flip-button i { color: #ffffff; font-style: normal; font-size: 1rem; }
 
 .badge-loading {
   position: absolute;
@@ -490,17 +491,17 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   place-content: start center;
   justify-items: center;
   gap: 17px;
-  color: var(--ink-soft);
+  color: rgba(255, 255, 255, 0.72);
   padding-top: calc(var(--contact-anchor-y) + 30px);
   transform: translateX(calc(var(--contact-card-x) - 50vw));
 }
 .badge-loading span {
   width: 66px;
   height: 92px;
-  border: 1px solid rgba(138, 115, 73, 0.26);
-  border-radius: 12px;
-  background: rgba(255, 253, 248, 0.72);
-  box-shadow: 0 15px 38px rgba(38, 35, 30, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(6, 6, 6, 0.88);
+  box-shadow: 0 15px 38px rgba(0, 0, 0, 0.22);
   animation: badge-loading-sway 1.4s ease-in-out infinite alternate;
 }
 .badge-loading p { margin: 0; font-size: 0.76rem; letter-spacing: 0.1em; }
@@ -512,29 +513,29 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   perspective: 1400px;
   pointer-events: none;
 }
-.static-lanyard { position: absolute; top: var(--contact-anchor-y); left: var(--contact-card-x); width: max(42px, calc(var(--contact-anchor-x) - var(--contact-card-x) + 21px)); height: clamp(156px, 22svh, 210px); pointer-events: none; }
+.static-lanyard { position: absolute; top: var(--contact-anchor-y); left: var(--contact-card-x); width: max(56px, calc(var(--contact-anchor-x) - var(--contact-card-x) + 28px)); height: clamp(156px, 22svh, 210px); pointer-events: none; }
 .static-lanyard i,
 .static-lanyard b,
-.static-lanyard u { position: absolute; overflow: hidden; background: linear-gradient(90deg, #30271d 0 8%, #4f3f2c 8% 92%, #30271d 92%); box-shadow: inset 0 0 0 1px rgba(210,192,155,.28); text-decoration: none; }
-.static-lanyard i { top: 0; right: 0; width: 42px; height: 35%; transform-origin: top; animation: static-lanyard-drop 0.38s cubic-bezier(.2,.78,.2,1) both; }
-.static-lanyard b { top: calc(35% - 21px); right: 0; left: 0; height: 42px; transform-origin: right; animation: static-lanyard-width 0.26s .34s ease-out both; }
-.static-lanyard u { top: 35%; bottom: 0; left: 0; width: 42px; transform-origin: top; animation: static-lanyard-drop 0.4s .56s cubic-bezier(.2,.78,.2,1) both; }
-.static-lanyard em { display: block; height: 100%; color: #d2c09b; font: 600 6px/1 Manrope, sans-serif; letter-spacing: .09em; text-align: center; text-orientation: sideways; writing-mode: vertical-rl; white-space: nowrap; }
-.static-lanyard span { position: absolute; left: 21px; bottom: -10px; width: 28px; height: 28px; border: 5px solid #aa8953; border-radius: 50%; background: rgba(255,253,248,.42); transform: translateX(-50%); box-shadow: inset 0 0 0 1px rgba(255,253,248,.64), 0 3px 9px rgba(67,51,29,.15); }
-.static-clip { position: absolute; top: calc(var(--contact-anchor-y) + clamp(174px, 22svh, 228px)); left: var(--contact-card-x); z-index: 2; width: 62px; height: 33px; border-radius: 8px; background: linear-gradient(145deg, #d2b57a, #8a6e42 48%, #6a5330); transform: translateX(-50%); box-shadow: 0 8px 18px rgba(38, 35, 30, 0.16), inset 0 1px 0 rgba(255, 253, 248, 0.44); pointer-events: auto; animation: static-hardware-turn 1.1s .3s cubic-bezier(.2,.8,.2,1) both; }
-.static-clip i { position: absolute; top: -18px; left: 50%; width: 26px; height: 26px; border: 5px solid #9c8153; border-radius: 50%; transform: translateX(-50%); }
-.static-clip b { position: absolute; top: 7px; right: 7px; width: 28px; height: 3px; border-radius: 999px; background: rgba(255,253,248,.42); }
+.static-lanyard u { position: absolute; overflow: hidden; background: #090909 url("/contact-lanyard.png") center / auto 100% repeat; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); text-decoration: none; }
+.static-lanyard i { top: 0; right: 0; width: 56px; height: 35%; transform-origin: top; animation: static-lanyard-drop 0.38s cubic-bezier(.2,.78,.2,1) both; }
+.static-lanyard b { top: calc(35% - 28px); right: 0; left: 0; height: 56px; transform-origin: right; animation: static-lanyard-width 0.26s .34s ease-out both; }
+.static-lanyard u { top: 35%; bottom: 0; left: 0; width: 56px; transform-origin: top; animation: static-lanyard-drop 0.4s .56s cubic-bezier(.2,.78,.2,1) both; }
+.static-lanyard em { display: none; }
+.static-lanyard span { position: absolute; left: 28px; bottom: -11px; width: 22px; height: 22px; border: 4px solid #9a9a9a; border-radius: 4px; background: #151515; transform: translateX(-50%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 3px 9px rgba(0,0,0,.24); }
+.static-clip { position: absolute; top: calc(var(--contact-anchor-y) + clamp(172px, 22svh, 226px)); left: var(--contact-card-x); z-index: 2; width: 34px; height: 45px; border-radius: 5px; background: linear-gradient(105deg, #424242, #c5c5c5 44%, #5b5b5b 68%, #1d1d1d); transform: translateX(-50%); box-shadow: 0 8px 18px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.44); pointer-events: auto; animation: static-hardware-turn 1.1s .3s cubic-bezier(.2,.8,.2,1) both; }
+.static-clip i { position: absolute; top: -10px; left: 50%; width: 20px; height: 18px; border: 4px solid #777; border-radius: 4px; transform: translateX(-50%); }
+.static-clip b { position: absolute; top: 9px; right: 5px; width: 24px; height: 2px; border-radius: 999px; background: rgba(255,255,255,.52); }
 .static-badge {
   position: absolute;
   top: calc(var(--contact-anchor-y) + clamp(196px, 22svh, 250px));
   left: var(--contact-card-x);
-  width: min(34vw, 400px, 52vh);
+  width: min(28vw, 330px, 48vh);
   max-width: calc(100vw - 32px);
   aspect-ratio: 2.6 / 3.7;
   transform: translateX(-50%);
   transform-style: preserve-3d;
   transition: transform 0.72s cubic-bezier(0.2, 0.8, 0.2, 1);
-  filter: drop-shadow(0 24px 34px rgba(38, 35, 30, 0.18));
+  filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.28));
   pointer-events: auto;
   animation: static-badge-drop 1.15s cubic-bezier(.18,.76,.24,1) both;
 }
@@ -543,10 +544,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border: 1px solid rgba(105, 85, 56, 0.15);
-  border-radius: 24px;
-  background: var(--surface);
-  padding: 26px 24px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: #050505;
+  padding: 24px 22px 20px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transition: opacity 0.16s ease, visibility 0.16s ease, transform 0.72s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -554,41 +555,42 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .static-badge:not(.is-flipped) .badge-back { visibility: hidden; opacity: 0; }
 .static-badge.is-flipped .badge-front { visibility: hidden; opacity: 0; transform: rotateY(-180deg); }
 .static-badge.is-flipped .badge-back { visibility: visible; opacity: 1; transform: rotateY(0); }
-.badge-front::before { content: ""; position: absolute; top: -68px; right: -62px; width: 160px; height: 160px; border-radius: 50%; background: var(--sage); opacity: 0.55; }
+.badge-front::before { content: ""; position: absolute; top: 34%; right: -18%; bottom: 25%; left: -18%; background: repeating-linear-gradient(45deg, transparent 0 25px, rgba(255,255,255,.09) 25px 26px, transparent 26px 43px), repeating-linear-gradient(-45deg, transparent 0 25px, rgba(255,255,255,.09) 25px 26px, transparent 26px 43px); opacity: 0.8; }
 .badge-front-head { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
-.badge-monogram { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 50%; background: var(--gold); color: var(--surface); font: 600 0.68rem/1 Manrope, sans-serif; }
-.badge-edition { color: var(--muted); font: 600 0.56rem/1 Manrope, sans-serif; letter-spacing: 0.1em; }
+.badge-monogram { display: grid; width: 36px; height: 36px; place-items: center; background: #ffffff; color: #000000; font: 700 0.68rem/1 Manrope, sans-serif; }
+.badge-edition { color: #878787; font: 600 0.56rem/1 Manrope, sans-serif; letter-spacing: 0.1em; }
 .badge-identity { position: relative; z-index: 1; display: grid; grid-template-columns: 0.9fr 1.1fr; align-items: center; gap: 16px; margin-top: 18px; }
-.badge-avatar { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; object-position: center 20%; border: 6px solid #f3eee4; border-radius: 20px; background: #f3eee4; }
-.badge-identity p { margin: 0; color: var(--gold-deep); font-size: 0.86rem; font-weight: 600; line-height: 1.35; letter-spacing: .02em; }
+.badge-avatar { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; object-position: center 20%; border: 4px solid #222222; border-radius: 8px; background: #111111; filter: saturate(.78) contrast(1.04); }
+.badge-identity p { margin: 0; color: #d8d8d8; font-size: 0.86rem; font-weight: 600; line-height: 1.35; letter-spacing: .02em; }
 .badge-identity h3 { margin: 8px 0 6px; font-family: "Noto Serif SC", serif; font-size: clamp(2rem, 5.6vw, 2.35rem); font-weight: 600; line-height: 1.05; letter-spacing: 0.06em; }
 .badge-identity span,
-.badge-identity small { display: block; color: var(--muted); font-size: 0.72rem; line-height: 1.35; }
+.badge-identity small { display: block; color: #878787; font-size: 0.72rem; line-height: 1.35; }
 .badge-identity small { margin-top: 3px; }
-.badge-contact-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; border-radius: 16px; background: #f3eee4; padding: 14px 16px 16px; }
-.badge-contact-grid a { min-width: 0; color: var(--ink); text-decoration: none; }
-.badge-contact-grid a + a { border-top: 1px solid rgba(38,35,30,.1); padding-top: 11px; }
-.badge-contact-grid small { display: block; margin-bottom: 7px; color: var(--gold-deep); font: 600 0.58rem/1 Manrope, sans-serif; letter-spacing: .1em; }
+.badge-contact-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; border-radius: 8px; background: #101010; padding: 14px 16px 16px; }
+.badge-contact-grid a { min-width: 0; color: #ffffff; text-decoration: none; }
+.badge-contact-grid a + a { border-top: 1px solid rgba(255,255,255,.12); padding-top: 11px; }
+.badge-contact-grid small { display: block; margin-bottom: 7px; color: #878787; font: 600 0.58rem/1 Manrope, sans-serif; letter-spacing: .1em; }
 .badge-contact-grid strong { display: block; font: 600 0.92rem/1.25 Manrope, sans-serif; white-space: nowrap; }
 .badge-contact-grid a:last-child strong { font-size: 0.78rem; white-space: normal; word-break: break-all; }
-.badge-section-label { margin: 18px 0 0; color: var(--muted); font: 600 0.62rem/1 "Noto Sans SC", sans-serif; letter-spacing: .1em; }
-.badge-capabilities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-.badge-capabilities span { border-radius: 999px; background: rgba(138,115,73,.13); padding: 10px 6px; text-align: center; font-size: 0.7rem; font-weight: 500; line-height: 1.2; }
+.badge-section-label { position: relative; z-index: 1; margin: 18px 0 0; color: #878787; font: 600 0.62rem/1 "Noto Sans SC", sans-serif; letter-spacing: .1em; }
+.badge-capabilities { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.badge-capabilities span { border-radius: 999px; background: rgba(255,255,255,.09); padding: 10px 6px; color: #eeeeee; text-align: center; font-size: 0.7rem; font-weight: 500; line-height: 1.2; }
 .badge-signature { position: absolute; right: 24px; bottom: 18px; left: 24px; margin: 0; border-top: 1px solid var(--line); padding-top: 12px; }
 .badge-signature span,
 .badge-signature small { display: block; font-family: Manrope, sans-serif; }
-.badge-signature span { color: var(--ink-soft); font-size: 0.62rem; font-weight: 600; letter-spacing: .08em; }
-.badge-signature small { margin-top: 5px; color: var(--gold-deep); font-size: 0.56rem; }
+.badge-signature { border-top-color: rgba(255,255,255,.14); }
+.badge-signature span { color: #ffffff; font-size: 0.62rem; font-weight: 600; letter-spacing: .08em; }
+.badge-signature small { margin-top: 5px; color: #878787; font-size: 0.56rem; }
 .badge-back { display: flex; flex-direction: column; align-items: center; padding: 24px; transform: rotateY(180deg); }
-.badge-back::after { content: ""; position: absolute; bottom: -70px; left: -60px; width: 170px; height: 170px; border-radius: 50%; background: var(--sage); opacity: 0.7; }
-.badge-back-head { display: flex; width: 100%; align-items: center; justify-content: space-between; color: var(--gold-deep); font: 600 0.52rem/1 Manrope, sans-serif; letter-spacing: 0.12em; }
-.badge-back-head i { width: 7px; height: 7px; border-radius: 50%; background: #6f8c67; box-shadow: 0 0 0 5px rgba(111, 140, 103, 0.12); }
+.badge-back::after { display: none; }
+.badge-back-head { display: flex; width: 100%; align-items: center; justify-content: space-between; color: #ffffff; font: 600 0.52rem/1 Manrope, sans-serif; letter-spacing: 0.12em; }
+.badge-back-head i { width: 7px; height: 7px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 0 5px rgba(255,255,255,.1); }
 .badge-qr-wrap { width: 92%; aspect-ratio: 1; overflow: hidden; margin-top: 31px; border-radius: 15px; background: white; padding: 5px; }
 .badge-qr-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center 45%; }
 .badge-back-copy { position: relative; z-index: 1; margin-top: 20px; text-align: center; }
-.badge-back-copy h3 { margin: 0; font-family: "Noto Serif SC", serif; font-size: 1.62rem; font-weight: 600; }
-.badge-back-copy p { margin: 7px 0 0; color: var(--muted); font: 500 0.78rem/1 Manrope, sans-serif; }
-.badge-back > small { position: relative; z-index: 1; margin-top: auto; color: var(--gold-deep); font-size: 0.65rem; }
+.badge-back-copy h3 { margin: 0; color: #ffffff; font-family: "Noto Sans SC", sans-serif; font-size: 1.62rem; font-weight: 600; }
+.badge-back-copy p { margin: 7px 0 0; color: #878787; font: 500 0.78rem/1 Manrope, sans-serif; }
+.badge-back > small { position: relative; z-index: 1; margin-top: auto; color: #878787; font-size: 0.65rem; }
 
 @keyframes contact-backdrop-in { from { opacity: 0; } }
 @keyframes badge-loading-sway { to { transform: rotate(3deg) translateY(4px); } }
@@ -699,7 +701,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .badge-flip-button { min-width: 184px; min-height: 48px; }
   .contact-modal-controls p { margin-top: 7px; font-size: 0.62rem; }
   .static-badge-scene { padding: 62px 14px 103px; }
-  .static-badge { width: min(78vw, 340px, 46vh); max-width: 340px; }
+  .static-badge { width: min(76vw, 320px, 46vh); max-width: 320px; }
   .badge-face { border-radius: 18px; padding: 18px; }
   .badge-identity { margin-top: 19px; }
   .badge-identity p { font-size: 0.72rem; }

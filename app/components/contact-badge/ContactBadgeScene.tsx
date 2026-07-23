@@ -1,5 +1,6 @@
 "use client";
 
+import { Environment, Lightformer, useTexture } from "@react-three/drei";
 import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import {
   BallCollider,
@@ -38,43 +39,6 @@ function supportsPointerCapture(target: EventTarget | null): target is PointerCa
   );
 }
 
-function createBandTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 256;
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("Unable to create lanyard texture");
-
-  context.fillStyle = "#4f3f2c";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.strokeStyle = "rgba(255,253,248,.075)";
-  context.lineWidth = 2;
-  for (let y = 24; y < canvas.height - 24; y += 9) {
-    context.beginPath();
-    context.moveTo(0, y);
-    context.lineTo(canvas.width, y + 3);
-    context.stroke();
-  }
-  context.fillStyle = "#30271d";
-  context.fillRect(0, 0, canvas.width, 18);
-  context.fillRect(0, canvas.height - 18, canvas.width, 18);
-  context.fillStyle = "#9d8358";
-  context.fillRect(0, 18, canvas.width, 4);
-  context.fillRect(0, canvas.height - 22, canvas.width, 4);
-  context.fillStyle = "#d2c09b";
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.font = "600 76px Manrope, sans-serif";
-  context.fillText("ZHUANG SHUKAI  ·", canvas.width / 2, canvas.height / 2 + 3);
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.anisotropy = 4;
-  texture.needsUpdate = true;
-  return texture;
-}
-
 function LanyardLine({
   anchor,
   nodes,
@@ -83,24 +47,29 @@ function LanyardLine({
   nodes: React.RefObject<RapierRigidBody | null>[];
 }) {
   const { size } = useThree();
-  const [bandTexture, setBandTexture] = useState<THREE.CanvasTexture | null>(null);
+  const sourceTexture = useTexture("/contact-lanyard.png");
+  const bandTexture = useMemo(() => {
+    const texture = sourceTexture.clone();
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.anisotropy = 16;
+    texture.needsUpdate = true;
+    return texture;
+  }, [sourceTexture]);
   const geometry = useMemo(() => new MeshLineGeometry(), []);
-  const bandMaterial = useMemo(
-    () => {
-      const material = new MeshLineMaterial({
-        color: new THREE.Color(bandTexture ? "#ffffff" : "#4f3f2c"),
-        lineWidth: 0.48,
-        map: bandTexture ?? undefined,
-        useMap: bandTexture ? 1 : 0,
-        repeat: new THREE.Vector2(4, 1),
-        sizeAttenuation: 1,
-        resolution: new THREE.Vector2(1, 1),
-      });
-      material.depthTest = false;
-      return material;
-    },
-    [bandTexture],
-  );
+  const bandMaterial = useMemo(() => {
+    const material = new MeshLineMaterial({
+      color: new THREE.Color("#ffffff"),
+      lineWidth: 1,
+      map: bandTexture,
+      useMap: 1,
+      repeat: new THREE.Vector2(-4, 1),
+      sizeAttenuation: 1,
+      resolution: new THREE.Vector2(1000, size.width < 768 ? 2000 : 1000),
+    });
+    material.depthTest = false;
+    return material;
+  }, [bandTexture, size.width]);
   const bandLine = useMemo(() => new THREE.Mesh(geometry, bandMaterial), [geometry, bandMaterial]);
   const targets = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
   const smoothedPoints = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
@@ -110,31 +79,7 @@ function LanyardLine({
   );
   const initialized = useRef(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    let texture: THREE.CanvasTexture | null = null;
-    const prepareTexture = async () => {
-      await document.fonts.ready;
-      texture = createBandTexture();
-      if (cancelled) {
-        texture.dispose();
-        return;
-      }
-      setBandTexture(texture);
-    };
-    void prepareTexture().catch(() => {
-      if (!cancelled) setBandTexture(null);
-    });
-    return () => {
-      cancelled = true;
-      texture?.dispose();
-    };
-  }, []);
-
-  useEffect(() => {
-    bandMaterial.resolution.set(size.width, size.height);
-  }, [bandMaterial, size.height, size.width]);
-
+  useEffect(() => () => bandTexture.dispose(), [bandTexture]);
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => bandMaterial.dispose(), [bandMaterial]);
 
@@ -142,11 +87,14 @@ function LanyardLine({
     const anchorBody = anchor.current;
     if (!anchorBody || nodes.length !== 3 || nodes.some((node) => !node.current)) return;
     const anchorTranslation = anchorBody.translation();
-    targets[0].set(anchorTranslation.x, anchorTranslation.y, anchorTranslation.z);
-    nodes.forEach((node, index) => {
-      const translation = node.current?.translation();
-      if (translation) targets[index + 1].set(translation.x, translation.y, translation.z);
-    });
+    const node1Translation = nodes[0].current?.translation();
+    const node2Translation = nodes[1].current?.translation();
+    const node3Translation = nodes[2].current?.translation();
+    if (!node1Translation || !node2Translation || !node3Translation) return;
+    targets[0].set(node3Translation.x, node3Translation.y, node3Translation.z);
+    targets[1].set(node2Translation.x, node2Translation.y, node2Translation.z);
+    targets[2].set(node1Translation.x, node1Translation.y, node1Translation.z);
+    targets[3].set(anchorTranslation.x, anchorTranslation.y, anchorTranslation.z);
 
     if (!initialized.current) {
       smoothedPoints.forEach((point, index) => point.copy(targets[index]));
@@ -171,8 +119,8 @@ function LanyardLine({
 }
 
 /*
-  The physical chain below mirrors the reference interaction. The visible band
-  above is generated locally so the lanyard texture remains original to this site.
+  The physical chain, GLB hardware and mapped band mirror the supplied
+  v0 IRL reference. Only the card atlas content is personalized.
 */
 
 function SuspendedBadge({
@@ -208,14 +156,8 @@ function SuspendedBadge({
   const anchorX = (anchorXRatio - 0.5) * viewport.width;
   const anchorY = viewport.height / 2 - anchorYRatio * viewport.height;
   const swingDirection = anchorX >= 0 ? -1 : 1;
-  const cardScale = viewport.width < 8 ? 1.06 : 1.28;
-  const cardHalfWidth = 1.32 * cardScale;
-  const cardJointY = 1.85 * cardScale + 0.48;
-  const initialCardX = THREE.MathUtils.clamp(
-    anchorX + swingDirection * 1.6,
-    -viewport.width / 2 + cardHalfWidth + 0.16,
-    viewport.width / 2 - cardHalfWidth - 0.16,
-  );
+  const isMobile = viewport.width < 8;
+  const initialCardX = anchorX + swingDirection * 2;
 
   useEffect(() => onReady(), [onReady]);
 
@@ -262,26 +204,6 @@ function SuspendedBadge({
       return;
     }
 
-    const position = body.translation();
-    if (
-      Math.abs(position.x) > viewport.width * 1.5 ||
-      position.y < -viewport.height * 1.5 ||
-      position.y > viewport.height ||
-      Math.abs(position.z) > 8
-    ) {
-      body.setTranslation(
-        {
-          x: initialCardX,
-          y: anchorY,
-          z: 0,
-        },
-        true,
-      );
-      body.setLinvel({ x: 0, y: 0, z: 0 }, true);
-      body.setAngvel({ x: 0, y: 0, z: 0 }, true);
-      return;
-    }
-
     const angularVelocity = body.angvel();
     const rotation = body.rotation();
     body.setAngvel(
@@ -294,10 +216,10 @@ function SuspendedBadge({
     );
   });
 
-  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 0.8]);
-  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 0.8]);
-  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 0.8]);
-  useSphericalJoint(node3, card, [[0, 0, 0], [0, cardJointY, 0]]);
+  useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 1]);
+  useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 1]);
+  useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 1]);
+  useSphericalJoint(node3, card, [[0, 0, 0], [0, 1.45, 0]]);
 
   useEffect(() => () => { document.body.style.cursor = ""; }, []);
 
@@ -340,9 +262,9 @@ function SuspendedBadge({
   return (
     <>
       <RigidBody ref={anchor} type="fixed" colliders={false} position={[anchorX, anchorY, 0]} />
-      <RigidBody ref={node1} {...nodeProps} position={[anchorX + swingDirection * 0.4, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
-      <RigidBody ref={node2} {...nodeProps} position={[anchorX + swingDirection * 0.8, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
-      <RigidBody ref={node3} {...nodeProps} position={[anchorX + swingDirection * 1.2, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node1} {...nodeProps} position={[anchorX + swingDirection * 0.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node2} {...nodeProps} position={[anchorX + swingDirection * 1, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node3} {...nodeProps} position={[anchorX + swingDirection * 1.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
       <RigidBody
         ref={card}
         colliders={false}
@@ -351,10 +273,10 @@ function SuspendedBadge({
         angularDamping={4}
         canSleep
       >
-        <CuboidCollider args={[1.32 * cardScale, 2.13 * cardScale, 0.11 * cardScale]} />
+        <CuboidCollider args={[0.8, 1.125, 0.01]} />
         <BadgeCard
-          cardScale={cardScale}
           isFlipped={isFlipped}
+          isMobile={isMobile}
           onTextureError={onSceneError}
           onPointerDown={startDrag}
           onPointerMove={moveCard}
@@ -389,8 +311,6 @@ function BadgeWorld({
   return (
     <>
       <ambientLight intensity={Math.PI} />
-      <directionalLight position={[4, 6, 7]} intensity={1.85} color="#fff1d6" />
-      <directionalLight position={[-5, 1, 4]} intensity={0.55} color="#e3e8de" />
       <Physics gravity={[0, -40, 0]} timeStep={isMobile ? 1 / 30 : 1 / 60}>
         <SuspendedBadge
           isFlipped={isFlipped}
@@ -402,6 +322,36 @@ function BadgeWorld({
           onDragEnd={onDragEnd}
         />
       </Physics>
+      <Environment blur={0.75}>
+        <Lightformer
+          intensity={2}
+          color="white"
+          position={[0, -1, 5]}
+          rotation={[0, 0, Math.PI / 3]}
+          scale={[100, 0.1, 1]}
+        />
+        <Lightformer
+          intensity={3}
+          color="white"
+          position={[-1, -1, 1]}
+          rotation={[0, 0, Math.PI / 3]}
+          scale={[100, 0.1, 1]}
+        />
+        <Lightformer
+          intensity={3}
+          color="white"
+          position={[1, 1, 1]}
+          rotation={[0, 0, Math.PI / 3]}
+          scale={[100, 0.1, 1]}
+        />
+        <Lightformer
+          intensity={10}
+          color="white"
+          position={[-10, 0, 14]}
+          rotation={[0, Math.PI / 2, Math.PI / 3]}
+          scale={[100, 10, 1]}
+        />
+      </Environment>
     </>
   );
 }
@@ -454,8 +404,9 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
     >
       <Canvas
         dpr={[1, isMobile ? 1.5 : 2]}
-        camera={{ position: [0, 0, 30], fov: 20, near: 0.1, far: 100 }}
+        camera={{ position: [0, 0, 20], fov: 20, near: 0.1, far: 100 }}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true, powerPreference: "high-performance" }}
+        onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), 0)}
         onPointerMissed={() => {
           if (performance.now() - lastDragAt.current > 450) onDismiss();
         }}
