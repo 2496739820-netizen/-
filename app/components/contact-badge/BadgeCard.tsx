@@ -14,6 +14,7 @@ import {
 } from "./contact-data";
 
 type BadgeCardProps = {
+  cardScale: number;
   isFlipped: boolean;
   onTextureError: () => void;
   onPointerDown: (event: ThreeEvent<PointerEvent>) => void;
@@ -78,12 +79,12 @@ async function drawFront(canvas: HTMLCanvasElement) {
   roundedRect(context, 72, 70, 72, 72, 36);
   context.fill();
   context.fillStyle = SURFACE;
-  context.font = "600 25px Manrope, sans-serif";
+  context.font = "600 24px Manrope, sans-serif";
   context.textAlign = "center";
   context.fillText("ZS", 108, 116);
   context.textAlign = "right";
   context.fillStyle = MUTED;
-  context.font = "600 18px Manrope, sans-serif";
+  context.font = "600 17px Manrope, sans-serif";
   context.fillText("CONTACT / 2026", 940, 112);
 
   let avatar: HTMLImageElement | null = null;
@@ -94,80 +95,88 @@ async function drawFront(canvas: HTMLCanvasElement) {
   }
 
   context.fillStyle = "#f3eee4";
-  roundedRect(context, 72, 196, 306, 306, 46);
+  roundedRect(context, 72, 188, 330, 330, 48);
   context.fill();
   if (avatar) {
-    drawCoverImage(context, avatar, 86, 210, 278);
+    drawCoverImage(context, avatar, 86, 202, 302);
   } else {
     context.fillStyle = GOLD;
-    context.font = "600 72px Manrope, sans-serif";
+    context.font = "600 78px Manrope, sans-serif";
     context.textAlign = "center";
-    context.fillText("ZS", 225, 390);
+    context.fillText("ZS", 237, 390);
   }
 
   context.textAlign = "left";
   context.fillStyle = GOLD;
-  context.font = "600 24px 'Noto Sans SC', sans-serif";
-  context.fillText("高端眼镜门店新媒体运营", 420, 248);
+  context.font = "600 32px 'Noto Sans SC', sans-serif";
+  context.fillText("高端眼镜门店新媒体运营", 440, 248);
   context.fillStyle = INK;
-  context.font = "600 82px 'Noto Serif SC', 'Songti SC', serif";
-  context.fillText("庄澍凯", 414, 350);
+  context.font = "600 102px 'Noto Serif SC', 'Songti SC', serif";
+  context.fillText("庄澍凯", 430, 370);
   context.fillStyle = MUTED;
-  context.font = "500 24px 'Noto Sans SC', sans-serif";
-  context.fillText("求职区域  粤港澳大湾区", 420, 421);
+  context.font = "500 27px 'Noto Sans SC', sans-serif";
+  context.fillText("求职区域  粤港澳大湾区", 440, 446);
 
   context.strokeStyle = "rgba(38,35,30,.13)";
   context.lineWidth = 2;
   context.beginPath();
-  context.moveTo(72, 550);
-  context.lineTo(952, 550);
+  context.moveTo(72, 566);
+  context.lineTo(952, 566);
   context.stroke();
 
-  roundedRect(context, 72, 606, 880, 186, 34);
+  roundedRect(context, 72, 606, 880, 270, 38);
   context.fillStyle = "#f3eee4";
   context.fill();
 
   context.textAlign = "left";
   context.fillStyle = GOLD;
-  context.font = "600 18px Manrope, sans-serif";
-  context.fillText("PHONE", 108, 657);
-  context.fillText("EMAIL", 512, 657);
+  context.font = "600 21px Manrope, sans-serif";
+  context.fillText("PHONE", 108, 652);
   context.fillStyle = INK;
-  context.font = "600 38px Manrope, sans-serif";
-  context.fillText(CONTACT_PHONE, 108, 718);
-  context.font = "500 29px Manrope, sans-serif";
-  context.fillText(CONTACT_EMAIL, 512, 716);
+  context.font = "600 52px Manrope, sans-serif";
+  context.fillText(CONTACT_PHONE, 108, 714);
+  context.strokeStyle = "rgba(38,35,30,.1)";
+  context.beginPath();
+  context.moveTo(108, 748);
+  context.lineTo(916, 748);
+  context.stroke();
+  context.fillStyle = GOLD;
+  context.font = "600 21px Manrope, sans-serif";
+  context.fillText("EMAIL", 108, 792);
+  context.fillStyle = INK;
+  context.font = "600 41px Manrope, sans-serif";
+  context.fillText(CONTACT_EMAIL, 108, 846);
 
   context.fillStyle = MUTED;
-  context.font = "600 19px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("职业技能", 72, 882);
+  context.font = "600 23px Manrope, 'Noto Sans SC', sans-serif";
+  context.fillText("职业技能", 72, 936);
 
   CONTACT_CAPABILITIES.forEach((capability, index) => {
     const column = index % 3;
     const row = Math.floor(index / 3);
-    const x = 72 + column * 294;
-    const y = 922 + row * 88;
-    roundedRect(context, x, y, 266, 66, 33);
-    context.fillStyle = "rgba(138,115,73,.095)";
+    const x = 72 + column * 296;
+    const y = 972 + row * 94;
+    roundedRect(context, x, y, 272, 74, 37);
+    context.fillStyle = "rgba(138,115,73,.13)";
     context.fill();
     context.fillStyle = INK;
-    context.font = "500 23px 'Noto Sans SC', sans-serif";
+    context.font = "500 30px 'Noto Sans SC', sans-serif";
     context.textAlign = "center";
-    context.fillText(capability, x + 133, y + 42);
+    context.fillText(capability, x + 136, y + 48);
   });
 
   context.textAlign = "left";
   context.strokeStyle = "rgba(38,35,30,.13)";
   context.beginPath();
-  context.moveTo(72, 1192);
-  context.lineTo(952, 1192);
+  context.moveTo(72, 1194);
+  context.lineTo(952, 1194);
   context.stroke();
   context.fillStyle = MUTED;
-  context.font = "600 18px Manrope, sans-serif";
-  context.fillText("ZHUANG SHUKAI", 72, 1270);
+  context.font = "600 22px Manrope, sans-serif";
+  context.fillText("ZHUANG SHUKAI", 72, 1280);
   context.fillStyle = GOLD;
-  context.font = "600 17px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("NEW MEDIA OPERATOR  ·  求职中", 72, 1325);
+  context.font = "600 20px Manrope, 'Noto Sans SC', sans-serif";
+  context.fillText("NEW MEDIA OPERATOR  ·  求职中", 72, 1338);
 }
 
 function loadImage(source: string): Promise<HTMLImageElement> {
@@ -223,13 +232,13 @@ async function drawBack(canvas: HTMLCanvasElement) {
 
   context.textAlign = "center";
   context.fillStyle = INK;
-  context.font = "600 48px 'Noto Serif SC', serif";
+  context.font = "600 60px 'Noto Serif SC', serif";
   context.fillText("扫码联系我", CANVAS_WIDTH / 2, 1075);
   context.fillStyle = MUTED;
-  context.font = "500 27px Manrope, sans-serif";
+  context.font = "500 34px Manrope, sans-serif";
   context.fillText(CONTACT_EMAIL, CANVAS_WIDTH / 2, 1132);
   context.fillStyle = GOLD;
-  context.font = "500 23px 'Noto Sans SC', sans-serif";
+  context.font = "500 28px 'Noto Sans SC', sans-serif";
   context.fillText("高端眼镜门店新媒体运营", CANVAS_WIDTH / 2, 1322);
 }
 
@@ -270,7 +279,7 @@ function useBadgeTextures(onTextureError: () => void) {
   return textures;
 }
 
-export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerMove, onPointerUp }: BadgeCardProps) {
+export function BadgeCard({ cardScale, isFlipped, onTextureError, onPointerDown, onPointerMove, onPointerUp }: BadgeCardProps) {
   const visualRef = useRef<THREE.Group>(null);
   const hardwareRef = useRef<THREE.Group>(null);
   const ringTarget = useRef(0);
@@ -338,7 +347,7 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
       onPointerOver={() => { document.body.style.cursor = "grab"; }}
       onPointerOut={() => { document.body.style.cursor = ""; }}
     >
-      <group ref={visualRef}>
+      <group ref={visualRef} scale={cardScale}>
         <RoundedBox args={[2.6, 3.7, 0.13]} radius={0.16} smoothness={6}>
           <meshStandardMaterial color="#f8f3e9" roughness={0.66} metalness={0.02} />
         </RoundedBox>
@@ -365,7 +374,7 @@ export function BadgeCard({ isFlipped, onTextureError, onPointerDown, onPointerM
           />
         </mesh>
       </group>
-      <group ref={hardwareRef} position={[0, 2, 0]}>
+      <group ref={hardwareRef} position={[0, 1.85 * cardScale + 0.15, 0]}>
         <mesh material={brass}>
           <boxGeometry args={[0.54, 0.24, 0.2]} />
         </mesh>

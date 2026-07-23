@@ -208,10 +208,13 @@ function SuspendedBadge({
   const anchorX = (anchorXRatio - 0.5) * viewport.width;
   const anchorY = viewport.height / 2 - anchorYRatio * viewport.height;
   const swingDirection = anchorX >= 0 ? -1 : 1;
+  const cardScale = viewport.width < 8 ? 1.06 : 1.28;
+  const cardHalfWidth = 1.32 * cardScale;
+  const cardJointY = 1.85 * cardScale + 0.48;
   const initialCardX = THREE.MathUtils.clamp(
     anchorX + swingDirection * 1.6,
-    -viewport.width / 2 + 1.48,
-    viewport.width / 2 - 1.48,
+    -viewport.width / 2 + cardHalfWidth + 0.16,
+    viewport.width / 2 - cardHalfWidth - 0.16,
   );
 
   useEffect(() => onReady(), [onReady]);
@@ -294,7 +297,7 @@ function SuspendedBadge({
   useRopeJoint(anchor, node1, [[0, 0, 0], [0, 0, 0], 0.8]);
   useRopeJoint(node1, node2, [[0, 0, 0], [0, 0, 0], 0.8]);
   useRopeJoint(node2, node3, [[0, 0, 0], [0, 0, 0], 0.8]);
-  useSphericalJoint(node3, card, [[0, 0, 0], [0, 2.33, 0]]);
+  useSphericalJoint(node3, card, [[0, 0, 0], [0, cardJointY, 0]]);
 
   useEffect(() => () => { document.body.style.cursor = ""; }, []);
 
@@ -348,8 +351,9 @@ function SuspendedBadge({
         angularDamping={4}
         canSleep
       >
-        <CuboidCollider args={[1.32, 2.13, 0.11]} />
+        <CuboidCollider args={[1.32 * cardScale, 2.13 * cardScale, 0.11 * cardScale]} />
         <BadgeCard
+          cardScale={cardScale}
           isFlipped={isFlipped}
           onTextureError={onSceneError}
           onPointerDown={startDrag}

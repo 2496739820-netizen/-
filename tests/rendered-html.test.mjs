@@ -227,6 +227,9 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /swingDirection \* 1\.6/);
   assert.match(scene, /position=\{\[initialCardX, anchorY, 0\]\}/);
   assert.match(scene, /curve\.getPoints\(size\.width < 768 \? 16 : 32\)/);
+  assert.match(scene, /const cardScale = viewport\.width < 8 \? 1\.06 : 1\.28/);
+  assert.match(scene, /cardJointY = 1\.85 \* cardScale \+ 0\.48/);
+  assert.match(scene, /1\.32 \* cardScale, 2\.13 \* cardScale, 0\.11 \* cardScale/);
 
   assert.match(card, /document\.fonts\.ready/);
   assert.match(card, /CanvasTexture/);
@@ -241,6 +244,10 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /boxGeometry args=\{\[0\.54, 0\.24, 0\.2\]\}/);
   assert.match(card, /torusGeometry args=\{\[0\.168, 0\.048/);
   assert.match(card, /CONTACT_PHONE/);
+  assert.match(card, /600 52px Manrope/);
+  assert.match(card, /600 41px Manrope/);
+  assert.match(card, /500 30px 'Noto Sans SC'/);
+  assert.match(card, /scale=\{cardScale\}/);
   assert.doesNotMatch(card, /CONTACT_RESULTS|虎派结果/);
 
   assert.match(fallback, /data-contact-badge="static"/);
@@ -272,6 +279,9 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /\.static-lanyard em/);
   assert.match(css, /writing-mode: vertical-rl/);
   assert.match(css, /\.badge-contact-grid/);
+  assert.match(css, /width: min\(34vw, 400px, 52vh\)/);
+  assert.match(css, /\.badge-contact-grid \{ display: grid; grid-template-columns: 1fr/);
+  assert.match(css, /\.badge-capabilities span \{[^}]*font-size: 0\.7rem/);
   assert.match(css, /@keyframes static-badge-drop/);
   assert.match(css, /\.badge-drag-hint\.is-hidden/);
 
