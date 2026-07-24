@@ -91,11 +91,10 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
   useEffect(() => {
     if (!open) return;
     const updateAnchor = () => {
-      const trigger = triggerRef.current?.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      const x = trigger ? trigger.left + trigger.width / 2 : viewportWidth * 0.82;
-      const y = trigger ? trigger.bottom - 2 : 74;
+      const x = viewportWidth * (viewportWidth < 768 ? 0.5 : 0.68);
+      const y = -Math.max(18, viewportHeight * 0.025);
       const cardWidth = Math.min(300, viewportWidth * 0.72, viewportHeight * 0.42 * (2.6 / 3.7));
       const cardX = Math.min(
         Math.max(x, cardWidth / 2 + 16),
@@ -106,7 +105,7 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
     updateAnchor();
     window.addEventListener("resize", updateAnchor);
     return () => window.removeEventListener("resize", updateAnchor);
-  }, [open, triggerRef]);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;

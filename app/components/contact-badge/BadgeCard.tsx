@@ -120,19 +120,21 @@ function drawQrCrop(
 }
 
 function drawCapabilities(context: CanvasRenderingContext2D) {
-  const labels = CONTACT_CAPABILITIES.map((item) => item.replace("平台", ""));
-  labels.forEach((label, index) => {
-    const column = index % 3;
-    const row = Math.floor(index / 3);
-    const x = 54 + column * 205;
-    const y = 838 + row * 43;
-    roundedRect(context, x, y, 176, 31, 15.5);
-    context.fillStyle = "rgba(255,255,255,.085)";
+  CONTACT_CAPABILITIES.forEach((label, index) => {
+    const column = index % 2;
+    const row = Math.floor(index / 2);
+    const x = 54 + column * 290;
+    const y = 628 + row * 66;
+    roundedRect(context, x, y, 266, 46, 23);
+    context.fillStyle = "rgba(255,255,255,.1)";
     context.fill();
-    context.fillStyle = "#d6d6d6";
-    context.font = "500 17px 'Noto Sans SC', sans-serif";
+    context.strokeStyle = "rgba(255,255,255,.08)";
+    context.lineWidth = 1;
+    context.stroke();
+    context.fillStyle = "#eeeeee";
+    context.font = "500 21px 'Noto Sans SC', sans-serif";
     context.textAlign = "center";
-    context.fillText(label, x + 88, y + 21);
+    context.fillText(label, x + 133, y + 31);
   });
 }
 
@@ -154,37 +156,71 @@ async function createPersonalAtlas(canvas: HTMLCanvasElement) {
 
   context.drawImage(base, 0, 0, ATLAS_SIZE, ATLAS_SIZE);
 
-  // Front atlas: preserve the reference card's black field and geometric X,
-  // while replacing its event identity with the portfolio owner's details.
+  // Front atlas: keep the reference card's monochrome identity while making
+  // the portfolio owner's personal and contact information immediately legible.
   context.fillStyle = "#000000";
-  context.fillRect(0, 54, 688, 290);
-  context.fillRect(0, 820, 688, 230);
+  context.fillRect(0, 0, 688, 1054);
 
-  drawCoverImage(context, avatar, 54, 72, 150, 150, 18);
+  context.strokeStyle = "rgba(255,255,255,.055)";
+  context.lineWidth = 1;
+  for (let offset = -540; offset < 680; offset += 72) {
+    context.beginPath();
+    context.moveTo(offset, 560);
+    context.lineTo(offset + 540, 1020);
+    context.stroke();
+  }
 
   context.textAlign = "left";
-  context.fillStyle = "#ffffff";
-  context.font = "600 48px 'Noto Sans SC', sans-serif";
-  context.fillText("庄澍凯", 232, 120);
-  context.fillStyle = "#a0a0a0";
-  context.font = "500 22px 'Noto Sans SC', sans-serif";
-  context.fillText("高端眼镜门店新媒体运营", 232, 164);
-  context.font = "500 19px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("粤港澳大湾区  ·  CONTACT 2026", 232, 204);
+  context.fillStyle = "#8d8d8d";
+  context.font = "600 17px Manrope, sans-serif";
+  context.fillText("PERSONAL CONTACT / 2026", 54, 48);
 
+  drawCoverImage(context, avatar, 54, 78, 178, 214, 18);
+
+  context.fillStyle = "#d1b681";
+  context.font = "600 18px 'Noto Sans SC', sans-serif";
+  context.fillText("高端眼镜门店新媒体运营", 260, 106);
+  context.textAlign = "left";
   context.fillStyle = "#ffffff";
-  context.font = "500 44px Manrope, 'Noto Sans SC', sans-serif";
-  context.fillText("CONTENT TO CONVERSION", 54, 304);
+  context.font = "600 56px 'Noto Serif SC', serif";
+  context.fillText("庄澍凯", 258, 170);
+  context.fillStyle = "#a0a0a0";
+  context.font = "500 19px Manrope, sans-serif";
+  context.fillText("ZHUANG SHUKAI", 260, 207);
+  context.font = "500 19px 'Noto Sans SC', sans-serif";
+  context.fillText("求职区域  粤港澳大湾区", 260, 251);
+
+  context.strokeStyle = "rgba(255,255,255,.16)";
+  context.beginPath();
+  context.moveTo(54, 326);
+  context.lineTo(634, 326);
+  context.stroke();
+
+  context.fillStyle = "#7f7f7f";
+  context.font = "600 16px Manrope, sans-serif";
+  context.fillText("PHONE", 54, 366);
+  context.fillStyle = "#ffffff";
+  context.font = "600 40px Manrope, sans-serif";
+  context.fillText(CONTACT_PHONE, 54, 414);
+
+  context.fillStyle = "#7f7f7f";
+  context.font = "600 16px Manrope, sans-serif";
+  context.fillText("EMAIL", 54, 465);
+  context.fillStyle = "#ffffff";
+  context.font = "500 29px Manrope, sans-serif";
+  context.fillText(CONTACT_EMAIL, 54, 507);
+
+  context.strokeStyle = "rgba(255,255,255,.16)";
+  context.beginPath();
+  context.moveTo(54, 548);
+  context.lineTo(634, 548);
+  context.stroke();
+
+  context.fillStyle = "#d1b681";
+  context.font = "600 18px 'Noto Sans SC', sans-serif";
+  context.fillText("职业技能", 54, 590);
 
   drawCapabilities(context);
-
-  context.textAlign = "right";
-  context.fillStyle = "#ffffff";
-  context.font = "500 43px Manrope, sans-serif";
-  context.fillText("ZHUANG SHUKAI", 634, 956);
-  context.fillStyle = "#878787";
-  context.font = "500 18px Manrope, sans-serif";
-  context.fillText(`${CONTACT_PHONE}  ·  ${CONTACT_EMAIL}`, 634, 996);
 
   // Back atlas: use the same reference panel geometry with the supplied
   // WeChat QR code and the portfolio contact details.
@@ -295,10 +331,10 @@ export function BadgeCard({
         <meshPhysicalMaterial
           map={texture}
           color={texture ? "#ffffff" : "#050505"}
-          clearcoat={isMobile ? 0 : 1}
-          clearcoatRoughness={0.15}
-          roughness={0.9}
-          metalness={0.8}
+          clearcoat={isMobile ? 0 : 0.65}
+          clearcoatRoughness={0.22}
+          roughness={0.72}
+          metalness={0.04}
         />
       </mesh>
       <mesh geometry={model.nodes.clip.geometry} material={clipMaterial} />

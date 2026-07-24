@@ -1,6 +1,6 @@
 "use client";
 
-import { Environment, Lightformer, useTexture } from "@react-three/drei";
+import { Environment, Lightformer } from "@react-three/drei";
 import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import {
   BallCollider,
@@ -39,37 +39,66 @@ function supportsPointerCapture(target: EventTarget | null): target is PointerCa
   );
 }
 
+function createPersonalBandTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1600;
+  canvas.height = 256;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Unable to create contact lanyard texture");
+
+  context.fillStyle = "#050505";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = "#171717";
+  context.fillRect(0, 0, canvas.width, 14);
+  context.fillRect(0, canvas.height - 14, canvas.width, 14);
+  context.strokeStyle = "rgba(255,255,255,.08)";
+  context.lineWidth = 2;
+  for (let y = 28; y < canvas.height - 28; y += 10) {
+    context.beginPath();
+    context.moveTo(0, y);
+    context.lineTo(canvas.width, y + 3);
+    context.stroke();
+  }
+
+  context.fillStyle = "#f3f0e8";
+  context.textAlign = "left";
+  context.textBaseline = "middle";
+  context.font = "600 48px Manrope, sans-serif";
+  for (let x = 48; x < canvas.width; x += 410) {
+    context.fillText("ZHUANG SHUKAI", x, canvas.height / 2);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.anisotropy = 8;
+  texture.needsUpdate = true;
+  return texture;
+}
+
 function LanyardLine({
   anchor,
-  nodes,
+  card,
 }: {
   anchor: React.RefObject<RapierRigidBody | null>;
-  nodes: React.RefObject<RapierRigidBody | null>[];
+  card: React.RefObject<RapierRigidBody | null>;
 }) {
   const { size } = useThree();
-  const sourceTexture = useTexture("/contact-lanyard.png");
-  const bandTexture = useMemo(() => {
-    const texture = sourceTexture.clone();
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.anisotropy = 16;
-    texture.needsUpdate = true;
-    return texture;
-  }, [sourceTexture]);
+  const [bandTexture, setBandTexture] = useState<THREE.CanvasTexture | null>(null);
   const geometry = useMemo(() => new MeshLineGeometry(), []);
   const bandMaterial = useMemo(() => {
     const material = new MeshLineMaterial({
-      color: new THREE.Color("#ffffff"),
-      lineWidth: 1,
-      map: bandTexture,
-      useMap: 1,
-      repeat: new THREE.Vector2(-4, 1),
+      color: new THREE.Color(bandTexture ? "#ffffff" : "#050505"),
+      lineWidth: 0.48,
+      map: bandTexture ?? undefined,
+      useMap: bandTexture ? 1 : 0,
+      repeat: new THREE.Vector2(-2.8, 1),
       sizeAttenuation: 1,
-      resolution: new THREE.Vector2(1000, size.width < 768 ? 2000 : 1000),
+      resolution: new THREE.Vector2(size.width, size.height),
     });
     material.depthTest = false;
     return material;
-  }, [bandTexture, size.width]);
+  }, [bandTexture, size.height, size.width]);
   const bandLine = useMemo(() => new THREE.Mesh(geometry, bandMaterial), [geometry, bandMaterial]);
   const targets = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
   const smoothedPoints = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
@@ -79,22 +108,39 @@ function LanyardLine({
   );
   const initialized = useRef(false);
 
-  useEffect(() => () => bandTexture.dispose(), [bandTexture]);
+  useEffect(() => {
+    let cancelled = false;
+    let texture: THREE.CanvasTexture | null = null;
+    const prepareTexture = async () => {
+      await document.fonts.ready;
+      texture = createPersonalBandTexture();
+      if (cancelled) {
+        texture.dispose();
+        return;
+      }
+      setBandTexture(texture);
+    };
+    void prepareTexture().catch(() => {
+      if (!cancelled) setBandTexture(null);
+    });
+    return () => {
+      cancelled = true;
+      texture?.dispose();
+    };
+  }, []);
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => bandMaterial.dispose(), [bandMaterial]);
 
   useFrame((_, delta) => {
     const anchorBody = anchor.current;
-    if (!anchorBody || nodes.length !== 3 || nodes.some((node) => !node.current)) return;
+    const cardBody = card.current;
+    if (!anchorBody || !cardBody) return;
     const anchorTranslation = anchorBody.translation();
-    const node1Translation = nodes[0].current?.translation();
-    const node2Translation = nodes[1].current?.translation();
-    const node3Translation = nodes[2].current?.translation();
-    if (!node1Translation || !node2Translation || !node3Translation) return;
-    targets[0].set(node3Translation.x, node3Translation.y, node3Translation.z);
-    targets[1].set(node2Translation.x, node2Translation.y, node2Translation.z);
-    targets[2].set(node1Translation.x, node1Translation.y, node1Translation.z);
+    const cardTranslation = cardBody.translation();
+    targets[0].set(cardTranslation.x, cardTranslation.y + 1.45, cardTranslation.z);
     targets[3].set(anchorTranslation.x, anchorTranslation.y, anchorTranslation.z);
+    targets[1].lerpVectors(targets[0], targets[3], 0.34);
+    targets[2].lerpVectors(targets[0], targets[3], 0.68);
 
     if (!initialized.current) {
       smoothedPoints.forEach((point, index) => point.copy(targets[index]));
@@ -157,7 +203,8 @@ function SuspendedBadge({
   const anchorY = viewport.height / 2 - anchorYRatio * viewport.height;
   const swingDirection = anchorX >= 0 ? -1 : 1;
   const isMobile = viewport.width < 8;
-  const initialCardX = anchorX + swingDirection * 2;
+  const initialCardX = anchorX + swingDirection * 0.32;
+  const initialCardY = anchorY - 4;
 
   useEffect(() => onReady(), [onReady]);
 
@@ -262,13 +309,13 @@ function SuspendedBadge({
   return (
     <>
       <RigidBody ref={anchor} type="fixed" colliders={false} position={[anchorX, anchorY, 0]} />
-      <RigidBody ref={node1} {...nodeProps} position={[anchorX + swingDirection * 0.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
-      <RigidBody ref={node2} {...nodeProps} position={[anchorX + swingDirection * 1, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
-      <RigidBody ref={node3} {...nodeProps} position={[anchorX + swingDirection * 1.5, anchorY, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node1} {...nodeProps} position={[anchorX + swingDirection * 0.04, anchorY - 0.85, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node2} {...nodeProps} position={[anchorX + swingDirection * 0.1, anchorY - 1.7, 0]}><BallCollider args={[0.1]} /></RigidBody>
+      <RigidBody ref={node3} {...nodeProps} position={[anchorX + swingDirection * 0.2, anchorY - 2.55, 0]}><BallCollider args={[0.1]} /></RigidBody>
       <RigidBody
         ref={card}
         colliders={false}
-        position={[initialCardX, anchorY, 0]}
+        position={[initialCardX, initialCardY, 0]}
         linearDamping={4}
         angularDamping={4}
         canSleep
@@ -283,7 +330,7 @@ function SuspendedBadge({
           onPointerUp={stopDrag}
         />
       </RigidBody>
-      <LanyardLine anchor={anchor} nodes={[node1, node2, node3]} />
+      <LanyardLine anchor={anchor} card={card} />
     </>
   );
 }
@@ -311,7 +358,7 @@ function BadgeWorld({
   return (
     <>
       <ambientLight intensity={Math.PI} />
-      <Physics gravity={[0, -40, 0]} timeStep={isMobile ? 1 / 30 : 1 / 60}>
+      <Physics gravity={[0, -22, 0]} timeStep={isMobile ? 1 / 30 : 1 / 60}>
         <SuspendedBadge
           isFlipped={isFlipped}
           onReady={onReady}
@@ -386,7 +433,7 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
 
   useEffect(() => {
     if (worldReady) return;
-    const timeout = window.setTimeout(onSceneError, 45000);
+    const timeout = window.setTimeout(onSceneError, 60000);
     return () => window.clearTimeout(timeout);
   }, [onSceneError, worldReady]);
 
