@@ -1,17 +1,50 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
-import test from "node:test";
+import { fileURLToPath } from "node:url";
+import test, { after, before } from "node:test";
+
+const projectDirectory = fileURLToPath(new URL("..", import.meta.url));
+const port = 3400 + (process.pid % 1000);
+const baseUrl = `http://127.0.0.1:${port}`;
+let server;
+
+before(async () => {
+  const output = [];
+  server = spawn(
+    process.execPath,
+    ["node_modules/next/dist/bin/next", "start", "-H", "127.0.0.1", "-p", String(port)],
+    {
+      cwd: projectDirectory,
+      env: { ...process.env, NODE_ENV: "production" },
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  );
+  server.stdout.on("data", (chunk) => output.push(chunk.toString()));
+  server.stderr.on("data", (chunk) => output.push(chunk.toString()));
+
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    if (server.exitCode !== null) {
+      throw new Error(`Next.js test server exited early:\n${output.join("")}`);
+    }
+    try {
+      const response = await fetch(baseUrl);
+      if (response.ok) return;
+    } catch {
+      // The server is still starting.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 150));
+  }
+  throw new Error(`Next.js test server did not become ready:\n${output.join("")}`);
+});
+
+after(() => {
+  server?.kill("SIGTERM");
+});
 
 async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
+  return fetch(baseUrl, { headers: { accept: "text/html" } });
 }
 
 test("server-renders the high-end eyewear new-media portfolio", async () => {
@@ -316,4 +349,10 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   for (const dependency of ["three", "@react-three/fiber", "@react-three/drei", "@react-three/rapier", "meshline", "qrcode"]) {
     assert.ok(dependencies[dependency], `${dependency} should be installed`);
   }
+  const packageData = JSON.parse(packageJson);
+  assert.equal(packageData.scripts.build, "next build");
+  assert.equal(packageData.scripts.dev, "next dev");
+  assert.equal(packageData.scripts.start, "next start");
+  assert.equal(packageData.devDependencies.vinext, undefined);
+  assert.equal(packageData.devDependencies.wrangler, undefined);
 });
