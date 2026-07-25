@@ -318,10 +318,11 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /created\.anisotropy = 16/);
   assert.match(card, /CONTACT_PHONE/);
   assert.match(card, /CONTACT_QR_SOURCE/);
-  assert.match(card, /drawCoverImage\(context, avatar, 48, 76, 168, 224, 14\)/);
-  assert.match(card, /context\.fillText\("高端眼镜门店", 244, 104\)/);
-  assert.match(card, /context\.fillText\("新媒体运营", 244, 136\)/);
-  assert.match(card, /context\.fillText\("庄澍凯", 244, 194\)/);
+  assert.match(card, /Reserve the top-center attachment zone/);
+  assert.match(card, /drawCoverImage\(context, avatar, 48, 142, 168, 224, 14\)/);
+  assert.match(card, /context\.fillText\("高端眼镜门店", 244, 170\)/);
+  assert.match(card, /context\.fillText\("新媒体运营", 244, 202\)/);
+  assert.match(card, /context\.fillText\("庄澍凯", 244, 260\)/);
   assert.doesNotMatch(card, /RoundedBox|ringTarget|boxGeometry|torusGeometry|map-anisotropy/);
   assert.doesNotMatch(card, /CONTACT_RESULTS|虎派结果/);
 
