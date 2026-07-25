@@ -20,27 +20,28 @@ function BadgeFront({ hidden }: { hidden: boolean }) {
   return (
     <div className="badge-face badge-front" aria-hidden={hidden}>
       <div className="badge-front-head">
-        <span className="badge-monogram">ZS</span>
-        <span className="badge-edition">CONTACT / 2026</span>
+        <span className="badge-edition">PERSONAL CONTACT / 2026</span>
       </div>
       <div className="badge-identity">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="badge-avatar" src={CONTACT_AVATAR_SOURCE} alt="庄澍凯个人照片" />
-        <div>
-          <p>高端眼镜门店新媒体运营</p>
-          <h3>庄澍凯</h3>
-          <span>求职区域  粤港澳大湾区</span>
+        <div className="badge-identity-copy">
+          <p className="badge-role">高端眼镜门店<br />新媒体运营</p>
+          <h3 className="badge-name">庄澍凯</h3>
+          <span className="badge-name-en">ZHUANG SHUKAI</span>
+          <span className="badge-region">求职区域　粤港澳大湾区</span>
         </div>
       </div>
+      <div className="badge-divider" aria-hidden="true" />
       <div className="badge-contact-grid" aria-label="联系方式">
         <a href={CONTACT_TEL}><small>PHONE</small><strong>{CONTACT_PHONE}</strong></a>
         <a href={CONTACT_MAILTO}><small>EMAIL</small><strong>{CONTACT_EMAIL}</strong></a>
       </div>
+      <div className="badge-divider" aria-hidden="true" />
       <p className="badge-section-label">职业技能</p>
       <div className="badge-capabilities" aria-label="核心能力">
         {CONTACT_CAPABILITIES.map((item) => <span key={item}>{item}</span>)}
       </div>
-      <p className="badge-signature"><span>ZHUANG SHUKAI</span><small>NEW MEDIA OPERATOR · 求职中</small></p>
     </div>
   );
 }

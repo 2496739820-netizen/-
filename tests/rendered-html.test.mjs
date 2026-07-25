@@ -298,7 +298,7 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /useGLTF\(CARD_MODEL_SOURCE\)/);
   assert.match(card, /CARD_MODEL_SOURCE = "\/contact-card\.glb"/);
   assert.match(card, /CARD_BASE_SOURCE = "\/contact-card-base-dark\.png"/);
-  assert.match(card, /scale=\{2\.25\}/);
+  assert.match(card, /scale=\{isMobile \? 2\.6 : 2\.35\}/);
   assert.match(card, /position=\{\[0, -1\.2, -0\.05\]\}/);
   assert.match(card, /model\.nodes\.card\.geometry/);
   assert.match(card, /model\.nodes\.clip\.geometry/);
@@ -310,12 +310,22 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(card, /created\.anisotropy = 16/);
   assert.match(card, /CONTACT_PHONE/);
   assert.match(card, /CONTACT_QR_SOURCE/);
+  assert.match(card, /drawCoverImage\(context, avatar, 48, 76, 168, 224, 14\)/);
+  assert.match(card, /context\.fillText\("高端眼镜门店", 244, 104\)/);
+  assert.match(card, /context\.fillText\("新媒体运营", 244, 136\)/);
+  assert.match(card, /context\.fillText\("庄澍凯", 244, 194\)/);
   assert.doesNotMatch(card, /RoundedBox|ringTarget|boxGeometry|torusGeometry|map-anisotropy/);
   assert.doesNotMatch(card, /CONTACT_RESULTS|虎派结果/);
 
   assert.match(fallback, /data-contact-badge="static"/);
   assert.match(fallback, /className="badge-avatar"/);
   assert.match(fallback, /alt="庄澍凯个人照片"/);
+  assert.match(fallback, /className="badge-role"/);
+  assert.match(fallback, /高端眼镜门店<br \/>新媒体运营/);
+  assert.match(fallback, /className="badge-name"/);
+  assert.match(fallback, /className="badge-name-en"/);
+  assert.match(fallback, /className="badge-region"/);
+  assert.match(fallback, /className="badge-divider"/);
   assert.match(fallback, /CONTACT_PHONE/);
   assert.match(fallback, /CONTACT_TEL/);
   assert.match(fallback, /ZHUANG SHUKAI · ZHUANG SHUKAI/);
@@ -348,7 +358,11 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /\.badge-contact-grid/);
   assert.match(css, /width: min\(28vw, 330px, 48vh\)/);
   assert.match(css, /\.badge-contact-grid \{[^}]*grid-template-columns: 1fr/);
-  assert.match(css, /\.badge-capabilities span \{[^}]*font-size: 0\.7rem/);
+  assert.match(css, /\.badge-avatar \{[^}]*aspect-ratio: 3 \/ 4/);
+  assert.match(css, /\.badge-role \{[^}]*color: #d1b681/);
+  assert.match(css, /\.badge-contact-grid strong \{[^}]*font: 600 1\.18rem/);
+  assert.match(css, /\.badge-capabilities \{[^}]*grid-template-columns: repeat\(2, 1fr\)/);
+  assert.match(css, /\.badge-capabilities span \{[^}]*font-size: 0\.68rem/);
   assert.match(css, /\.badge-face \{[^}]*background: #050505/);
   assert.match(css, /@keyframes static-badge-drop/);
   assert.match(css, /\.badge-drag-hint\.is-hidden/);

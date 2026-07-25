@@ -555,32 +555,27 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .static-badge:not(.is-flipped) .badge-back { visibility: hidden; opacity: 0; }
 .static-badge.is-flipped .badge-front { visibility: hidden; opacity: 0; transform: rotateY(-180deg); }
 .static-badge.is-flipped .badge-back { visibility: visible; opacity: 1; transform: rotateY(0); }
-.badge-front::before { content: ""; position: absolute; top: 34%; right: -18%; bottom: 25%; left: -18%; background: repeating-linear-gradient(45deg, transparent 0 25px, rgba(255,255,255,.09) 25px 26px, transparent 26px 43px), repeating-linear-gradient(-45deg, transparent 0 25px, rgba(255,255,255,.09) 25px 26px, transparent 26px 43px); opacity: 0.8; }
+.badge-front { display: flex; flex-direction: column; padding: 20px 20px 17px; }
+.badge-front::before { content: ""; position: absolute; top: 34%; right: -18%; bottom: 16%; left: -18%; background: repeating-linear-gradient(45deg, transparent 0 25px, rgba(255,255,255,.09) 25px 26px, transparent 26px 43px), repeating-linear-gradient(-45deg, transparent 0 25px, rgba(255,255,255,.09) 25px 26px, transparent 26px 43px); opacity: 0.52; }
 .badge-front-head { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
-.badge-monogram { display: grid; width: 36px; height: 36px; place-items: center; background: #ffffff; color: #000000; font: 700 0.68rem/1 Manrope, sans-serif; }
-.badge-edition { color: #878787; font: 600 0.56rem/1 Manrope, sans-serif; letter-spacing: 0.1em; }
-.badge-identity { position: relative; z-index: 1; display: grid; grid-template-columns: 0.9fr 1.1fr; align-items: center; gap: 16px; margin-top: 18px; }
-.badge-avatar { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; object-position: center 20%; border: 4px solid #222222; border-radius: 8px; background: #111111; filter: saturate(.78) contrast(1.04); }
-.badge-identity p { margin: 0; color: #d8d8d8; font-size: 0.86rem; font-weight: 600; line-height: 1.35; letter-spacing: .02em; }
-.badge-identity h3 { margin: 8px 0 6px; font-family: "Noto Serif SC", serif; font-size: clamp(2rem, 5.6vw, 2.35rem); font-weight: 600; line-height: 1.05; letter-spacing: 0.06em; }
-.badge-identity span,
-.badge-identity small { display: block; color: #878787; font-size: 0.72rem; line-height: 1.35; }
-.badge-identity small { margin-top: 3px; }
-.badge-contact-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; border-radius: 8px; background: #101010; padding: 14px 16px 16px; }
+.badge-edition { color: #8d8d8d; font: 600 0.55rem/1 Manrope, sans-serif; letter-spacing: 0.11em; }
+.badge-identity { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); align-items: center; gap: 14px; margin-top: 14px; }
+.badge-avatar { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: center 18%; border: 3px solid #1c1c1c; border-radius: 12px; background: #111111; filter: saturate(.82) contrast(1.05); }
+.badge-identity-copy { min-width: 0; }
+.badge-role { margin: 0; color: #d1b681; font-size: 0.8rem; font-weight: 600; line-height: 1.32; letter-spacing: 0.02em; }
+.badge-name { margin: 8px 0 0; color: #ffffff; font-family: "Noto Serif SC", serif; font-size: clamp(1.85rem, 5vw, 2.15rem); font-weight: 600; line-height: 1.06; letter-spacing: 0.04em; }
+.badge-name-en { display: block; margin-top: 6px; color: #9a9a9a; font: 500 0.61rem/1.2 Manrope, sans-serif; letter-spacing: 0.12em; }
+.badge-region { display: block; margin-top: 7px; color: #898989; font-size: 0.66rem; line-height: 1.35; }
+.badge-divider { position: relative; z-index: 1; height: 1px; flex: 0 0 1px; margin-top: 13px; background: rgba(255,255,255,.14); }
+.badge-contact-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 13px; padding: 0; }
 .badge-contact-grid a { min-width: 0; color: #ffffff; text-decoration: none; }
-.badge-contact-grid a + a { border-top: 1px solid rgba(255,255,255,.12); padding-top: 11px; }
-.badge-contact-grid small { display: block; margin-bottom: 7px; color: #878787; font: 600 0.58rem/1 Manrope, sans-serif; letter-spacing: .1em; }
-.badge-contact-grid strong { display: block; font: 600 0.92rem/1.25 Manrope, sans-serif; white-space: nowrap; }
-.badge-contact-grid a:last-child strong { font-size: 0.78rem; white-space: normal; word-break: break-all; }
-.badge-section-label { position: relative; z-index: 1; margin: 18px 0 0; color: #878787; font: 600 0.62rem/1 "Noto Sans SC", sans-serif; letter-spacing: .1em; }
-.badge-capabilities { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-.badge-capabilities span { border-radius: 999px; background: rgba(255,255,255,.09); padding: 10px 6px; color: #eeeeee; text-align: center; font-size: 0.7rem; font-weight: 500; line-height: 1.2; }
-.badge-signature { position: absolute; right: 24px; bottom: 18px; left: 24px; margin: 0; border-top: 1px solid var(--line); padding-top: 12px; }
-.badge-signature span,
-.badge-signature small { display: block; font-family: Manrope, sans-serif; }
-.badge-signature { border-top-color: rgba(255,255,255,.14); }
-.badge-signature span { color: #ffffff; font-size: 0.62rem; font-weight: 600; letter-spacing: .08em; }
-.badge-signature small { margin-top: 5px; color: #878787; font-size: 0.56rem; }
+.badge-contact-grid a + a { border-top: 0; padding-top: 0; }
+.badge-contact-grid small { display: block; margin-bottom: 5px; color: #7a7a7a; font: 600 0.55rem/1 Manrope, sans-serif; letter-spacing: .12em; }
+.badge-contact-grid strong { display: block; color: #ffffff; font: 600 1.18rem/1.15 Manrope, sans-serif; letter-spacing: -0.02em; white-space: nowrap; }
+.badge-contact-grid a:last-child strong { color: #f2f2f2; font-size: 0.8rem; font-weight: 600; letter-spacing: 0; white-space: normal; word-break: break-all; }
+.badge-section-label { position: relative; z-index: 1; margin: 13px 0 0; color: #d1b681; font: 600 0.67rem/1 "Noto Sans SC", sans-serif; letter-spacing: .11em; }
+.badge-capabilities { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px 9px; margin-top: 9px; }
+.badge-capabilities span { border-radius: 999px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); padding: 8px 6px; color: #eeeeee; text-align: center; font-size: 0.68rem; font-weight: 500; line-height: 1.2; }
 .badge-back { display: flex; flex-direction: column; align-items: center; padding: 24px; transform: rotateY(180deg); }
 .badge-back::after { display: none; }
 .badge-back-head { display: flex; width: 100%; align-items: center; justify-content: space-between; color: #ffffff; font: 600 0.52rem/1 Manrope, sans-serif; letter-spacing: 0.12em; }
@@ -758,18 +753,20 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .static-badge-scene { padding: 62px 14px 103px; }
   .static-badge { width: min(76vw, 320px, 46vh); max-width: 320px; }
   .badge-face { border-radius: 18px; padding: 18px; }
-  .badge-identity { gap: 12px; margin-top: 16px; }
-  .badge-identity p { font-size: 0.74rem; }
-  .badge-identity h3 { margin-block: 6px 5px; font-size: 1.76rem; }
-  .badge-identity span { font-size: 0.64rem; }
-  .badge-contact-grid { gap: 9px; margin-top: 12px; padding: 10px 12px; }
+  .badge-front { padding: 16px; }
+  .badge-identity { grid-template-columns: minmax(0, 0.74fr) minmax(0, 1.26fr); gap: 10px; margin-top: 12px; }
+  .badge-role { font-size: 0.7rem; }
+  .badge-name { margin-top: 6px; font-size: 1.68rem; }
+  .badge-name-en { margin-top: 5px; font-size: 0.54rem; }
+  .badge-region { margin-top: 5px; font-size: 0.57rem; }
+  .badge-divider { margin-top: 10px; }
+  .badge-contact-grid { gap: 8px; margin-top: 10px; padding: 0; }
   .badge-contact-grid small { margin-bottom: 5px; }
-  .badge-contact-grid strong { font-size: 0.88rem; }
+  .badge-contact-grid strong { font-size: 1.05rem; }
   .badge-contact-grid a:last-child strong { font-size: 0.72rem; }
-  .badge-section-label { margin-top: 12px; }
+  .badge-section-label { margin-top: 10px; font-size: 0.62rem; }
   .badge-capabilities { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 8px; }
-  .badge-capabilities span { padding: 7px 4px; font-size: 0.64rem; }
-  .badge-signature { right: 18px; bottom: 14px; left: 18px; padding-top: 7px; }
+  .badge-capabilities span { padding: 6px 4px; font-size: 0.62rem; }
   .badge-qr-wrap { margin-top: 18px; }
   .badge-back-copy { margin-top: 16px; }
 }
