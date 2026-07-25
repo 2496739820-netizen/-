@@ -76,6 +76,20 @@ function createPersonalBandTexture() {
   return texture;
 }
 
+async function waitForBandFonts() {
+  await new Promise<void>((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      resolve();
+    };
+    const timeout = window.setTimeout(finish, 1200);
+    void document.fonts.ready.then(finish, finish);
+  });
+}
+
 function LanyardLine({
   anchor,
   card,
@@ -112,7 +126,7 @@ function LanyardLine({
     let cancelled = false;
     let texture: THREE.CanvasTexture | null = null;
     const prepareTexture = async () => {
-      await document.fonts.ready;
+      await waitForBandFonts();
       texture = createPersonalBandTexture();
       if (cancelled) {
         texture.dispose();
@@ -205,8 +219,6 @@ function SuspendedBadge({
   const isMobile = viewport.width < 8;
   const initialCardX = anchorX + swingDirection * 0.32;
   const initialCardY = anchorY - 4;
-
-  useEffect(() => onReady(), [onReady]);
 
   const releaseCard = useCallback(() => {
     document.body.style.cursor = "";
@@ -324,6 +336,7 @@ function SuspendedBadge({
         <BadgeCard
           isFlipped={isFlipped}
           isMobile={isMobile}
+          onTextureReady={onReady}
           onTextureError={onSceneError}
           onPointerDown={startDrag}
           onPointerMove={moveCard}
@@ -433,7 +446,7 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
 
   useEffect(() => {
     if (worldReady) return;
-    const timeout = window.setTimeout(onSceneError, 60000);
+    const timeout = window.setTimeout(onSceneError, 12000);
     return () => window.clearTimeout(timeout);
   }, [onSceneError, worldReady]);
 

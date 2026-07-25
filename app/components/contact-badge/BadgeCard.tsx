@@ -16,6 +16,7 @@ import {
 type BadgeCardProps = {
   isFlipped: boolean;
   isMobile: boolean;
+  onTextureReady: () => void;
   onTextureError: () => void;
   onPointerDown: (event: ThreeEvent<PointerEvent>) => void;
   onPointerMove: (event: ThreeEvent<PointerEvent>) => void;
@@ -37,6 +38,8 @@ type CardModel = {
 const CARD_MODEL_SOURCE = "/contact-card.glb";
 const CARD_BASE_SOURCE = "/contact-card-base-dark.png";
 const ATLAS_SIZE = 1376;
+const ASSET_TIMEOUT_MS = 8000;
+const FONT_WAIT_MS = 1200;
 
 function roundedRect(
   context: CanvasRenderingContext2D,
@@ -53,9 +56,37 @@ function roundedRect(
 function loadImage(source: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error(`Unable to load ${source}`));
+    let settled = false;
+    const timeout = window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      reject(new Error(`Timed out loading ${source}`));
+    }, ASSET_TIMEOUT_MS);
+    const finish = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      callback();
+    };
+    image.decoding = "async";
+    image.onload = () => finish(() => resolve(image));
+    image.onerror = () => finish(() => reject(new Error(`Unable to load ${source}`)));
     image.src = source;
+  });
+}
+
+async function waitForFontsWithoutBlockingTexture() {
+  if (!document.fonts) return;
+  await new Promise<void>((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      resolve();
+    };
+    const timeout = window.setTimeout(finish, FONT_WAIT_MS);
+    void document.fonts.ready.then(finish, finish);
   });
 }
 
@@ -261,7 +292,7 @@ async function createPersonalAtlas(canvas: HTMLCanvasElement) {
   context.fillText(CONTACT_PHONE, 1282, 871);
 }
 
-function usePersonalAtlas(onTextureError: () => void) {
+function usePersonalAtlas(onTextureReady: () => void, onTextureError: () => void) {
   const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
 
   useEffect(() => {
@@ -269,7 +300,7 @@ function usePersonalAtlas(onTextureError: () => void) {
     let created: THREE.CanvasTexture | null = null;
 
     const create = async () => {
-      await document.fonts.ready;
+      await waitForFontsWithoutBlockingTexture();
       const canvas = document.createElement("canvas");
       canvas.width = canvas.height = ATLAS_SIZE;
       await createPersonalAtlas(canvas);
@@ -281,6 +312,7 @@ function usePersonalAtlas(onTextureError: () => void) {
       created.anisotropy = 16;
       created.needsUpdate = true;
       setTexture(created);
+      onTextureReady();
     };
 
     void create().catch(() => {
@@ -291,7 +323,7 @@ function usePersonalAtlas(onTextureError: () => void) {
       cancelled = true;
       created?.dispose();
     };
-  }, [onTextureError]);
+  }, [onTextureError, onTextureReady]);
 
   return texture;
 }
@@ -299,13 +331,14 @@ function usePersonalAtlas(onTextureError: () => void) {
 export function BadgeCard({
   isFlipped,
   isMobile,
+  onTextureReady,
   onTextureError,
   onPointerDown,
   onPointerMove,
   onPointerUp,
 }: BadgeCardProps) {
   const visualRef = useRef<THREE.Group>(null);
-  const texture = usePersonalAtlas(onTextureError);
+  const texture = usePersonalAtlas(onTextureReady, onTextureError);
   const model = useGLTF(CARD_MODEL_SOURCE) as unknown as CardModel;
   const clipMaterial = useMemo(() => {
     const material = model.materials.metal.clone();
@@ -343,7 +376,8 @@ export function BadgeCard({
     >
       <mesh geometry={model.nodes.card.geometry}>
         <meshPhysicalMaterial
-          map={texture}
+          key={texture?.uuid ?? "badge-texture-loading"}
+          map={texture ?? undefined}
           color={texture ? "#ffffff" : "#050505"}
           clearcoat={isMobile ? 0 : 0.65}
           clearcoatRoughness={0.22}

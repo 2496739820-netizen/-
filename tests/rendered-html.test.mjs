@@ -260,7 +260,7 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /unproject\(state\.camera\)/);
   assert.match(scene, /state\.camera\.position\.length\(\)/);
   assert.match(scene, /performance\.now\(\) - lastDragAt\.current > 450/);
-  assert.match(scene, /window\.setTimeout\(onSceneError, 60000\)/);
+  assert.match(scene, /window\.setTimeout\(onSceneError, 12000\)/);
   assert.match(scene, /!worldReady &&/);
   assert.match(scene, /anchorXRatio/);
   assert.match(scene, /CatmullRomCurve3/);
@@ -289,7 +289,12 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /<Environment blur=\{0\.75\}>/);
   assert.equal(scene.match(/<Lightformer/g)?.length, 4);
 
-  assert.match(card, /document\.fonts\.ready/);
+  assert.match(card, /waitForFontsWithoutBlockingTexture/);
+  assert.match(card, /FONT_WAIT_MS = 1200/);
+  assert.match(card, /ASSET_TIMEOUT_MS = 8000/);
+  assert.match(card, /onTextureReady/);
+  assert.match(card, /key=\{texture\?\.uuid \?\? "badge-texture-loading"\}/);
+  assert.match(card, /map=\{texture \?\? undefined\}/);
   assert.match(card, /CanvasTexture/);
   assert.match(card, /rotation\.y/);
   assert.match(card, /dispose\(\)/);
