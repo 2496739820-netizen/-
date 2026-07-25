@@ -239,6 +239,9 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(modal, /const y = -Math\.max\(18, viewportHeight \* 0\.025\)/);
   assert.match(modal, /--contact-anchor-x/);
   assert.match(modal, /anchorXRatio/);
+  assert.match(modal, /markSceneReady/);
+  assert.match(modal, /工牌内容已显示　拖拽交互加载中/);
+  assert.doesNotMatch(modal, /disabled=\{mode === "checking"/);
   assert.match(modal, /onDismiss=\{handleClose\}/);
 
   assert.match(scene, /useRopeJoint/);
@@ -260,8 +263,8 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /unproject\(state\.camera\)/);
   assert.match(scene, /state\.camera\.position\.length\(\)/);
   assert.match(scene, /performance\.now\(\) - lastDragAt\.current > 450/);
-  assert.match(scene, /window\.setTimeout\(onSceneError, 12000\)/);
-  assert.match(scene, /!worldReady &&/);
+  assert.match(scene, /window\.setTimeout\(onSceneError, 45000\)/);
+  assert.match(scene, /onReady\(\)/);
   assert.match(scene, /anchorXRatio/);
   assert.match(scene, /CatmullRomCurve3/);
   assert.match(scene, /curve\.getPoints/);
@@ -291,7 +294,7 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
 
   assert.match(card, /waitForFontsWithoutBlockingTexture/);
   assert.match(card, /FONT_WAIT_MS = 1200/);
-  assert.match(card, /ASSET_TIMEOUT_MS = 8000/);
+  assert.match(card, /ASSET_TIMEOUT_MS = 30000/);
   assert.match(card, /onTextureReady/);
   assert.match(card, /key=\{texture\?\.uuid \?\? "badge-texture-loading"\}/);
   assert.match(card, /map=\{texture \?\? undefined\}/);

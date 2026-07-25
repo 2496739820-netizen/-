@@ -18,6 +18,7 @@ import { BadgeCard } from "./BadgeCard";
 
 type ContactBadgeSceneProps = {
   isFlipped: boolean;
+  onReady: () => void;
   onSceneError: () => void;
   onDismiss: () => void;
   anchorXRatio: number;
@@ -430,12 +431,22 @@ function WebGLContextGuard({ onSceneError }: { onSceneError: () => void }) {
   return null;
 }
 
-export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, anchorXRatio, anchorYRatio }: ContactBadgeSceneProps) {
+export default function ContactBadgeScene({
+  isFlipped,
+  onReady,
+  onSceneError,
+  onDismiss,
+  anchorXRatio,
+  anchorYRatio,
+}: ContactBadgeSceneProps) {
   const [worldReady, setWorldReady] = useState(false);
   const [hasDragged, setHasDragged] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const lastDragAt = useRef(0);
-  const markWorldReady = useCallback(() => setWorldReady(true), []);
+  const markWorldReady = useCallback(() => {
+    setWorldReady(true);
+    onReady();
+  }, [onReady]);
   const markDragStart = useCallback(() => {
     lastDragAt.current = performance.now();
     setHasDragged(true);
@@ -446,7 +457,7 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
 
   useEffect(() => {
     if (worldReady) return;
-    const timeout = window.setTimeout(onSceneError, 12000);
+    const timeout = window.setTimeout(onSceneError, 45000);
     return () => window.clearTimeout(timeout);
   }, [onSceneError, worldReady]);
 
@@ -462,12 +473,6 @@ export default function ContactBadgeScene({ isFlipped, onSceneError, onDismiss, 
       onContextMenu={(event) => event.preventDefault()}
       onPointerDown={(event) => event.stopPropagation()}
     >
-      {!worldReady && (
-        <div className="badge-loading badge-loading-scene" role="status">
-          <span aria-hidden="true" />
-          <p>正在挂上工牌</p>
-        </div>
-      )}
       <Canvas
         dpr={[1, isMobile ? 1.5 : 2]}
         camera={{ position: [0, 0, 20], fov: 20, near: 0.1, far: 100 }}

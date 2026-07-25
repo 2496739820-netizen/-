@@ -38,7 +38,7 @@ type CardModel = {
 const CARD_MODEL_SOURCE = "/contact-card.glb";
 const CARD_BASE_SOURCE = "/contact-card-base-dark.png";
 const ATLAS_SIZE = 1376;
-const ASSET_TIMEOUT_MS = 8000;
+const ASSET_TIMEOUT_MS = 30000;
 const FONT_WAIT_MS = 1200;
 
 function roundedRect(

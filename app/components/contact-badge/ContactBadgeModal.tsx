@@ -23,6 +23,7 @@ type ContactBadgeModalProps = {
 
 type SceneProps = {
   isFlipped: boolean;
+  onReady: () => void;
   onSceneError: () => void;
   onDismiss: () => void;
   anchorXRatio: number;
@@ -78,11 +79,13 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
   const [isFlipped, setIsFlipped] = useState(false);
   const [mode, setMode] = useState<RenderMode>("checking");
   const [Scene, setScene] = useState<ComponentType<SceneProps> | null>(null);
+  const [sceneReady, setSceneReady] = useState(false);
   const [anchor, setAnchor] = useState({ x: 0, y: 0, cardX: 0 });
   const handleClose = useCallback(() => {
     setIsFlipped(false);
     setMode("checking");
     setScene(null);
+    setSceneReady(false);
     onClose();
   }, [onClose]);
 
@@ -137,8 +140,10 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
 
   const useStaticFallback = useCallback(() => {
     setScene(null);
+    setSceneReady(false);
     setMode("static");
   }, []);
+  const markSceneReady = useCallback(() => setSceneReady(true), []);
 
   if (!open) return null;
 
@@ -172,16 +177,11 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
             if (event.target === event.currentTarget) handleClose();
           }}
         >
-          {(mode === "checking" || mode === "loading") && (
-            <div className="badge-loading" role="status">
-              <span aria-hidden="true" />
-              <p>正在挂上工牌</p>
-            </div>
-          )}
           {mode === "3d" && Scene && (
             <SceneErrorBoundary onError={useStaticFallback}>
               <Scene
                 isFlipped={isFlipped}
+                onReady={markSceneReady}
                 onSceneError={useStaticFallback}
                 onDismiss={handleClose}
                 anchorXRatio={anchor.x / Math.max(1, window.innerWidth)}
@@ -189,7 +189,9 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
               />
             </SceneErrorBoundary>
           )}
-          {mode === "static" && <StaticBadgeFallback isFlipped={isFlipped} />}
+          {(mode === "static" || mode === "checking" || mode === "loading" || !sceneReady) && (
+            <StaticBadgeFallback isFlipped={isFlipped} />
+          )}
         </div>
 
         <div className="contact-modal-controls">
@@ -197,14 +199,19 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
             className="badge-flip-button"
             type="button"
             aria-pressed={isFlipped}
-            disabled={mode === "checking" || mode === "loading"}
             onClick={() => setIsFlipped((current) => !current)}
           >
             <span>{isFlipped ? "返回个人简介" : "查看联系方式"}</span>
             <i aria-hidden="true">↻</i>
           </button>
           <p aria-live="polite">
-            {mode === "static" ? "轻点按钮查看联系方式" : isFlipped ? "扫码添加微信或通过邮箱联系" : "拖动工牌或查看背面二维码"}
+            {mode === "checking" || mode === "loading" || (mode === "3d" && !sceneReady)
+              ? "工牌内容已显示　拖拽交互加载中"
+              : mode === "static"
+                ? "轻点按钮查看联系方式"
+                : isFlipped
+                  ? "扫码添加微信或通过邮箱联系"
+                  : "拖动工牌或查看背面二维码"}
           </p>
         </div>
       </div>
