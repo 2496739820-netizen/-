@@ -114,40 +114,42 @@ function CapabilityRadar() {
           <desc id="radar-svg-desc">
             内容策划九分、账号运营九分、到店转化九分、影像制作八分、数据复盘八分、平台投流七分。
           </desc>
-          <g className="radar-grid" aria-hidden="true">
-            <polygon points="260,162 297,183.5 297,226.5 260,248 223,226.5 223,183.5" />
-            <polygon points="260,119 334.5,162 334.5,248 260,291 185.5,248 185.5,162" />
-            <polygon points="260,76 372.6,140 372.6,270 260,334 147.4,270 147.4,140" />
-            <line x1="260" y1="205" x2="260" y2="76" />
-            <line x1="260" y1="205" x2="372.6" y2="140" />
-            <line x1="260" y1="205" x2="372.6" y2="270" />
-            <line x1="260" y1="205" x2="260" y2="334" />
-            <line x1="260" y1="205" x2="147.4" y2="270" />
-            <line x1="260" y1="205" x2="147.4" y2="140" />
-          </g>
-          <polygon
-            className="radar-area"
-            points="260,88 361.3,146.5 361.3,263.5 260,309 169.9,257 181.2,159.5"
-          />
-          <polyline
-            className="radar-stroke"
-            points="260,88 361.3,146.5 361.3,263.5 260,309 169.9,257 181.2,159.5 260,88"
-          />
-          <g className="radar-dots" aria-hidden="true">
-            <circle cx="260" cy="88" r="5" />
-            <circle cx="361.3" cy="146.5" r="5" />
-            <circle cx="361.3" cy="263.5" r="5" />
-            <circle cx="260" cy="309" r="5" />
-            <circle cx="169.9" cy="257" r="5" />
-            <circle cx="181.2" cy="159.5" r="5" />
+          <g className="radar-plot">
+            <g className="radar-grid" aria-hidden="true">
+              <polygon points="260,162 297,183.5 297,226.5 260,248 223,226.5 223,183.5" />
+              <polygon points="260,119 334.5,162 334.5,248 260,291 185.5,248 185.5,162" />
+              <polygon points="260,76 372.6,140 372.6,270 260,334 147.4,270 147.4,140" />
+              <line x1="260" y1="205" x2="260" y2="76" />
+              <line x1="260" y1="205" x2="372.6" y2="140" />
+              <line x1="260" y1="205" x2="372.6" y2="270" />
+              <line x1="260" y1="205" x2="260" y2="334" />
+              <line x1="260" y1="205" x2="147.4" y2="270" />
+              <line x1="260" y1="205" x2="147.4" y2="140" />
+            </g>
+            <polygon
+              className="radar-area"
+              points="260,88 361.3,146.5 361.3,263.5 260,309 169.9,257 181.2,159.5"
+            />
+            <polyline
+              className="radar-stroke"
+              points="260,88 361.3,146.5 361.3,263.5 260,309 169.9,257 181.2,159.5 260,88"
+            />
+            <g className="radar-dots" aria-hidden="true">
+              <circle cx="260" cy="88" r="5" />
+              <circle cx="361.3" cy="146.5" r="5" />
+              <circle cx="361.3" cy="263.5" r="5" />
+              <circle cx="260" cy="309" r="5" />
+              <circle cx="169.9" cy="257" r="5" />
+              <circle cx="181.2" cy="159.5" r="5" />
+            </g>
           </g>
           <g className="radar-labels" aria-hidden="true">
-            <text x="260" y="42" textAnchor="middle"><tspan>内容策划</tspan><tspan className="radar-score">9</tspan></text>
-            <text x="392" y="126" textAnchor="start"><tspan>账号运营</tspan><tspan className="radar-score">9</tspan></text>
-            <text x="392" y="288" textAnchor="start"><tspan>到店转化</tspan><tspan className="radar-score">9</tspan></text>
-            <text x="260" y="382" textAnchor="middle"><tspan>影像制作</tspan><tspan className="radar-score">8</tspan></text>
-            <text x="128" y="288" textAnchor="end"><tspan>数据复盘</tspan><tspan className="radar-score">8</tspan></text>
-            <text x="128" y="126" textAnchor="end"><tspan>平台投流</tspan><tspan className="radar-score">7</tspan></text>
+            <text x="260" y="42" textAnchor="middle"><tspan>内容策划</tspan><tspan className="radar-score" dx="6">9</tspan></text>
+            <text x="392" y="126" textAnchor="start"><tspan>账号运营</tspan><tspan className="radar-score" dx="6">9</tspan></text>
+            <text x="392" y="288" textAnchor="start"><tspan>到店转化</tspan><tspan className="radar-score" dx="6">9</tspan></text>
+            <text x="260" y="382" textAnchor="middle"><tspan>影像制作</tspan><tspan className="radar-score" dx="6">8</tspan></text>
+            <text x="128" y="288" textAnchor="end"><tspan>数据复盘</tspan><tspan className="radar-score" dx="6">8</tspan></text>
+            <text x="128" y="126" textAnchor="end"><tspan>平台投流</tspan><tspan className="radar-score" dx="6">7</tspan></text>
           </g>
         </svg>
         <span className="radar-seal" aria-hidden="true">ZS</span>

@@ -169,6 +169,11 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(css, /\.hero-proof/);
   assert.match(css, /\.brand-avatar/);
   assert.match(css, /url\("\/brand-avatar\.png"\)/);
+  assert.match(css, /@media \(max-width: 620px\)/);
+  assert.match(css, /\.radar-accessible-list \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.case-card \{ min-height: 0; border-radius: 22px/);
+  assert.match(css, /\.proof-item \{ min-height: 84px/);
+  assert.match(css, /\.experience-list article > strong \{[\s\S]*?border-top: 1px solid var\(--line\)/);
   assert.match(css, /--paper: #f4f0e7/);
   assert.match(css, /--surface: #fffdf8/);
   assert.match(css, /--gold: #8a7349/);
@@ -330,6 +335,9 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(focusTrap, /returnFocusElement\?\.focus\(\)/);
   assert.match(css, /\.contact-modal-backdrop/);
   assert.match(css, /min-height: 50px/);
+  assert.match(css, /background: rgba\(38, 35, 30, 0\.48\)/);
+  assert.match(css, /\.badge-flip-button \{ min-width: min\(220px, 100%\); min-height: 52px/);
+  assert.match(css, /\.badge-capabilities \{ grid-template-columns: repeat\(2, 1fr\)/);
   assert.match(css, /touch-action: none/);
   assert.match(css, /background: rgba\(46, 42, 35, 0\.1\)/);
   assert.match(css, /left: var\(--contact-card-x\)/);
