@@ -268,7 +268,9 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /anchorXRatio/);
   assert.match(scene, /CatmullRomCurve3/);
   assert.match(scene, /curve\.getPoints/);
-  assert.match(scene, /targets\[0\]\.set\(cardTranslation\.x, cardTranslation\.y \+ 1\.45/);
+  assert.match(scene, /cardQuaternion\.set\(cardRotation\.x, cardRotation\.y, cardRotation\.z, cardRotation\.w\)/);
+  assert.match(scene, /attachmentOffset\.set\(0, 1\.45, 0\)\.applyQuaternion\(cardQuaternion\)/);
+  assert.match(scene, /\.add\(attachmentOffset\)/);
   assert.match(scene, /targets\[1\]\.lerpVectors\(targets\[0\], targets\[3\], 0\.34\)/);
   assert.match(scene, /<LanyardLine anchor=\{anchor\} card=\{card\} \/>/);
   assert.match(scene, /lineWidth: 0\.48/);

@@ -117,6 +117,8 @@ function LanyardLine({
   const bandLine = useMemo(() => new THREE.Mesh(geometry, bandMaterial), [geometry, bandMaterial]);
   const targets = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
   const smoothedPoints = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
+  const attachmentOffset = useMemo(() => new THREE.Vector3(), []);
+  const cardQuaternion = useMemo(() => new THREE.Quaternion(), []);
   const curve = useMemo(
     () => new THREE.CatmullRomCurve3(smoothedPoints, false, "chordal"),
     [smoothedPoints],
@@ -152,7 +154,12 @@ function LanyardLine({
     if (!anchorBody || !cardBody) return;
     const anchorTranslation = anchorBody.translation();
     const cardTranslation = cardBody.translation();
-    targets[0].set(cardTranslation.x, cardTranslation.y + 1.45, cardTranslation.z);
+    const cardRotation = cardBody.rotation();
+    cardQuaternion.set(cardRotation.x, cardRotation.y, cardRotation.z, cardRotation.w);
+    attachmentOffset.set(0, 1.45, 0).applyQuaternion(cardQuaternion);
+    targets[0]
+      .set(cardTranslation.x, cardTranslation.y, cardTranslation.z)
+      .add(attachmentOffset);
     targets[3].set(anchorTranslation.x, anchorTranslation.y, anchorTranslation.z);
     targets[1].lerpVectors(targets[0], targets[3], 0.34);
     targets[2].lerpVectors(targets[0], targets[3], 0.68);
