@@ -120,7 +120,10 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
 });
 
 test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
-  const html = await (await render()).text();
+  const response = await render();
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+  const html = await response.text();
   const noteUrls = [
     "https://www.xiaohongshu.com/explore/66ab4132000000002701f16e",
     "https://www.xiaohongshu.com/explore/69a16f6f0000000015038c2e",
@@ -129,12 +132,16 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
 
   assert.match(html, /小红书内容作品/);
   assert.match(html, /虎\.派\.眼\.镜/);
+  assert.match(html, /https:\/\/www\.xiaohongshu\.com\/user\/profile\/5fed68f20000000001009f77/);
   assert.match(html, /3604\s*粉丝/);
   assert.match(html, /1\.7\s*万获赞与收藏/);
   assert.match(html, /公开数据快照日期：2026-07-27/);
   assert.match(html, /林德伯格 全系列干货讲解/);
   assert.match(html, /日系 美系 欧系/);
   assert.match(html, /林德伯格 6537/);
+  assert.match(html, /林德伯格 \| 最新全系列干货讲解🔥/);
+  assert.match(html, /日系 - 美系 - 欧系，一个多元的眼镜宇宙！/);
+  assert.match(html, /客订分享！林德伯格6537\+蔡司鎏金膜~/);
   for (const metric of ["127", "147", "48", "49", "81", "88", "11", "21", "22", "9", "10", "2"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }

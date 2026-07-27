@@ -37,7 +37,7 @@ export type HupaiWork = ImageWork | VideoWork;
 
 export const hupaiAccount = {
   name: "虎.派.眼.镜",
-  profileUrl: "https://www.xiaohongshu.com/user/profile/64f85a95000000001e032b07",
+  profileUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77",
   followers: "3604粉丝",
   likesAndSaves: "1.7 万获赞与收藏",
   responsibility: "2024.05 至今负责拍摄与运营",
@@ -48,7 +48,7 @@ export const hupaiWorks = [
   {
     id: "66ab4132000000002701f16e",
     title: "林德伯格 全系列干货讲解",
-    originalTitle: "林德伯格 全系列干货讲解",
+    originalTitle: "林德伯格 | 最新全系列干货讲解🔥",
     publishedAt: "2024-08-01",
     format: "图文干货",
     capability: "以品牌知识拆解建立专业信任，完成选题、拍摄与图文表达。",
@@ -70,7 +70,7 @@ export const hupaiWorks = [
   {
     id: "69a16f6f0000000015038c2e",
     title: "日系 美系 欧系",
-    originalTitle: "日系 美系 欧系眼镜风格怎么选？",
+    originalTitle: "日系 - 美系 - 欧系，一个多元的眼镜宇宙！",
     publishedAt: "2026-02-27",
     format: "品牌策划图文",
     capability: "用风格对比降低选购门槛，将品牌定位转化为可读、可收藏的内容。",
@@ -92,7 +92,7 @@ export const hupaiWorks = [
   {
     id: "6a4a0ea7000000001702df31",
     title: "林德伯格 6537",
-    originalTitle: "林德伯格 6537",
+    originalTitle: "客订分享！林德伯格6537+蔡司鎏金膜~",
     publishedAt: "2026-07-05",
     format: "19 秒竖屏短视频",
     capability: "以短视频展示镜架细节与佩戴质感，兼顾产品表达和平台内容节奏。",
