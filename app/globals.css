@@ -686,7 +686,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hupai-account-evidence > *:nth-child(4) { border-left: 0; }
   .hupai-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hupai-work-card:first-child { grid-column: 1 / -1; }
-  .hupai-work-card:first-child .hupai-work-image-link { aspect-ratio: 16 / 9; }
+  .hupai-work-card:first-child .hupai-work-image-link { aspect-ratio: 4 / 3; }
   .case-list { grid-template-columns: 1fr; }
   .case-card { min-height: 390px; }
   .method-layout { grid-template-columns: 1fr; gap: 58px; }
@@ -776,7 +776,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hupai-evidence-heading h3 { font-size: clamp(1.85rem, 8vw, 2.25rem); }
   .hupai-account-evidence { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 20px; border-radius: 18px; }
   .hupai-account-evidence > * { min-height: 74px; padding: 14px; }
-  .hupai-account-evidence > *:nth-child(2n + 1) { border-left: 0; }
+  .hupai-account-evidence > *:nth-child(2) { border-left: 0; }
+  .hupai-account-evidence > *:nth-child(3) { border-left: 1px solid var(--line); }
+  .hupai-account-evidence > *:nth-child(4) { border-left: 0; }
+  .hupai-account-evidence > *:nth-child(5) { border-left: 1px solid var(--line); }
   .hupai-account-evidence > *:nth-child(n + 3) { border-top: 1px solid var(--line); }
   .hupai-account-evidence > a { grid-column: 1 / -1; min-height: 66px; }
   .hupai-work-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }
