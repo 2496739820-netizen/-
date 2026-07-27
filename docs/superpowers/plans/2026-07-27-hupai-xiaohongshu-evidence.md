@@ -181,6 +181,18 @@ git commit -m "Add verified Hupai Xiaohongshu media"
   );
   assert.match(html, /src="\/hupai\/lindberg-6537-preview\.mp4"/);
   assert.match(html, /href="https:\/\/www\.xiaohongshu\.com\/explore\/6a4a0ea7000000001702df31"/);
+  assert.match(
+    html,
+    /<a[^>]*class="hupai-work-image-link"[^>]*href="https:\/\/www\.xiaohongshu\.com\/explore\/66ab4132000000002701f16e"/,
+  );
+  assert.match(
+    html,
+    /<a[^>]*class="hupai-work-image-link"[^>]*href="https:\/\/www\.xiaohongshu\.com\/explore\/69a16f6f0000000015038c2e"/,
+  );
+  assert.doesNotMatch(
+    html,
+    /<a[^>]*class="hupai-work-image-link"[^>]*href="https:\/\/www\.xiaohongshu\.com\/explore\/6a4a0ea7000000001702df31"/,
+  );
   assert.match(html, /上方是可核实的作品样本/);
   assert.match(html, /下方是可复用的运营方法/);
   assert.ok(html.indexOf("小红书内容作品") < html.indexOf('class="case-list"'));
@@ -388,15 +400,23 @@ export function HupaiPortfolio() {
                   您的浏览器不支持视频播放，请使用下方链接查看原笔记。
                 </video>
               ) : (
-                <Image
-                  className="hupai-work-image"
-                  src={work.image}
-                  alt={work.imageAlt}
-                  width={work.imageWidth}
-                  height={work.imageHeight}
-                  sizes={index === 0 ? "(max-width: 900px) 100vw, 46vw" : "(max-width: 620px) 100vw, 26vw"}
-                  loading="lazy"
-                />
+                <a
+                  className="hupai-work-image-link"
+                  href={work.noteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`在小红书查看${work.originalTitle}`}
+                >
+                  <Image
+                    className="hupai-work-image"
+                    src={work.image}
+                    alt={work.imageAlt}
+                    width={work.imageWidth}
+                    height={work.imageHeight}
+                    sizes={index === 0 ? "(max-width: 900px) 100vw, 46vw" : "(max-width: 620px) 100vw, 26vw"}
+                    loading="lazy"
+                  />
+                </a>
               )}
               <span>{work.format}</span>
             </div>
@@ -597,6 +617,16 @@ Expected: FAIL at `.hupai-evidence` CSS assertion；Task 2 的内容和资产断
 }
 .hupai-work-card.is-featured .hupai-work-media { aspect-ratio: 4 / 3; }
 .hupai-work-card.is-video .hupai-work-media { aspect-ratio: 4 / 5; }
+.hupai-work-image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hupai-work-image-link:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline-offset: -5px;
+}
 .hupai-work-image,
 .hupai-work-media video {
   display: block;
@@ -762,6 +792,10 @@ const info = await js(String.raw`(() => ({
     currentSrc: video.currentSrc,
   })),
   links: document.querySelectorAll('.hupai-evidence a[href*="xiaohongshu.com"]').length,
+  uniqueLinks: new Set(
+    [...document.querySelectorAll('.hupai-evidence a[href*="xiaohongshu.com"]')]
+      .map((link) => link.href)
+  ).size,
 }))()`)
 await captureScreenshot('/tmp/hupai-portfolio-desktop.png')
 cliLog(JSON.stringify({ info, screenshot: '/tmp/hupai-portfolio-desktop.png' }, null, 2))
@@ -773,7 +807,8 @@ Expected:
 - `horizontalOverflow: false`
 - `evidenceBeforeCases: true`
 - exactly one video with `preload: "none"` and `paused: true`
-- four Xiaohongshu links（账号 + 三篇笔记）
+- six clickable links（账号 + 三篇正文链接 + 两张静态作品图）
+- four unique Xiaohongshu destinations（账号 + 三篇笔记）
 - screenshot shows one dominant work card and two supporting cards without clipped text。
 
 - [ ] **Step 3: 使用 ego-browser 检查手机端**
