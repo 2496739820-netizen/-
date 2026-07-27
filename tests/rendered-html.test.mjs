@@ -133,6 +133,8 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.match(html, /小红书内容作品/);
   assert.match(html, /虎\.派\.眼\.镜/);
   assert.match(html, /https:\/\/www\.xiaohongshu\.com\/user\/profile\/5fed68f20000000001009f77/);
+  assert.match(html, /<span>粉丝<\/span><strong>3604粉丝<\/strong>/);
+  assert.doesNotMatch(html, /<span>关注<\/span><strong>3604粉丝<\/strong>/);
   assert.match(html, /3604\s*粉丝/);
   assert.match(html, /1\.7\s*万获赞与收藏/);
   assert.match(html, /公开数据快照日期：2026-07-27/);
@@ -264,8 +266,10 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
   assert.match(component, /controls/);
   assert.match(component, /playsInline/);
   assert.match(component, /loading="lazy"/);
+  assert.match(component, /sizes=\{work\.image\.sizes\}/);
   assert.match(component, /<dl/);
   assert.match(component, /hupai-work-image-link/);
+  assert.match(data, /\(max-width: 620px\) calc\(100vw - 24px\)/);
 
   assert.deepEqual([...lindbergSeries.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.equal(universeCover.subarray(0, 4).toString("ascii"), "RIFF");
@@ -293,6 +297,7 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*>\s\*:nth-child\(2\)\s*\{[\s\S]*?border-left:\s*0/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*>\s\*:nth-child\(3\)\s*\{[\s\S]*?border-left:\s*1px\s+solid\s+var\(--line\)/);
+  assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*>\s\*:nth-child\(n \+ 2\)\s*\{[\s\S]*?border-top:\s*1px\s+solid\s+var\(--line\)/);
   assert.match(css, /\.hupai-evidence\s+a\s*\{[\s\S]*?min-height:\s*44px/);
   assert.match(css, /\.hupai-account-evidence span\s*\{[\s\S]*?(?:font(?:-size)?:[^;}]*?)0\.75rem/);
   assert.match(css, /\.hupai-work-format-tag\s*\{[\s\S]*?font:[^;}]*?0\.75rem/);

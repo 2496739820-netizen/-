@@ -15,6 +15,7 @@ type WorkBase = {
     alt: string;
     width: number;
     height: number;
+    sizes: string;
   };
   metrics: readonly WorkMetric[];
   noteUrl: string;
@@ -57,6 +58,7 @@ export const hupaiWorks = [
       alt: "林德伯格全系列干货讲解的小红书笔记页面截图",
       width: 1068,
       height: 836,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(100vw - 36px), 46vw",
     },
     metrics: [
       { label: "点赞", value: 127 },
@@ -79,6 +81,7 @@ export const hupaiWorks = [
       alt: "日系、美系、欧系眼镜风格对比的小红书笔记封面",
       width: 1080,
       height: 1440,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
     metrics: [
       { label: "点赞", value: 81 },
@@ -101,6 +104,7 @@ export const hupaiWorks = [
       alt: "林德伯格 6537 短视频的小红书笔记封面",
       width: 1080,
       height: 1440,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
     metrics: [
       { label: "点赞", value: 22 },

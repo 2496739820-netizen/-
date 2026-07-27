@@ -34,7 +34,7 @@ export function HupaiPortfolio() {
           <span>小红书账号</span>
           <strong>{hupaiAccount.name}</strong>
         </a>
-        <div><span>关注</span><strong>{hupaiAccount.followers}</strong></div>
+        <div><span>粉丝</span><strong>{hupaiAccount.followers}</strong></div>
         <div><span>获赞与收藏</span><strong>{hupaiAccount.likesAndSaves}</strong></div>
         <div><span>负责范围</span><strong>{hupaiAccount.responsibility}</strong></div>
         <div><span>数据快照</span><strong>{hupaiAccount.snapshotDate}</strong></div>
@@ -56,6 +56,7 @@ export function HupaiPortfolio() {
                   alt={work.image.alt}
                   width={work.image.width}
                   height={work.image.height}
+                  sizes={work.image.sizes}
                   loading="lazy"
                 />
               </a>
