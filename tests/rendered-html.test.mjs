@@ -113,10 +113,44 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.doesNotMatch(html, /既能做内容|也对结果负责/);
   assert.doesNotMatch(html, />既能做内容，</);
   assert.doesNotMatch(html, />也对结果负责。</);
-  assert.doesNotMatch(html, /<video\b|hero\.mp4/i);
+  assert.doesNotMatch(html, /hero\.mp4|class="video-bg"/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|SkeletonPreview/);
 
   assert.ok(html.indexOf("能力处方") < html.indexOf('id="hupai"'));
+});
+
+test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
+  const html = await (await render()).text();
+  const noteUrls = [
+    "https://www.xiaohongshu.com/explore/66ab4132000000002701f16e",
+    "https://www.xiaohongshu.com/explore/69a16f6f0000000015038c2e",
+    "https://www.xiaohongshu.com/explore/6a4a0ea7000000001702df31",
+  ];
+
+  assert.match(html, /小红书内容作品/);
+  assert.match(html, /虎\.派\.眼\.镜/);
+  assert.match(html, /3604\s*粉丝/);
+  assert.match(html, /1\.7\s*万获赞与收藏/);
+  assert.match(html, /公开数据快照日期：2026-07-27/);
+  assert.match(html, /林德伯格 全系列干货讲解/);
+  assert.match(html, /日系 美系 欧系/);
+  assert.match(html, /林德伯格 6537/);
+  for (const metric of ["127", "147", "48", "49", "81", "88", "11", "21", "22", "9", "10", "2"]) {
+    assert.match(html, new RegExp(`>${metric}<`));
+  }
+  for (const url of noteUrls) assert.match(html, new RegExp(url));
+
+  assert.match(html, /<video\b[^>]*\bcontrols(?:="")?[^>]*>/i);
+  assert.match(html, /<video\b[^>]*\bplaysinline(?:="")?[^>]*>/i);
+  assert.match(html, /<video\b[^>]*\bpreload="none"[^>]*>/i);
+  assert.match(html, /<video\b[^>]*\bposter="\/hupai\/lindberg-6537-cover\.webp"[^>]*>/i);
+  assert.match(html, /<source[^>]*src="\/hupai\/lindberg-6537-preview\.mp4"[^>]*>/i);
+
+  const imageLinks = [...html.matchAll(/<a[^>]*class="hupai-work-image-link"[^>]*href="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(imageLinks, noteUrls.slice(0, 2));
+  assert.doesNotMatch(html, new RegExp(`class="hupai-work-image-link"[^>]*href="${noteUrls[2]}"`));
+  assert.ok(html.indexOf("上方是可核实的作品样本") < html.indexOf('class="case-list"'));
+  assert.ok(html.indexOf("小红书内容作品") < html.indexOf('class="case-list"'));
 });
 
 test("ships the verified portfolio assets and removes the unrelated video experience", async () => {
@@ -204,6 +238,34 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   await access(new URL("../public/contact-lanyard.png", import.meta.url));
   await access(new URL("../public/contact-card-base-dark.png", import.meta.url));
   await assert.rejects(access(new URL("../public/hero.mp4", import.meta.url)));
+});
+
+test("ships typed Hupai evidence data and browser-playable source assets", async () => {
+  const [data, component, lindbergSeries, universeCover, videoCover, preview] = await Promise.all([
+    readFile(new URL("../app/components/hupai-portfolio/hupai-data.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../public/hupai/lindberg-series-evidence.png", import.meta.url)),
+    readFile(new URL("../public/hupai/eyewear-universe-cover.webp", import.meta.url)),
+    readFile(new URL("../public/hupai/lindberg-6537-cover.webp", import.meta.url)),
+    readFile(new URL("../public/hupai/lindberg-6537-preview.mp4", import.meta.url)),
+  ]);
+
+  assert.match(data, /snapshotDate: "2026-07-27"/);
+  assert.match(data, /id: "6a4a0ea7000000001702df31"/);
+  assert.match(data, /https:\/\/www\.xiaohongshu\.com\/explore\/66ab4132000000002701f16e/);
+  assert.match(component, /preload="none"/);
+  assert.match(component, /controls/);
+  assert.match(component, /playsInline/);
+  assert.match(component, /loading="lazy"/);
+  assert.match(component, /<dl/);
+  assert.match(component, /hupai-work-image-link/);
+
+  assert.deepEqual([...lindbergSeries.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  assert.equal(universeCover.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(universeCover.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(videoCover.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(videoCover.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(preview.subarray(4, 8).toString("ascii"), "ftyp");
 });
 
 test("implements the accessible, lazy-loaded physical contact badge", async () => {

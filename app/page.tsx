@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ContactBadgeModal } from "./components/contact-badge/ContactBadgeModal";
+import { HupaiPortfolio } from "./components/hupai-portfolio/HupaiPortfolio";
 
 const metrics = [
   { value: "3W+", label: "月均到店新客 GMV" },
@@ -316,6 +317,12 @@ export default function Home() {
                 <h2>虎派眼镜</h2>
               </div>
               <p className="section-summary">负责小红书主账号全链路运营，并协同员工矩阵与多平台投流，把内容种草延伸到咨询、客资与到店成交。</p>
+            </div>
+
+            <HupaiPortfolio />
+            <div className="hupai-case-bridge" data-reveal>
+              <p>上方是可核实的作品样本</p>
+              <p>下方是可复用的运营方法</p>
             </div>
 
             <div className="case-list">
