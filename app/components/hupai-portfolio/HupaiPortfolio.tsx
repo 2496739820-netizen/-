@@ -22,20 +22,22 @@ export function HupaiPortfolio() {
           <p className="eyebrow">Verified Xiaohongshu work</p>
           <h3 id="hupai-evidence-title">小红书内容作品</h3>
         </div>
+      </div>
+
+      <div className="hupai-account-evidence" aria-label="虎派眼镜小红书账号公开数据">
         <a
           href={hupaiAccount.profileUrl}
           target="_blank"
           rel="noreferrer"
           aria-label={`在小红书打开 ${hupaiAccount.name} 账号`}
         >
-          {hupaiAccount.name}
+          <span>小红书账号</span>
+          <strong>{hupaiAccount.name}</strong>
         </a>
-      </div>
-
-      <div className="hupai-account-evidence" aria-label="虎派眼镜小红书账号公开数据">
-        <strong>{hupaiAccount.followers}</strong>
-        <strong>{hupaiAccount.likesAndSaves}</strong>
-        <span>{hupaiAccount.responsibility}</span>
+        <div><span>关注</span><strong>{hupaiAccount.followers}</strong></div>
+        <div><span>获赞与收藏</span><strong>{hupaiAccount.likesAndSaves}</strong></div>
+        <div><span>负责范围</span><strong>{hupaiAccount.responsibility}</strong></div>
+        <div><span>数据快照</span><strong>{hupaiAccount.snapshotDate}</strong></div>
       </div>
 
       <div className="hupai-work-grid">
@@ -58,16 +60,19 @@ export function HupaiPortfolio() {
                 />
               </a>
             ) : (
-              <video
-                controls
-                playsInline
-                preload="none"
-                poster={work.video.poster}
-                aria-label={work.video.label}
-              >
-                <source src={work.video.src} type="video/mp4" />
-                您的浏览器不支持视频播放。
-              </video>
+              <div className="hupai-work-video">
+                <span className="hupai-work-format-tag">{work.format}</span>
+                <video
+                  controls
+                  playsInline
+                  preload="none"
+                  poster={work.video.poster}
+                  aria-label={work.video.label}
+                >
+                  <source src={work.video.src} type="video/mp4" />
+                  您的浏览器不支持视频播放。
+                </video>
+              </div>
             )}
 
             <div className="hupai-work-content">

@@ -275,6 +275,21 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
   assert.equal(preview.subarray(4, 8).toString("ascii"), "ftyp");
 });
 
+test("styles Hupai work evidence as a responsive editorial proof module", async () => {
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(css, /\.hupai-evidence\s*\{[\s\S]*?margin-top:\s*clamp\(52px,\s*6vw,\s*88px\)/);
+  assert.match(css, /\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:/);
+  assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1\.35fr\)\s+repeat\(2,\s*minmax\(0,\s*0\.825fr\)\)/);
+  assert.match(css, /\.hupai-work-card:last-child\s+video\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%;[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/);
+  assert.match(css, /@media \(max-width: 900px\)\s*\{[\s\S]*?\.hupai-work-card:first-child\s*\{[\s\S]*?grid-column:\s*1\s*\/\s*-1/);
+  assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
+  assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(css, /\.hupai-evidence\s+a\s*\{[\s\S]*?min-height:\s*44px/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-image-link:hover\s+img\s*\{[\s\S]*?transform:\s*none/);
+  assert.doesNotMatch(css, /#ff2442/i);
+});
+
 test("implements the accessible, lazy-loaded physical contact badge", async () => {
   const [page, modal, scene, card, fallback, focusTrap, data, css, packageJson] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
