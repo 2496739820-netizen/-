@@ -1,0 +1,22 @@
+{
+  "name": "hupai-interaction-editorial",
+  "label": "虎派互动数据编辑线稿",
+  "preamble": "Refined editorial line icons for a warm high-end eyewear portfolio. Uniform medium-thin outline, rounded caps and joins, no fill, no isolated circles or dot decorations, calm geometric construction, flat front-facing view.",
+  "palette": ["#695538", "#8A7349"],
+  "cutout": "floodfill",
+  "thresh": 30,
+  "construction": {
+    "grid": "24-unit keyline; live area 72%; generous equal padding; optical sizing",
+    "stroke": "uniform 1.75 units, rounded caps and joins",
+    "corner_radius": "one restrained rounded-corner language",
+    "angles": "45-degree increments",
+    "detail_budget": "one interaction metaphor and no more than four elements",
+    "fill_rule": "outline only, no fill",
+    "color_rule": "deep brass primary line with optional shorter muted-brass secondary line",
+    "shared_parts": "reuse one canonical heart, bookmark, speech-tail, and arrowhead geometry",
+    "perspective": "flat front-facing",
+    "shadow": "none",
+    "motif": "a short echo line integrated into the main silhouette, never a detached circle",
+    "forbidden": "isolated circles, small dots, labels, numbers, shadows, black fills"
+  }
+}
