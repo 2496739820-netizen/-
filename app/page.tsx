@@ -153,7 +153,7 @@ function CapabilityRadar() {
             <text x="128" y="126" textAnchor="end"><tspan>平台投流</tspan><tspan className="radar-score" dx="6">9</tspan></text>
           </g>
         </svg>
-        <span className="radar-seal" aria-hidden="true">ZS</span>
+        <span className="radar-seal" aria-hidden="true">ZSK</span>
       </div>
 
       <ul className="radar-accessible-list">

@@ -182,6 +182,8 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(page, /href="\/zhuang-shukai-resume\.pdf"/);
   assert.match(page, /function CapabilityRadar/);
   assert.match(page, /className="radar-chart"/);
+  assert.match(page, /className="radar-seal"[^>]*>ZSK<\/span>/);
+  assert.doesNotMatch(page, /className="radar-seal"[^>]*>ZS<\/span>/);
   assert.match(page, /className="hero-proof/);
   assert.match(page, /className="brand-avatar"/);
   assert.doesNotMatch(page, /src="\/zhuang-shukai-portrait\.jpg"/);
