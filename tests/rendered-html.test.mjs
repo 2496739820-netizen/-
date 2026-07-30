@@ -292,6 +292,10 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /\.hupai-evidence\s*\{[\s\S]*?margin-top:\s*clamp\(52px,\s*6vw,\s*88px\)/);
   assert.match(css, /\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:/);
   assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1\.35fr\)\s+repeat\(2,\s*minmax\(0,\s*0\.825fr\)\)/);
+  assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?align-items:\s*stretch/);
+  assert.match(css, /\.hupai-work-card\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex-direction:\s*column/);
+  assert.match(css, /\.hupai-work-content\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex:\s*1;[\s\S]*?flex-direction:\s*column/);
+  assert.match(css, /\.hupai-work-content\s*>\s*a\s*\{[\s\S]*?width:\s*fit-content;[\s\S]*?margin-top:\s*auto;[\s\S]*?padding-top:\s*12px/);
   assert.match(css, /\.hupai-work-card:first-child\s+\.hupai-work-image-link\s*\{[\s\S]*?aspect-ratio:\s*4\s*\/\s*3/);
   assert.match(css, /\.hupai-work-video\s*\{[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/);
   assert.match(css, /\.hupai-work-video video\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%;[\s\S]*?aspect-ratio:\s*4\s*\/\s*5;[\s\S]*?object-fit:\s*cover/);
