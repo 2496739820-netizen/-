@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import test, { after, before } from "node:test";
 
@@ -318,6 +318,31 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /\.hupai-case-bridge\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-image-link:hover\s+img\s*\{[\s\S]*?transform:\s*none/);
   assert.doesNotMatch(css, /#ff2442/i);
+});
+
+test("keeps the 16 interaction icon previews transparent and outside the website UI", async () => {
+  const iconDirectory = new URL("../design/icon-previews/hupai-interaction-editorial/", import.meta.url);
+  const selectedDirectory = new URL("../design/icon-previews/hupai-interaction-editorial-selected/", import.meta.url);
+  const iconFiles = (await readdir(iconDirectory)).filter((file) => file.endsWith(".png")).sort();
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.deepEqual(iconFiles, Array.from({ length: 16 }, (_, index) => `${String(index + 1).padStart(2, "0")}.png`));
+
+  const selectedSources = {
+    like: "03.png",
+    save: "07.png",
+    comment: "11.png",
+    share: "15.png",
+  };
+  for (const [name, source] of Object.entries(selectedSources)) {
+    const sourcePng = await readFile(new URL(source, iconDirectory));
+    const selectedPng = await readFile(new URL(`${name}.png`, selectedDirectory));
+    assert.equal(sourcePng[25], 6, `${source} must use RGBA PNG color type`);
+    assert.ok(sourcePng.equals(selectedPng), `${name}.png must match ${source}`);
+  }
+
+  assert.doesNotMatch(`${page}\n${css}`, /hupai-interaction-editorial/);
 });
 
 test("implements the accessible, lazy-loaded physical contact badge", async () => {
