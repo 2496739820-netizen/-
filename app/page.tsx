@@ -12,12 +12,12 @@ const metrics = [
 ];
 
 const capabilities = [
-  { label: "内容策划", score: 9 },
-  { label: "账号运营", score: 9 },
-  { label: "到店转化", score: 9 },
-  { label: "影像制作", score: 8 },
+  { label: "内容策划", score: 8 },
+  { label: "账号运营", score: 8 },
+  { label: "到店转化", score: 8 },
+  { label: "影像制作", score: 10 },
   { label: "数据复盘", score: 8 },
-  { label: "平台投流", score: 7 },
+  { label: "平台投流", score: 9 },
 ];
 
 const caseStories = [
@@ -113,7 +113,7 @@ function CapabilityRadar() {
         >
           <title id="radar-svg-title">庄澍凯新媒体运营能力雷达图</title>
           <desc id="radar-svg-desc">
-            内容策划九分、账号运营九分、到店转化九分、影像制作八分、数据复盘八分、平台投流七分。
+            内容策划八分、账号运营八分、到店转化八分、影像制作十分、数据复盘八分、平台投流九分。
           </desc>
           <g className="radar-plot">
             <g className="radar-grid" aria-hidden="true">
@@ -129,28 +129,28 @@ function CapabilityRadar() {
             </g>
             <polygon
               className="radar-area"
-              points="260,88 361.3,146.5 361.3,263.5 260,309 169.9,257 181.2,159.5"
+              points="260,102 350.1,153 350.1,257 260,334 169.9,257 158.7,146.5"
             />
             <polyline
               className="radar-stroke"
-              points="260,88 361.3,146.5 361.3,263.5 260,309 169.9,257 181.2,159.5 260,88"
+              points="260,102 350.1,153 350.1,257 260,334 169.9,257 158.7,146.5 260,102"
             />
             <g className="radar-dots" aria-hidden="true">
-              <circle cx="260" cy="88" r="5" />
-              <circle cx="361.3" cy="146.5" r="5" />
-              <circle cx="361.3" cy="263.5" r="5" />
-              <circle cx="260" cy="309" r="5" />
+              <circle cx="260" cy="102" r="5" />
+              <circle cx="350.1" cy="153" r="5" />
+              <circle cx="350.1" cy="257" r="5" />
+              <circle cx="260" cy="334" r="5" />
               <circle cx="169.9" cy="257" r="5" />
-              <circle cx="181.2" cy="159.5" r="5" />
+              <circle cx="158.7" cy="146.5" r="5" />
             </g>
           </g>
           <g className="radar-labels" aria-hidden="true">
-            <text x="260" y="42" textAnchor="middle"><tspan>内容策划</tspan><tspan className="radar-score" dx="6">9</tspan></text>
-            <text x="392" y="126" textAnchor="start"><tspan>账号运营</tspan><tspan className="radar-score" dx="6">9</tspan></text>
-            <text x="392" y="288" textAnchor="start"><tspan>到店转化</tspan><tspan className="radar-score" dx="6">9</tspan></text>
-            <text x="260" y="382" textAnchor="middle"><tspan>影像制作</tspan><tspan className="radar-score" dx="6">8</tspan></text>
+            <text x="260" y="42" textAnchor="middle"><tspan>内容策划</tspan><tspan className="radar-score" dx="6">8</tspan></text>
+            <text x="392" y="126" textAnchor="start"><tspan>账号运营</tspan><tspan className="radar-score" dx="6">8</tspan></text>
+            <text x="392" y="288" textAnchor="start"><tspan>到店转化</tspan><tspan className="radar-score" dx="6">8</tspan></text>
+            <text x="260" y="382" textAnchor="middle"><tspan>影像制作</tspan><tspan className="radar-score" dx="6">10</tspan></text>
             <text x="128" y="288" textAnchor="end"><tspan>数据复盘</tspan><tspan className="radar-score" dx="6">8</tspan></text>
-            <text x="128" y="126" textAnchor="end"><tspan>平台投流</tspan><tspan className="radar-score" dx="6">7</tspan></text>
+            <text x="128" y="126" textAnchor="end"><tspan>平台投流</tspan><tspan className="radar-score" dx="6">9</tspan></text>
           </g>
         </svg>
         <span className="radar-seal" aria-hidden="true">ZS</span>

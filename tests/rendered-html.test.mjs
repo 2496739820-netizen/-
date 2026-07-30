@@ -186,8 +186,15 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(page, /className="brand-avatar"/);
   assert.doesNotMatch(page, /src="\/zhuang-shukai-portrait\.jpg"/);
   assert.match(page, /\{ id: "top", label: "能力概览" \}/);
-  assert.match(page, /内容策划.{0,30}score: 9/s);
-  assert.match(page, /平台投流.{0,30}score: 7/s);
+  assert.match(page, /内容策划.{0,30}score: 8/s);
+  assert.match(page, /账号运营.{0,30}score: 8/s);
+  assert.match(page, /到店转化.{0,30}score: 8/s);
+  assert.match(page, /影像制作.{0,30}score: 10/s);
+  assert.match(page, /数据复盘.{0,30}score: 8/s);
+  assert.match(page, /平台投流.{0,30}score: 9/s);
+  assert.match(page, /points="260,102 350\.1,153 350\.1,257 260,334 169\.9,257 158\.7,146\.5"/);
+  assert.match(page, /points="260,102 350\.1,153 350\.1,257 260,334 169\.9,257 158\.7,146\.5 260,102"/);
+  assert.match(page, /内容策划八分、账号运营八分、到店转化八分、影像制作十分、数据复盘八分、平台投流九分/);
   assert.match(page, /data-nav=/);
   assert.match(page, /相对能力重心/);
   assert.doesNotMatch(page, /loading="lazy"/);
