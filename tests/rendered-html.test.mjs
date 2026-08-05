@@ -316,17 +316,20 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /\.hupai-work-format-tag\s*\{[\s\S]*?font:[^;}]*?0\.75rem/);
   assert.match(css, /\.hupai-work-content\s*>\s*p:first-child\s*\{[\s\S]*?font:[^;}]*?0\.75rem/);
   assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?font-size:\s*0\.75rem/);
+  assert.match(css, /\.hupai-work-metric-icon\s*\{[\s\S]*?width:\s*22px;[\s\S]*?height:\s*22px/);
+  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?display:\s*flex;[\s\S]*?align-items:\s*center;[\s\S]*?gap:\s*7px/);
+  assert.match(css, /\.hupai-work-metrics dd\s*\{[\s\S]*?padding-left:\s*29px/);
   assert.match(css, /\.hupai-evidence-note\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /\.hupai-case-bridge\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-image-link:hover\s+img\s*\{[\s\S]*?transform:\s*none/);
   assert.doesNotMatch(css, /#ff2442/i);
 });
 
-test("keeps the 16 interaction icon previews transparent and outside the website UI", async () => {
+test("applies the selected interaction icons to every Hupai work metric", async () => {
   const iconDirectory = new URL("../design/icon-previews/hupai-interaction-editorial/", import.meta.url);
   const selectedDirectory = new URL("../design/icon-previews/hupai-interaction-editorial-selected/", import.meta.url);
   const iconFiles = (await readdir(iconDirectory)).filter((file) => file.endsWith(".png")).sort();
-  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const component = await readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8");
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
   assert.deepEqual(iconFiles, Array.from({ length: 16 }, (_, index) => `${String(index + 1).padStart(2, "0")}.png`));
@@ -340,11 +343,21 @@ test("keeps the 16 interaction icon previews transparent and outside the website
   for (const [name, source] of Object.entries(selectedSources)) {
     const sourcePng = await readFile(new URL(source, iconDirectory));
     const selectedPng = await readFile(new URL(`${name}.png`, selectedDirectory));
+    const publicPng = await readFile(new URL(`../public/hupai/interaction-${name}.png`, import.meta.url));
     assert.equal(sourcePng[25], 6, `${source} must use RGBA PNG color type`);
     assert.ok(sourcePng.equals(selectedPng), `${name}.png must match ${source}`);
+    assert.ok(selectedPng.equals(publicPng), `interaction-${name}.png must match the selected icon`);
   }
 
-  assert.doesNotMatch(`${page}\n${css}`, /hupai-interaction-editorial/);
+  assert.match(component, /const metricIconSources/);
+  assert.match(component, /"点赞": "\/hupai\/interaction-like\.png"/);
+  assert.match(component, /"收藏": "\/hupai\/interaction-save\.png"/);
+  assert.match(component, /"评论": "\/hupai\/interaction-comment\.png"/);
+  assert.match(component, /"分享": "\/hupai\/interaction-share\.png"/);
+  assert.match(component, /className="hupai-work-metric-icon"/);
+  assert.match(component, /alt=""/);
+  assert.match(component, /aria-hidden="true"/);
+  assert.match(css, /\.hupai-work-metric-icon/);
 });
 
 test("implements the accessible, lazy-loaded physical contact badge", async () => {

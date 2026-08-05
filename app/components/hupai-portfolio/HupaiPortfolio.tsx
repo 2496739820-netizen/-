@@ -1,12 +1,29 @@
 import Image from "next/image";
-import { hupaiAccount, hupaiWorks, type HupaiWork } from "./hupai-data";
+import { hupaiAccount, hupaiWorks, type HupaiWork, type WorkMetric } from "./hupai-data";
+
+const metricIconSources = {
+  "点赞": "/hupai/interaction-like.png",
+  "收藏": "/hupai/interaction-save.png",
+  "评论": "/hupai/interaction-comment.png",
+  "分享": "/hupai/interaction-share.png",
+} satisfies Record<WorkMetric["label"], string>;
 
 function WorkMetrics({ work }: { work: HupaiWork }) {
   return (
     <dl className="hupai-work-metrics" aria-label={`${work.title}互动数据`}>
       {work.metrics.map((metric) => (
         <div key={metric.label}>
-          <dt>{metric.label}</dt>
+          <dt>
+            <Image
+              className="hupai-work-metric-icon"
+              src={metricIconSources[metric.label]}
+              alt=""
+              width={22}
+              height={22}
+              aria-hidden="true"
+            />
+            <span>{metric.label}</span>
+          </dt>
           <dd>{metric.value}</dd>
         </div>
       ))}
