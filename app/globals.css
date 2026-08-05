@@ -344,10 +344,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .hupai-work-content > p:nth-of-type(2) { font-size: 0.84rem; }
 .hupai-work-content > p:nth-of-type(3) { margin-top: 10px; color: var(--ink-soft); font-size: 0.88rem; }
 .hupai-work-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px 16px; margin: 20px 0 12px; border-top: 1px solid var(--line); padding-top: 14px; }
-.hupai-work-metrics div { min-width: 0; }
-.hupai-work-metrics dt { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 0.75rem; line-height: 1.3; }
+.hupai-work-metrics div { display: flex; min-width: 0; flex-direction: column; align-items: center; }
+.hupai-work-metrics dt { display: flex; align-items: center; justify-content: center; gap: 7px; color: var(--muted); font-size: 0.75rem; line-height: 1.3; }
 .hupai-work-metric-icon { display: block; width: 22px; height: 22px; flex: 0 0 22px; object-fit: contain; }
-.hupai-work-metrics dd { margin: 2px 0 0; padding-left: 29px; font: 600 1rem/1.2 "Manrope", sans-serif; }
+.hupai-work-metrics dd { margin: 2px 0 0; padding-left: 0; font: 600 1rem/1.2 "Manrope", sans-serif; text-align: center; }
 .hupai-work-content > a { display: inline-flex; width: fit-content; min-height: 44px; align-items: center; margin-top: auto; padding-top: 12px; color: var(--gold-deep); font-size: 0.84rem; font-weight: 600; }
 .hupai-work-content > a::after { content: "↗"; margin-left: 7px; font-size: 1rem; }
 .hupai-evidence-note { margin: 14px 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.65; text-align: right; }

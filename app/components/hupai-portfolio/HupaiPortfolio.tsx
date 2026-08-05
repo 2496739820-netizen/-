@@ -14,6 +14,7 @@ function WorkMetrics({ work }: { work: HupaiWork }) {
       {work.metrics.map((metric) => (
         <div key={metric.label}>
           <dt>
+            <span>{metric.label}</span>
             <Image
               className="hupai-work-metric-icon"
               src={metricIconSources[metric.label]}
@@ -22,7 +23,6 @@ function WorkMetrics({ work }: { work: HupaiWork }) {
               height={22}
               aria-hidden="true"
             />
-            <span>{metric.label}</span>
           </dt>
           <dd>{metric.value}</dd>
         </div>
