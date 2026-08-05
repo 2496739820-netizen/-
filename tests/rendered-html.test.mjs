@@ -315,12 +315,12 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /\.hupai-account-evidence span\s*\{[\s\S]*?(?:font(?:-size)?:[^;}]*?)0\.75rem/);
   assert.match(css, /\.hupai-work-format-tag\s*\{[\s\S]*?font:[^;}]*?0\.75rem/);
   assert.match(css, /\.hupai-work-content\s*>\s*p:first-child\s*\{[\s\S]*?font:[^;}]*?0\.75rem/);
-  assert.match(css, /\.hupai-work-metrics\s*\{[\s\S]*?align-content:\s*center;[\s\S]*?min-height:\s*144px/);
-  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?font-size:\s*0\.8rem/);
-  assert.match(css, /\.hupai-work-metric-icon\s*\{[\s\S]*?width:\s*17px;[\s\S]*?height:\s*17px/);
-  assert.match(css, /\.hupai-work-metrics div\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex-direction:\s*column;[\s\S]*?align-items:\s*center;[\s\S]*?justify-content:\s*center/);
-  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?display:\s*flex;[\s\S]*?justify-content:\s*center;[\s\S]*?gap:\s*5px/);
-  assert.match(css, /\.hupai-work-metrics dd\s*\{[\s\S]*?font:\s*600\s+1\.12rem[\s\S]*?text-align:\s*center/);
+  assert.match(css, /\.hupai-work-metrics\s*\{[\s\S]*?align-content:\s*start;[\s\S]*?min-height:\s*0;[\s\S]*?gap:\s*10px\s+18px/);
+  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?font-size:\s*0\.72rem;[\s\S]*?letter-spacing:\s*0\.04em/);
+  assert.match(css, /\.hupai-work-metric-icon\s*\{[\s\S]*?width:\s*14px;[\s\S]*?height:\s*14px;[\s\S]*?opacity:\s*0\.7/);
+  assert.match(css, /\.hupai-work-metrics div\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex-direction:\s*column;[\s\S]*?align-items:\s*flex-start;[\s\S]*?justify-content:\s*flex-start/);
+  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?display:\s*flex;[\s\S]*?justify-content:\s*flex-start;[\s\S]*?gap:\s*5px/);
+  assert.match(css, /\.hupai-work-metrics dd\s*\{[\s\S]*?font:\s*600\s+1\.28rem[\s\S]*?letter-spacing:\s*-0\.03em;[\s\S]*?text-align:\s*left;[\s\S]*?font-variant-numeric:\s*tabular-nums/);
   assert.match(css, /\.hupai-evidence-note\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /\.hupai-case-bridge\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-image-link:hover\s+img\s*\{[\s\S]*?transform:\s*none/);
