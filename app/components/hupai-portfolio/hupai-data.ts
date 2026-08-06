@@ -66,7 +66,7 @@ export const hupaiWorks = [
       { label: "评论", value: 48 },
       { label: "分享", value: 49 },
     ],
-    noteUrl: "https://www.xiaohongshu.com/explore/66ab4132000000002701f16e",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/66ab4132000000002701f16e?xsec_token=ABEeK9YoIEUOgOkE4q1JH-OKccXDsClT4TRJ5iKOhFNDU=&xsec_source=pc_user",
     kind: "image",
   },
   {
@@ -89,7 +89,7 @@ export const hupaiWorks = [
       { label: "评论", value: 11 },
       { label: "分享", value: 21 },
     ],
-    noteUrl: "https://www.xiaohongshu.com/explore/69a16f6f0000000015038c2e",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/69a16f6f0000000015038c2e?xsec_token=ABC4b86owzt-0c7_p14sVnKM-n96xBIIkilpXe_F8N7Fs=&xsec_source=pc_user",
     kind: "image",
   },
   {
@@ -112,7 +112,7 @@ export const hupaiWorks = [
       { label: "评论", value: 10 },
       { label: "分享", value: 2 },
     ],
-    noteUrl: "https://www.xiaohongshu.com/explore/6a4a0ea7000000001702df31",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/6a4a0ea7000000001702df31?xsec_token=ABnzVHeGextP6DN1kzXFSpnScK6rFQLXuq4uJk_qLhtSI=&xsec_source=pc_user",
     kind: "video",
     video: {
       src: "/hupai/lindberg-6537-preview.mp4",
@@ -179,7 +179,7 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
-    noteUrl: "https://www.xiaohongshu.com/explore/647db32c0000000013031980",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/647db32c0000000013031980?xsec_token=ABbaHzlJQptzx5VrubvwXml86zehbe6aapWjXRQqYPnmw=&xsec_source=pc_user",
     metrics: [
       { label: "观看", value: 182133 },
       { label: "评论", value: 34 },
@@ -201,7 +201,7 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
-    noteUrl: "https://www.xiaohongshu.com/explore/643fe1770000000013006cc9",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/643fe1770000000013006cc9?xsec_token=ABBzLeiu105MXIoqKcgKnOV0rJ-MCQoGYlW7tgPQ3VGgQ=&xsec_source=pc_user",
     metrics: [
       { label: "观看", value: 150094 },
       { label: "评论", value: 83 },
@@ -223,7 +223,7 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
-    noteUrl: "https://www.xiaohongshu.com/explore/646b256600000000270020c6",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/646b256600000000270020c6?xsec_token=ABDr-5_4PCHKqMb3WHSQAQiBGTi5Q7XW7l-_uO4g1fV5I=&xsec_source=pc_user",
     metrics: [
       { label: "观看", value: 92688 },
       { label: "评论", value: 14 },

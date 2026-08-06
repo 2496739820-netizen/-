@@ -124,10 +124,10 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  const noteUrls = [
-    "https://www.xiaohongshu.com/explore/66ab4132000000002701f16e",
-    "https://www.xiaohongshu.com/explore/69a16f6f0000000015038c2e",
-    "https://www.xiaohongshu.com/explore/6a4a0ea7000000001702df31",
+  const noteIds = [
+    "66ab4132000000002701f16e",
+    "69a16f6f0000000015038c2e",
+    "6a4a0ea7000000001702df31",
   ];
 
   assert.match(html, /小红书内容作品/);
@@ -147,7 +147,7 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   for (const metric of ["127", "147", "48", "49", "81", "88", "11", "21", "22", "9", "10", "2"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
-  for (const url of noteUrls) assert.match(html, new RegExp(url));
+  for (const noteId of noteIds) assert.match(html, new RegExp(noteId));
 
   assert.match(html, /<video\b[^>]*\bcontrols(?:="")?[^>]*>/i);
   assert.match(html, /<video\b[^>]*\bplaysinline(?:="")?[^>]*>/i);
@@ -156,8 +156,10 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.match(html, /<source[^>]*src="\/hupai\/lindberg-6537-preview\.mp4"[^>]*>/i);
 
   const imageLinks = [...html.matchAll(/<a[^>]*class="hupai-work-image-link"[^>]*href="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(imageLinks, noteUrls.slice(0, 2));
-  assert.doesNotMatch(html, new RegExp(`class="hupai-work-image-link"[^>]*href="${noteUrls[2]}"`));
+  assert.equal(imageLinks.length, 2);
+  assert.ok(imageLinks[0].includes(noteIds[0]) && imageLinks[0].includes("xsec_source=pc_user"));
+  assert.ok(imageLinks[1].includes(noteIds[1]) && imageLinks[1].includes("xsec_source=pc_user"));
+  assert.doesNotMatch(html, new RegExp(`class="hupai-work-image-link"[^>]*href="[^"]*${noteIds[2]}`));
   assert.ok(html.indexOf("上方是可核实的作品样本") < html.indexOf('class="case-list"'));
   assert.ok(html.indexOf("小红书内容作品") < html.indexOf('class="case-list"'));
 });
@@ -196,17 +198,16 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   for (const metric of ["182,133", "8,064", "150,094", "6,865", "92,688", "3,108", "42,877", "1,642", "21,247", "849", "7,308", "369"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
-  const personalNoteUrls = [
-    "https://www.xiaohongshu.com/explore/647db32c0000000013031980",
-    "https://www.xiaohongshu.com/explore/643fe1770000000013006cc9",
-    "https://www.xiaohongshu.com/explore/646b256600000000270020c6",
+  const personalNoteIds = [
+    "647db32c0000000013031980",
+    "643fe1770000000013006cc9",
+    "646b256600000000270020c6",
+    "648be41400000000120331f6",
+    "65471a96000000001e02976e",
+    "654222d8000000001e022020",
   ];
-  assert.equal((html.match(new RegExp(personalProfileUrl, "g")) ?? []).length, 7);
-  for (const url of personalNoteUrls) assert.match(html, new RegExp(url));
-  for (const noteId of ["648be41400000000120331f6", "65471a96000000001e02976e", "654222d8000000001e022020"]) {
-    assert.match(html, new RegExp(noteId));
-  }
-  assert.equal((html.match(/xsec_source=pc_user/g) ?? []).length, 6);
+  assert.equal((html.match(new RegExp(personalProfileUrl, "g")) ?? []).length, 13);
+  for (const noteId of personalNoteIds) assert.match(html, new RegExp(noteId));
   assert.equal((html.match(/>查看原笔记</g) ?? []).length, 9);
   assert.match(html, /创作后台快照数据/);
   assert.doesNotMatch(html, /backend-note-manager\.png/);
@@ -321,7 +322,8 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
 
   assert.match(data, /snapshotDate: "2026-07-27"/);
   assert.match(data, /id: "6a4a0ea7000000001702df31"/);
-  assert.match(data, /https:\/\/www\.xiaohongshu\.com\/explore\/66ab4132000000002701f16e/);
+  assert.equal((data.match(/noteUrl: "[^"]*xsec_source=pc_user"/g) ?? []).length, 9);
+  assert.doesNotMatch(data, /noteUrl: "https:\/\/www\.xiaohongshu\.com\/explore\//);
   assert.match(component, /preload="none"/);
   assert.match(component, /controls/);
   assert.match(component, /playsInline/);
@@ -378,7 +380,7 @@ test("ships six verified personal Xiaohongshu cards, covers, and tab behavior", 
   for (const noteId of ["648be41400000000120331f6", "65471a96000000001e02976e", "654222d8000000001e022020"]) {
     assert.match(personalWorksData, new RegExp(noteId));
   }
-  assert.equal((personalWorksData.match(/xsec_source=pc_user/g) ?? []).length, 3);
+  assert.equal((personalWorksData.match(/xsec_source=pc_user/g) ?? []).length, 6);
   assert.doesNotMatch(personalWorksData, /系列展示 \/ 待补完整数据/);
   assert.match(component, /personal-work-metric-icon/);
   assert.match(component, /ViewMetricIcon/);
