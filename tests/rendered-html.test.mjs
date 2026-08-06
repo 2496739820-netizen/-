@@ -188,7 +188,14 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /表现蒙太奇/);
   assert.match(html, /角度/);
   assert.match(html, /叙事蒙太奇/);
-  for (const metric of ["182127", "8064", "5273", "772", "150082", "83", "6864", "4546", "92687", "3108", "1957", "277"]) {
+  assert.match(html, /构图/);
+  assert.match(html, /色彩/);
+  assert.match(html, /声音设计/);
+  assert.equal((html.match(/class="personal-work-card"/g) ?? []).length, 6);
+  assert.equal((html.match(/系列展示 \/ 待补完整数据/g) ?? []).length, 3);
+  assert.match(html, />1,642</);
+  assert.doesNotMatch(html, />42,877<|>21,247</);
+  for (const metric of ["182,127", "8,064", "150,082", "6,864", "92,687", "3,108"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   const personalNoteUrls = [
@@ -330,14 +337,17 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
   assert.equal(preview.subarray(4, 8).toString("ascii"), "ftyp");
 });
 
-test("ships verified personal Xiaohongshu data, covers, and tab behavior", async () => {
-  const [data, component, css, montage, angle, composition] = await Promise.all([
+test("ships verified and series personal Xiaohongshu cards, covers, and tab behavior", async () => {
+  const [data, component, css, montage, angle, narrativeMontage, composition, color, sound] = await Promise.all([
     readFile(new URL("../app/components/hupai-portfolio/hupai-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../public/personal-xhs/01-montage.webp", import.meta.url)),
     readFile(new URL("../public/personal-xhs/02-angle.webp", import.meta.url)),
     readFile(new URL("../public/personal-xhs/03-narrative-montage.webp", import.meta.url)),
+    readFile(new URL("../public/personal-xhs/04-composition.webp", import.meta.url)),
+    readFile(new URL("../public/personal-xhs/05-color.webp", import.meta.url)),
+    readFile(new URL("../public/personal-xhs/06-sound.webp", import.meta.url)),
   ]);
 
   assert.match(data, /publishedNotes: 21/);
@@ -356,6 +366,17 @@ test("ships verified personal Xiaohongshu data, covers, and tab behavior", async
   for (const asset of ["01-montage.webp", "02-angle.webp", "03-narrative-montage.webp"]) {
     assert.match(data, new RegExp(`/personal-xhs/${asset.replace(".", "\\.")}`));
   }
+  for (const asset of ["04-composition.webp", "05-color.webp", "06-sound.webp"]) {
+    assert.match(data, new RegExp(`/personal-xhs/${asset.replace(".", "\\.")}`));
+  }
+  const personalWorksData = data.slice(data.indexOf("export const personalWorks"));
+  assert.equal((personalWorksData.match(/kind: "verified"/g) ?? []).length, 3);
+  assert.equal((personalWorksData.match(/kind: "series"/g) ?? []).length, 3);
+  assert.equal((personalWorksData.match(/noteUrl: "https:\/\/www\.xiaohongshu\.com\/explore\//g) ?? []).length, 3);
+  assert.match(personalWorksData, /title: "构图"[\s\S]*?\{ label: "点赞", value: 1642 \}/);
+  assert.match(personalWorksData, /系列展示 \/ 待补完整数据/);
+  assert.match(component, /personal-work-metric-icon/);
+  assert.match(component, /ViewMetricIcon/);
   assert.match(component, /useState\("hupai"\)/);
   assert.match(component, /event\.key === "ArrowRight"/);
   assert.match(component, /event\.key === "ArrowLeft"/);
@@ -366,12 +387,15 @@ test("ships verified personal Xiaohongshu data, covers, and tab behavior", async
   assert.match(component, /inert=/);
   assert.doesNotMatch(`${data}${component}`, /backend-note-manager\.png|15815347183/);
 
-  for (const cover of [montage, angle, composition]) {
+  for (const cover of [montage, angle, narrativeMontage, composition, color, sound]) {
     assert.equal(cover.subarray(0, 4).toString("ascii"), "RIFF");
     assert.equal(cover.subarray(8, 12).toString("ascii"), "WEBP");
   }
   assert.match(css, /\.account-tabs\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /\.account-tab\s*\{[\s\S]*?min-height:\s*44px/);
+  assert.match(css, /\.personal-work-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(css, /\.personal-work-metrics dt\s*\{[\s\S]*?display:\s*flex;[\s\S]*?justify-content:\s*flex-start/);
+  assert.match(css, /\.personal-work-metric-icon\s*\{[\s\S]*?width:\s*14px;[\s\S]*?height:\s*14px;[\s\S]*?opacity:\s*0\.7/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.personal-work-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
 });
 

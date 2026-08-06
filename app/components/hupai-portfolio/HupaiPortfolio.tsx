@@ -10,6 +10,7 @@ import {
   personalWorks,
   type HupaiWork,
   type PersonalWork,
+  type PersonalWorkMetric,
   type WorkMetric,
 } from "./hupai-data";
 
@@ -26,6 +27,8 @@ const accountTabs: readonly { id: AccountId; label: string; description: string 
   { id: "hupai", label: "虎.派.眼.镜", description: "工作账号 · 门店运营" },
   { id: "personal", label: "白夜下", description: "个人账号 · 视听语言" },
 ];
+
+const personalNumberFormatter = new Intl.NumberFormat("en-US");
 
 function WorkMetrics({ work }: { work: HupaiWork }) {
   return (
@@ -143,15 +146,46 @@ function HupaiPanel({ isActive }: { isActive: boolean }) {
   );
 }
 
+function ViewMetricIcon() {
+  return (
+    <svg className="personal-work-metric-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M2.5 12s3.3-5.2 9.5-5.2 9.5 5.2 9.5 5.2-3.3 5.2-9.5 5.2S2.5 12 2.5 12Z" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="12" cy="12" r="2.4" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function PersonalMetricIcon({ label }: { label: PersonalWorkMetric["label"] }) {
+  if (label === "观看") return <ViewMetricIcon />;
+
+  return (
+    <Image
+      className="personal-work-metric-icon"
+      src={metricIconSources[label]}
+      alt=""
+      width={14}
+      height={14}
+      aria-hidden="true"
+    />
+  );
+}
+
 function PersonalMetrics({ work }: { work: PersonalWork }) {
-  const visibleMetrics = work.visibleMetricLabels.map((label) => work.metrics.find((metric) => metric.label === label)!);
+  const visibleMetrics = work.kind === "verified"
+    ? work.metrics.filter((metric) => metric.label === "观看" || metric.label === "点赞")
+    : work.metrics;
+
+  if (visibleMetrics.length === 0) return null;
 
   return (
     <dl className="personal-work-metrics" aria-label={`${work.title}创作后台快照指标`}>
       {visibleMetrics.map((metric) => (
         <div key={metric.label}>
-          <dt>{metric.label}</dt>
-          <dd>{metric.value}</dd>
+          <dt>
+            <span>{metric.label}</span>
+            <PersonalMetricIcon label={metric.label} />
+          </dt>
+          <dd>{personalNumberFormatter.format(metric.value)}</dd>
         </div>
       ))}
     </dl>
@@ -194,36 +228,52 @@ function PersonalPanel({ isActive }: { isActive: boolean }) {
       <div className="personal-work-grid">
         {personalWorks.map((work) => (
           <article className="personal-work-card" key={work.id}>
-            <a
-              className="personal-work-image"
-              href={work.noteUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`在小红书打开《${work.title}》原笔记`}
-            >
-              <span className="personal-work-format-tag">{work.format}</span>
-              <Image
-                src={work.image.src}
-                alt={work.image.alt}
-                width={work.image.width}
-                height={work.image.height}
-                sizes={work.image.sizes}
-                loading="lazy"
-              />
-            </a>
+            {work.kind === "verified" ? (
+              <a
+                className="personal-work-image"
+                href={work.noteUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`在小红书打开《${work.title}》原笔记`}
+              >
+                <span className="personal-work-format-tag">{work.format}</span>
+                <Image
+                  src={work.image.src}
+                  alt={work.image.alt}
+                  width={work.image.width}
+                  height={work.image.height}
+                  sizes={work.image.sizes}
+                  loading="lazy"
+                />
+              </a>
+            ) : (
+              <div className="personal-work-image">
+                <span className="personal-work-format-tag">{work.format}</span>
+                <Image
+                  src={work.image.src}
+                  alt={work.image.alt}
+                  width={work.image.width}
+                  height={work.image.height}
+                  sizes={work.image.sizes}
+                  loading="lazy"
+                />
+              </div>
+            )}
             <div className="personal-work-content">
               <p>{work.format}</p>
               <h4>{work.title}</h4>
               <p>{work.capability}</p>
               <PersonalMetrics work={work} />
-              <a
-                href={work.noteUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`查看《${work.title}》原笔记`}
-              >
-                查看原笔记
-              </a>
+              {work.kind === "verified" ? (
+                <a
+                  href={work.noteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`查看《${work.title}》原笔记`}
+                >
+                  查看原笔记
+                </a>
+              ) : <p className="personal-series-status">{work.status}</p>}
             </div>
           </article>
         ))}

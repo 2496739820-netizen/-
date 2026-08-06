@@ -127,8 +127,8 @@ export type PersonalWorkMetric = {
   value: number;
 };
 
-export type PersonalWork = {
-  id: "montage" | "angle" | "narrative-montage";
+type PersonalWorkBase = {
+  id: "montage" | "angle" | "narrative-montage" | "composition" | "color" | "sound";
   title: string;
   format: string;
   capability: string;
@@ -139,10 +139,20 @@ export type PersonalWork = {
     height: number;
     sizes: string;
   };
-  noteUrl: string;
   metrics: readonly PersonalWorkMetric[];
-  visibleMetricLabels: readonly PersonalWorkMetric["label"][];
 };
+
+export type VerifiedPersonalWork = PersonalWorkBase & {
+  kind: "verified";
+  noteUrl: string;
+};
+
+export type SeriesPersonalWork = PersonalWorkBase & {
+  kind: "series";
+  status: "系列展示 / 待补完整数据";
+};
+
+export type PersonalWork = VerifiedPersonalWork | SeriesPersonalWork;
 
 export const personalAccount = {
   name: "白夜下",
@@ -163,6 +173,7 @@ export const personalResults = {
 export const personalWorks = [
   {
     id: "montage",
+    kind: "verified",
     title: "表现蒙太奇",
     format: "系列 · 视听语言",
     capability: "独立完成账号定位、系列化选题、剪辑、画面分析与知识表达。",
@@ -181,10 +192,10 @@ export const personalWorks = [
       { label: "收藏", value: 5273 },
       { label: "分享", value: 772 },
     ],
-    visibleMetricLabels: ["观看", "点赞", "收藏", "分享"],
   },
   {
     id: "angle",
+    kind: "verified",
     title: "角度",
     format: "镜头语法",
     capability: "围绕镜头角度的叙事功能，完成内容策划、剪辑与画面分析。",
@@ -203,10 +214,10 @@ export const personalWorks = [
       { label: "收藏", value: 4546 },
       { label: "分享", value: 545 },
     ],
-    visibleMetricLabels: ["观看", "点赞", "收藏", "评论"],
   },
   {
     id: "narrative-montage",
+    kind: "verified",
     title: "叙事蒙太奇",
     format: "剪辑结构",
     capability: "通过时间重组与情节推进，完成知识型内容的系列化表达。",
@@ -225,6 +236,55 @@ export const personalWorks = [
       { label: "收藏", value: 1957 },
       { label: "分享", value: 277 },
     ],
-    visibleMetricLabels: ["观看", "点赞", "收藏", "分享"],
+  },
+  {
+    id: "composition",
+    kind: "series",
+    title: "构图",
+    format: "电影视听语言",
+    capability: "从画面组织入手，拆解构图如何服务叙事重点。",
+    image: {
+      src: "/personal-xhs/04-composition.webp",
+      alt: "白夜下《构图》系列封面",
+      width: 640,
+      height: 853,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
+    },
+    metrics: [
+      { label: "点赞", value: 1642 },
+    ],
+    status: "系列展示 / 待补完整数据",
+  },
+  {
+    id: "color",
+    kind: "series",
+    title: "色彩",
+    format: "电影视听语言",
+    capability: "以色彩关系为线索，提炼电影画面的情绪表达。",
+    image: {
+      src: "/personal-xhs/05-color.webp",
+      alt: "白夜下《色彩》系列封面",
+      width: 640,
+      height: 853,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
+    },
+    metrics: [],
+    status: "系列展示 / 待补完整数据",
+  },
+  {
+    id: "sound",
+    kind: "series",
+    title: "声音设计",
+    format: "电影视听语言",
+    capability: "从声音层次切入，解析画面之外的叙事信息。",
+    image: {
+      src: "/personal-xhs/06-sound.webp",
+      alt: "白夜下《声音设计》系列封面",
+      width: 640,
+      height: 853,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
+    },
+    metrics: [],
+    status: "系列展示 / 待补完整数据",
   },
 ] as const satisfies readonly PersonalWork[];
