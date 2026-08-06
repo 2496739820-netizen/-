@@ -121,3 +121,110 @@ export const hupaiWorks = [
     },
   },
 ] as const satisfies readonly HupaiWork[];
+
+export type PersonalWorkMetric = {
+  label: "观看" | "评论" | "点赞" | "收藏" | "分享";
+  value: number;
+};
+
+export type PersonalWork = {
+  id: "montage" | "angle" | "narrative-montage";
+  title: string;
+  format: string;
+  capability: string;
+  image: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    sizes: string;
+  };
+  noteUrl: string;
+  metrics: readonly PersonalWorkMetric[];
+  visibleMetricLabels: readonly PersonalWorkMetric["label"][];
+};
+
+export const personalAccount = {
+  name: "白夜下",
+  profileUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2",
+  followers: "3,336",
+  likesAndSaves: "6.7 万",
+  publishedNotes: 21,
+  positioning: "影视后期 · 视听语言知识",
+  snapshotDate: "2026-08-06",
+} as const;
+
+export const personalResults = {
+  maxViews: "18.2万",
+  maxLikes: "8,064",
+  maxSaves: "5,273",
+} as const;
+
+export const personalWorks = [
+  {
+    id: "montage",
+    title: "表现蒙太奇",
+    format: "系列 · 视听语言",
+    capability: "独立完成账号定位、系列化选题、剪辑、画面分析与知识表达。",
+    image: {
+      src: "/personal-xhs/01-montage.webp",
+      alt: "白夜下《表现蒙太奇》小红书笔记封面",
+      width: 640,
+      height: 853,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
+    },
+    noteUrl: "https://www.xiaohongshu.com/explore/647db32c0000000013031980",
+    metrics: [
+      { label: "观看", value: 182127 },
+      { label: "评论", value: 34 },
+      { label: "点赞", value: 8064 },
+      { label: "收藏", value: 5273 },
+      { label: "分享", value: 772 },
+    ],
+    visibleMetricLabels: ["观看", "点赞", "收藏", "分享"],
+  },
+  {
+    id: "angle",
+    title: "角度",
+    format: "镜头语法",
+    capability: "围绕镜头角度的叙事功能，完成内容策划、剪辑与画面分析。",
+    image: {
+      src: "/personal-xhs/02-angle.webp",
+      alt: "白夜下《角度》小红书笔记封面",
+      width: 640,
+      height: 853,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
+    },
+    noteUrl: "https://www.xiaohongshu.com/explore/643fe1770000000013006cc9",
+    metrics: [
+      { label: "观看", value: 150082 },
+      { label: "评论", value: 83 },
+      { label: "点赞", value: 6864 },
+      { label: "收藏", value: 4546 },
+      { label: "分享", value: 545 },
+    ],
+    visibleMetricLabels: ["观看", "点赞", "收藏", "评论"],
+  },
+  {
+    id: "narrative-montage",
+    title: "叙事蒙太奇",
+    format: "剪辑结构",
+    capability: "通过时间重组与情节推进，完成知识型内容的系列化表达。",
+    image: {
+      src: "/personal-xhs/03-narrative-montage.webp",
+      alt: "白夜下《叙事蒙太奇》小红书笔记封面",
+      width: 640,
+      height: 853,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
+    },
+    noteUrl: "https://www.xiaohongshu.com/explore/646b256600000000270020c6",
+    metrics: [
+      { label: "观看", value: 92687 },
+      { label: "评论", value: 14 },
+      { label: "点赞", value: 3108 },
+      { label: "收藏", value: 1957 },
+      { label: "分享", value: 277 },
+    ],
+    visibleMetricLabels: ["观看", "点赞", "收藏", "分享"],
+  },
+] as const satisfies readonly PersonalWork[];
