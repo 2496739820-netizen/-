@@ -128,6 +128,9 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
     "66ab4132000000002701f16e",
     "69a16f6f0000000015038c2e",
     "6a4a0ea7000000001702df31",
+    "699e5ebc000000001a029468",
+    "68088f68000000001c03efac",
+    "6819d3b60000000021003550",
   ];
 
   assert.match(html, /小红书内容作品/);
@@ -144,22 +147,19 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.match(html, /林德伯格 \| 最新全系列干货讲解🔥/);
   assert.match(html, /日系 - 美系 - 欧系，一个多元的眼镜宇宙！/);
   assert.match(html, /客订分享！林德伯格6537\+蔡司鎏金膜~/);
-  for (const metric of ["128", "150", "48", "50", "82", "90", "11", "21", "39", "20", "10"]) {
+  for (const metric of ["128", "150", "82", "90", "39", "20", "110", "72", "232", "196", "229", "242"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   for (const noteId of noteIds) assert.match(html, new RegExp(noteId));
 
-  assert.match(html, /<video\b[^>]*\bcontrols(?:="")?[^>]*>/i);
-  assert.match(html, /<video\b[^>]*\bplaysinline(?:="")?[^>]*>/i);
-  assert.match(html, /<video\b[^>]*\bpreload="none"[^>]*>/i);
-  assert.match(html, /<video\b[^>]*\bposter="\/hupai\/lindberg-6537-cover\.webp"[^>]*>/i);
-  assert.match(html, /<source[^>]*src="\/hupai\/lindberg-6537-preview\.mp4"[^>]*>/i);
+  assert.doesNotMatch(html, /<video\b/i);
 
   const imageLinks = [...html.matchAll(/<a[^>]*class="hupai-work-image-link"[^>]*href="([^"]+)"/g)].map((match) => match[1]);
-  assert.equal(imageLinks.length, 2);
-  assert.ok(imageLinks[0].includes(noteIds[0]) && imageLinks[0].includes("xsec_source=pc_user"));
-  assert.ok(imageLinks[1].includes(noteIds[1]) && imageLinks[1].includes("xsec_source=pc_user"));
-  assert.doesNotMatch(html, new RegExp(`class="hupai-work-image-link"[^>]*href="[^"]*${noteIds[2]}`));
+  assert.equal(imageLinks.length, 6);
+  for (const [index, noteId] of noteIds.entries()) {
+    assert.ok(imageLinks[index].includes(noteId), `cover ${index + 1} must link to ${noteId}`);
+    assert.ok(imageLinks[index].includes("xsec_token="), `cover ${index + 1} must retain its access token`);
+  }
   assert.ok(html.indexOf("上方是可核实的作品样本") < html.indexOf('class="case-list"'));
   assert.ok(html.indexOf("小红书内容作品") < html.indexOf('class="case-list"'));
 });
@@ -208,7 +208,7 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   ];
   assert.equal((html.match(new RegExp(personalProfileUrl, "g")) ?? []).length, 13);
   for (const noteId of personalNoteIds) assert.match(html, new RegExp(noteId));
-  assert.equal((html.match(/>查看原笔记</g) ?? []).length, 9);
+  assert.equal((html.match(/>查看原笔记</g) ?? []).length, 12);
   assert.match(html, /每日同步数据 · 最近更新/);
   assert.doesNotMatch(html, /backend-note-manager\.png/);
   assert.doesNotMatch(html, /15815347183/);
@@ -310,15 +310,17 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   await assert.rejects(access(new URL("../public/hero.mp4", import.meta.url)));
 });
 
-test("ships typed Hupai evidence data and browser-playable source assets", async () => {
-  const [data, component, snapshotRaw, lindbergSeries, universeCover, videoCover, preview] = await Promise.all([
+test("ships typed Hupai evidence data and complete original note covers", async () => {
+  const [data, component, snapshotRaw, lindbergSeries, universeCover, videoCover, s925tCover, tavatCover, zhenguanCover] = await Promise.all([
     readFile(new URL("../app/components/hupai-portfolio/hupai-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/hupai-portfolio/xhs-metrics.json", import.meta.url), "utf8"),
-    readFile(new URL("../public/hupai/lindberg-series-evidence.png", import.meta.url)),
+    readFile(new URL("../public/hupai/lindberg-series-cover.webp", import.meta.url)),
     readFile(new URL("../public/hupai/eyewear-universe-cover.webp", import.meta.url)),
     readFile(new URL("../public/hupai/lindberg-6537-cover.webp", import.meta.url)),
-    readFile(new URL("../public/hupai/lindberg-6537-preview.mp4", import.meta.url)),
+    readFile(new URL("../public/hupai/9999-s925t-cover.webp", import.meta.url)),
+    readFile(new URL("../public/hupai/tavat-hardcore-cover.webp", import.meta.url)),
+    readFile(new URL("../public/hupai/zhenguan-cover.webp", import.meta.url)),
   ]);
 
   const snapshot = JSON.parse(snapshotRaw);
@@ -331,25 +333,40 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
     comments: 20,
     shares: 10,
   });
+  assert.deepEqual(snapshot.hupai.works["699e5ebc000000001a029468"], {
+    likes: 110,
+    saves: 72,
+  });
+  assert.deepEqual(snapshot.hupai.works["68088f68000000001c03efac"], {
+    likes: 232,
+    saves: 196,
+  });
+  assert.deepEqual(snapshot.hupai.works["6819d3b60000000021003550"], {
+    likes: 229,
+    saves: 242,
+  });
   assert.match(data, /metricSnapshot\.snapshotDate/);
   assert.match(data, /id: "6a4a0ea7000000001702df31"/);
-  assert.equal((data.match(/noteUrl: "[^"]*xsec_source=pc_user"/g) ?? []).length, 9);
-  assert.doesNotMatch(data, /noteUrl: "https:\/\/www\.xiaohongshu\.com\/explore\//);
-  assert.match(component, /preload="none"/);
-  assert.match(component, /controls/);
-  assert.match(component, /playsInline/);
+  for (const noteId of ["699e5ebc000000001a029468", "68088f68000000001c03efac", "6819d3b60000000021003550"]) {
+    assert.match(data, new RegExp(`id: "${noteId}"`));
+  }
+  const hupaiWorksData = data.slice(data.indexOf("export const hupaiWorks"), data.indexOf("export type PersonalWorkMetric"));
+  assert.equal((hupaiWorksData.match(/kind: "(?:image|video)"/g) ?? []).length, 6);
+  assert.equal((hupaiWorksData.match(/noteUrl: "https:\/\/www\.xiaohongshu\.com\//g) ?? []).length, 6);
+  assert.equal((hupaiWorksData.match(/xsec_token=/g) ?? []).length, 6);
+  assert.doesNotMatch(hupaiWorksData, /noteUrl: "https:\/\/www\.xiaohongshu\.com\/(?:explore|user\/profile\/[^"?]+\/[^"?]+)"/);
+  assert.doesNotMatch(component, /<video/);
   assert.match(component, /loading="lazy"/);
   assert.match(component, /sizes=\{work\.image\.sizes\}/);
   assert.match(component, /<dl/);
   assert.match(component, /hupai-work-image-link/);
+  assert.match(component, /metric\.label === "点赞" \|\| metric\.label === "收藏"/);
   assert.match(data, /\(max-width: 620px\) calc\(100vw - 24px\)/);
 
-  assert.deepEqual([...lindbergSeries.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
-  assert.equal(universeCover.subarray(0, 4).toString("ascii"), "RIFF");
-  assert.equal(universeCover.subarray(8, 12).toString("ascii"), "WEBP");
-  assert.equal(videoCover.subarray(0, 4).toString("ascii"), "RIFF");
-  assert.equal(videoCover.subarray(8, 12).toString("ascii"), "WEBP");
-  assert.equal(preview.subarray(4, 8).toString("ascii"), "ftyp");
+  for (const cover of [lindbergSeries, universeCover, videoCover, s925tCover, tavatCover, zhenguanCover]) {
+    assert.equal(cover.subarray(0, 4).toString("ascii"), "RIFF");
+    assert.equal(cover.subarray(8, 12).toString("ascii"), "WEBP");
+  }
 });
 
 test("ships six verified personal Xiaohongshu cards, covers, and tab behavior", async () => {
@@ -425,34 +442,29 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
 
   assert.match(css, /\.hupai-evidence\s*\{[\s\S]*?margin-top:\s*clamp\(52px,\s*6vw,\s*88px\)/);
   assert.match(css, /\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:/);
-  assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1\.35fr\)\s+repeat\(2,\s*minmax\(0,\s*0\.825fr\)\)/);
+  assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?align-items:\s*stretch/);
   assert.match(css, /\.hupai-work-card\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex-direction:\s*column/);
   assert.match(css, /\.hupai-work-content\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex:\s*1;[\s\S]*?flex-direction:\s*column/);
-  assert.match(css, /\.hupai-work-content\s*>\s*a\s*\{[\s\S]*?width:\s*fit-content;[\s\S]*?margin-top:\s*auto;[\s\S]*?padding-top:\s*12px/);
-  assert.match(css, /\.hupai-work-card:first-child\s+\.hupai-work-image-link\s*\{[\s\S]*?aspect-ratio:\s*4\s*\/\s*3/);
-  assert.match(css, /\.hupai-work-video\s*\{[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/);
-  assert.match(css, /\.hupai-work-video video\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%;[\s\S]*?aspect-ratio:\s*4\s*\/\s*5;[\s\S]*?object-fit:\s*cover/);
-  assert.doesNotMatch(css, /\.hupai-work-card:last-child\s+(?:video|\.hupai-work-video)/);
-  assert.match(css, /@media \(max-width: 900px\)\s*\{[\s\S]*?\.hupai-work-card:first-child\s*\{[\s\S]*?grid-column:\s*1\s*\/\s*-1/);
+  assert.match(css, /\.hupai-work-content\s*>\s*a\s*\{[\s\S]*?width:\s*fit-content;[\s\S]*?margin-top:\s*auto;[\s\S]*?padding-top:\s*10px/);
+  assert.match(css, /\.hupai-work-image-link\s*\{[\s\S]*?aspect-ratio:\s*3\s*\/\s*4/);
+  assert.match(css, /\.hupai-work-image-link img\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%;[\s\S]*?object-fit:\s*contain/);
   assert.match(css, /@media \(max-width: 900px\)\s*\{[\s\S]*?\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(css, /@media \(max-width: 900px\)\s*\{[\s\S]*?\.hupai-work-card:first-child\s+\.hupai-work-image-link\s*\{[\s\S]*?aspect-ratio:\s*4\s*\/\s*3/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
-  assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-work-video\s*\{[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*>\s\*:nth-child\(2\)\s*\{[\s\S]*?border-left:\s*0/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*>\s\*:nth-child\(3\)\s*\{[\s\S]*?border-left:\s*1px\s+solid\s+var\(--line\)/);
   assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.hupai-account-evidence\s*>\s\*:nth-child\(n \+ 2\)\s*\{[\s\S]*?border-top:\s*1px\s+solid\s+var\(--line\)/);
   assert.match(css, /\.hupai-evidence\s+a\s*\{[\s\S]*?min-height:\s*44px/);
   assert.match(css, /\.hupai-account-evidence span\s*\{[\s\S]*?(?:font(?:-size)?:[^;}]*?)0\.75rem/);
-  assert.match(css, /\.hupai-work-format-tag\s*\{[\s\S]*?font:[^;}]*?0\.75rem/);
-  assert.match(css, /\.hupai-work-content\s*>\s*p:first-child\s*\{[\s\S]*?font:[^;}]*?0\.75rem/);
-  assert.match(css, /\.hupai-work-metrics\s*\{[\s\S]*?align-content:\s*start;[\s\S]*?min-height:\s*0;[\s\S]*?gap:\s*10px\s+18px/);
-  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?font-size:\s*0\.72rem;[\s\S]*?letter-spacing:\s*0\.04em/);
+  assert.match(css, /\.hupai-work-format-tag\s*\{[\s\S]*?font:[^;}]*?0\.61rem/);
+  assert.match(css, /\.hupai-work-content\s*>\s*p:first-child\s*\{[\s\S]*?font:[^;}]*?0\.66rem/);
+  assert.match(css, /\.hupai-work-metrics\s*\{[\s\S]*?align-content:\s*start;[\s\S]*?min-height:\s*0;[\s\S]*?gap:\s*8px/);
+  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?font-size:\s*0\.65rem;[\s\S]*?letter-spacing:\s*0\.04em/);
   assert.match(css, /\.hupai-work-metric-icon\s*\{[\s\S]*?width:\s*14px;[\s\S]*?height:\s*14px;[\s\S]*?opacity:\s*0\.7/);
   assert.match(css, /\.hupai-work-metrics div\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex-direction:\s*column;[\s\S]*?align-items:\s*flex-start;[\s\S]*?justify-content:\s*flex-start/);
-  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?display:\s*flex;[\s\S]*?justify-content:\s*flex-start;[\s\S]*?gap:\s*5px/);
-  assert.match(css, /\.hupai-work-metrics dd\s*\{[\s\S]*?font:\s*600\s+1\.28rem[\s\S]*?letter-spacing:\s*-0\.03em;[\s\S]*?text-align:\s*left;[\s\S]*?font-variant-numeric:\s*tabular-nums/);
+  assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?display:\s*flex;[\s\S]*?justify-content:\s*flex-start;[\s\S]*?gap:\s*4px/);
+  assert.match(css, /\.hupai-work-metrics dd\s*\{[\s\S]*?font:\s*600\s+0\.98rem[\s\S]*?letter-spacing:\s*-0\.03em;[\s\S]*?text-align:\s*left;[\s\S]*?font-variant-numeric:\s*tabular-nums/);
   assert.match(css, /\.hupai-evidence-note\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /\.hupai-case-bridge\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-image-link:hover\s+img\s*\{[\s\S]*?transform:\s*none/);

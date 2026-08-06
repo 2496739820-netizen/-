@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "snapshotDate": "2026-08-06",
-  "updatedAt": "2026-08-06T19:32:00+08:00",
+  "updatedAt": "2026-08-06T20:49:00+08:00",
   "hupai": {
     "followers": 3646,
     "likesAndSaves": "1.7 万",
@@ -23,6 +23,18 @@
         "saves": 20,
         "comments": 20,
         "shares": 10
+      },
+      "699e5ebc000000001a029468": {
+        "likes": 110,
+        "saves": 72
+      },
+      "68088f68000000001c03efac": {
+        "likes": 232,
+        "saves": 196
+      },
+      "6819d3b60000000021003550": {
+        "likes": 229,
+        "saves": 242
       }
     }
   },

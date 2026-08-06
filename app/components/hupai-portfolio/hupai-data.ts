@@ -27,16 +27,7 @@ export type ImageWork = WorkBase & {
   kind: "image";
 };
 
-export type VideoWork = WorkBase & {
-  kind: "video";
-  video: {
-    src: string;
-    poster: string;
-    label: string;
-  };
-};
-
-export type HupaiWork = ImageWork | VideoWork;
+export type HupaiWork = ImageWork;
 
 function verifiedCount(value: number, label: string) {
   if (!Number.isSafeInteger(value) || value < 0) {
@@ -52,8 +43,6 @@ function hupaiMetrics(
   return [
     { label: "点赞", value: verifiedCount(metrics.likes, `${id}.likes`) },
     { label: "收藏", value: verifiedCount(metrics.saves, `${id}.saves`) },
-    { label: "评论", value: verifiedCount(metrics.comments, `${id}.comments`) },
-    { label: "分享", value: verifiedCount(metrics.shares, `${id}.shares`) },
   ];
 }
 
@@ -79,11 +68,11 @@ export const hupaiWorks = [
     format: "图文干货",
     capability: "以品牌知识拆解建立专业信任，完成选题、拍摄与图文表达。",
     image: {
-      src: "/hupai/lindberg-series-evidence.png",
-      alt: "林德伯格全系列干货讲解的小红书笔记页面截图",
-      width: 1068,
-      height: 836,
-      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(100vw - 36px), 46vw",
+      src: "/hupai/lindberg-series-cover.webp",
+      alt: "林德伯格全系列干货讲解的小红书原笔记封面",
+      width: 640,
+      height: 853,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("66ab4132000000002701f16e"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/66ab4132000000002701f16e?xsec_token=ABEeK9YoIEUOgOkE4q1JH-OKccXDsClT4TRJ5iKOhFNDU=&xsec_source=pc_user",
@@ -101,7 +90,7 @@ export const hupaiWorks = [
       alt: "日系、美系、欧系眼镜风格对比的小红书笔记封面",
       width: 1080,
       height: 1440,
-      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("69a16f6f0000000015038c2e"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/69a16f6f0000000015038c2e?xsec_token=ABC4b86owzt-0c7_p14sVnKM-n96xBIIkilpXe_F8N7Fs=&xsec_source=pc_user",
@@ -119,16 +108,65 @@ export const hupaiWorks = [
       alt: "林德伯格 6537 短视频的小红书笔记封面",
       width: 1080,
       height: 1440,
-      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("6a4a0ea7000000001702df31"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/6a4a0ea7000000001702df31?xsec_token=ABnzVHeGextP6DN1kzXFSpnScK6rFQLXuq4uJk_qLhtSI=&xsec_source=pc_user",
-    kind: "video",
-    video: {
-      src: "/hupai/lindberg-6537-preview.mp4",
-      poster: "/hupai/lindberg-6537-cover.webp",
-      label: "林德伯格 6537 19 秒竖屏短视频预览",
+    kind: "image",
+  },
+  {
+    id: "699e5ebc000000001a029468",
+    title: "999.9 S-925T 金属镜架",
+    originalTitle: "永远钟情于金属镜架的质感～999.9s925t",
+    publishedAt: "2026-02-28",
+    format: "产品解析图文",
+    capability: "拆解镜型、双层框面与佩戴稳定性，把产品结构转化为易理解的选购信息。",
+    image: {
+      src: "/hupai/9999-s925t-cover.webp",
+      alt: "999.9 S-925T 金属镜架的小红书原笔记封面",
+      width: 1080,
+      height: 1439,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
+    metrics: hupaiMetrics("699e5ebc000000001a029468"),
+    noteUrl: "https://www.xiaohongshu.com/explore/699e5ebc000000001a029468?xsec_token=WBkYQ8QnaGG-W0sL_oyQTO6lrLlVfKltmRINjS5PshBOQ=&xsec_source=pc_ad",
+    kind: "image",
+  },
+  {
+    id: "68088f68000000001c03efac",
+    title: "TAVAT 工业复古机械风",
+    originalTitle: "硬核男士推荐！工业、复古、机械......",
+    publishedAt: "2025-04-23",
+    format: "风格推荐图文",
+    capability: "通过多款 TAVAT 对比建立硬核风格选框指南，同时承接询价与到店需求。",
+    image: {
+      src: "/hupai/tavat-hardcore-cover.webp",
+      alt: "TAVAT 工业复古机械风眼镜的小红书原笔记封面",
+      width: 1080,
+      height: 1440,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
+    },
+    metrics: hupaiMetrics("68088f68000000001c03efac"),
+    noteUrl: "https://www.xiaohongshu.com/explore/68088f68000000001c03efac?xsec_token=WB-O-k9HdSnmToF2MOcVIJqtDtrb9AdAKuXk3M32SODcQ=&xsec_source=pc_ad",
+    kind: "image",
+  },
+  {
+    id: "6819d3b60000000021003550",
+    title: "贞观谨制系列",
+    originalTitle: "被一副眼镜俘获，贞观谨制",
+    publishedAt: "2025-05-06",
+    format: "品牌系列图文",
+    capability: "系统呈现六款镜架的框型、材质与工艺差异，建立品牌认知与专业信任。",
+    image: {
+      src: "/hupai/zhenguan-cover.webp",
+      alt: "贞观谨制手工眼镜的小红书原笔记封面",
+      width: 1080,
+      height: 1440,
+      sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
+    },
+    metrics: hupaiMetrics("6819d3b60000000021003550"),
+    noteUrl: "https://www.xiaohongshu.com/explore/6819d3b60000000021003550?xsec_token=WBKR3uEQ5rGUus7gMb1Yt9Wi_KGg94qqChmPtBSL6ZVnc=&xsec_source=pc_ad",
+    kind: "image",
   },
 ] as const satisfies readonly HupaiWork[];
 

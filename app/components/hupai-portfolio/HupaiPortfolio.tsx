@@ -31,9 +31,13 @@ const accountTabs: readonly { id: AccountId; label: string; description: string 
 const personalNumberFormatter = new Intl.NumberFormat("en-US");
 
 function WorkMetrics({ work }: { work: HupaiWork }) {
+  const visibleMetrics = work.metrics.filter(
+    (metric) => metric.label === "点赞" || metric.label === "收藏",
+  );
+
   return (
     <dl className="hupai-work-metrics" aria-label={`${work.title}互动数据`}>
-      {work.metrics.map((metric) => (
+      {visibleMetrics.map((metric) => (
         <div key={metric.label}>
           <dt>
             <span>{metric.label}</span>
@@ -89,38 +93,22 @@ function HupaiPanel({ isActive }: { isActive: boolean }) {
       <div className="hupai-work-grid">
         {hupaiWorks.map((work) => (
           <article className="hupai-work-card" key={work.id}>
-            {work.kind === "image" ? (
-              <a
-                className="hupai-work-image-link"
-                href={work.noteUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`在小红书打开《${work.title}》原笔记`}
-              >
-                <Image
-                  src={work.image.src}
-                  alt={work.image.alt}
-                  width={work.image.width}
-                  height={work.image.height}
-                  sizes={work.image.sizes}
-                  loading="lazy"
-                />
-              </a>
-            ) : (
-              <div className="hupai-work-video">
-                <span className="hupai-work-format-tag">{work.format}</span>
-                <video
-                  controls
-                  playsInline
-                  preload="none"
-                  poster={work.video.poster}
-                  aria-label={work.video.label}
-                >
-                  <source src={work.video.src} type="video/mp4" />
-                  您的浏览器不支持视频播放。
-                </video>
-              </div>
-            )}
+            <a
+              className="hupai-work-image-link"
+              href={work.noteUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`在小红书打开《${work.title}》原笔记`}
+            >
+              <Image
+                src={work.image.src}
+                alt={work.image.alt}
+                width={work.image.width}
+                height={work.image.height}
+                sizes={work.image.sizes}
+                loading="lazy"
+              />
+            </a>
 
             <div className="hupai-work-content">
               <p>{work.format} · {work.publishedAt}</p>

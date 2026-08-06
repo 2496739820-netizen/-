@@ -334,34 +334,29 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .account-results strong { color: var(--gold-deep); font: 600 clamp(1.28rem, 1.9vw, 1.8rem)/1 "Manrope", sans-serif; letter-spacing: -0.045em; font-variant-numeric: tabular-nums; }
 .account-results span { color: var(--muted); font: 600 0.7rem/1.42 "Manrope", "Noto Sans SC", sans-serif; letter-spacing: 0.04em; }
 
-.hupai-work-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 0.825fr)); gap: clamp(14px, 1.6vw, 22px); align-items: stretch; margin-top: 22px; }
+.hupai-work-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(10px, 1vw, 16px); align-items: stretch; margin-top: 22px; }
 .hupai-work-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 24px; background: var(--paper); }
-.hupai-work-card:nth-child(2) { background: rgba(220, 224, 211, 0.52); }
-.hupai-work-card:last-child { background: var(--paper-deep); }
-.hupai-work-image-link,
-.hupai-work-video { position: relative; display: block; width: 100%; overflow: hidden; background: var(--paper-deep); }
-.hupai-work-card:first-child .hupai-work-image-link { aspect-ratio: 4 / 3; }
-.hupai-work-card:not(:first-child) .hupai-work-image-link,
-.hupai-work-video { aspect-ratio: 4 / 5; }
-.hupai-work-image-link img,
-.hupai-work-video video { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.hupai-work-card:nth-child(3n + 2) { background: rgba(220, 224, 211, 0.52); }
+.hupai-work-card:nth-child(3n) { background: var(--paper-deep); }
+.hupai-work-image-link { position: relative; display: block; width: 100%; aspect-ratio: 3 / 4; overflow: hidden; background: var(--paper-deep); }
+.hupai-work-image-link img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .hupai-work-image-link img { transition: transform 0.28s ease; }
-.hupai-work-image-link:hover img { transform: scale(1.018); }
+.hupai-work-image-link:hover img { transform: none; }
 .hupai-work-image-link:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: -6px; }
-.hupai-work-format-tag { position: absolute; z-index: 1; top: 12px; left: 12px; border: 1px solid rgba(255, 253, 248, 0.65); border-radius: 999px; background: rgba(38, 35, 30, 0.66); padding: 5px 8px; color: var(--surface); font: 600 0.75rem/1 "Manrope", "Noto Sans SC", sans-serif; letter-spacing: 0.08em; }
+.hupai-work-format-tag { position: absolute; z-index: 1; top: 9px; left: 9px; border: 1px solid rgba(255, 253, 248, 0.65); border-radius: 999px; background: rgba(38, 35, 30, 0.66); padding: 4px 6px; color: var(--surface); font: 600 0.61rem/1 "Manrope", "Noto Sans SC", sans-serif; letter-spacing: 0.06em; }
 
-.hupai-work-content { display: flex; flex: 1; flex-direction: column; padding: clamp(19px, 2vw, 27px); }
-.hupai-work-content > p { margin: 0; color: var(--muted); font-size: 0.86rem; line-height: 1.68; }
-.hupai-work-content > p:first-child { color: var(--gold-deep); font: 600 0.75rem/1.35 "Manrope", "Noto Sans SC", sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
-.hupai-work-content h4 { margin: 13px 0 12px; font-family: "Noto Serif SC", serif; font-size: clamp(1.45rem, 2.05vw, 2.25rem); font-weight: 500; line-height: 1.3; letter-spacing: -0.025em; }
-.hupai-work-content > p:nth-of-type(2) { font-size: 0.84rem; }
-.hupai-work-content > p:nth-of-type(3) { margin-top: 10px; color: var(--ink-soft); font-size: 0.88rem; }
-.hupai-work-metrics { display: grid; align-content: start; min-height: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; margin: 16px 0 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+.hupai-work-content { display: flex; flex: 1; flex-direction: column; padding: clamp(14px, 1.2vw, 18px); }
+.hupai-work-content > p { margin: 0; color: var(--ink-soft); font-size: 0.76rem; line-height: 1.58; }
+.hupai-work-content > p:first-child { color: var(--gold-deep); font: 600 0.66rem/1.35 "Manrope", "Noto Sans SC", sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+.hupai-work-content h4 { margin: 9px 0 8px; font-family: "Noto Serif SC", serif; font-size: clamp(1.1rem, 1.4vw, 1.35rem); font-weight: 500; line-height: 1.3; letter-spacing: -0.025em; }
+.hupai-work-content > p:nth-of-type(2) { font-size: 0.7rem; }
+.hupai-work-content > p:nth-of-type(3) { margin-top: 7px; color: var(--ink-soft); font-size: 0.76rem; }
+.hupai-work-metrics { display: grid; align-content: start; min-height: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 13px 0 6px; border-top: 1px solid var(--line); padding-top: 11px; }
 .hupai-work-metrics div { display: flex; min-width: 0; min-height: 0; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 4px; }
-.hupai-work-metrics dt { display: flex; align-items: center; justify-content: flex-start; gap: 5px; color: var(--muted); font-size: 0.72rem; font-weight: 500; line-height: 1.2; letter-spacing: 0.04em; }
+.hupai-work-metrics dt { display: flex; align-items: center; justify-content: flex-start; gap: 4px; color: var(--muted); font-size: 0.65rem; font-weight: 500; line-height: 1.2; letter-spacing: 0.04em; }
 .hupai-work-metric-icon { display: block; width: 14px; height: 14px; flex: 0 0 14px; object-fit: contain; opacity: 0.7; translate: 0 0.5px; }
-.hupai-work-metrics dd { margin: 0; padding-left: 0; color: var(--ink); font: 600 1.28rem/1.1 "Manrope", sans-serif; letter-spacing: -0.03em; text-align: left; font-variant-numeric: tabular-nums; }
-.hupai-work-content > a { display: inline-flex; width: fit-content; min-height: 44px; align-items: center; margin-top: auto; padding-top: 12px; color: var(--gold-deep); font-size: 0.84rem; font-weight: 600; }
+.hupai-work-metrics dd { margin: 0; padding-left: 0; color: var(--ink); font: 600 0.98rem/1.1 "Manrope", sans-serif; letter-spacing: -0.03em; text-align: left; font-variant-numeric: tabular-nums; }
+.hupai-work-content > a { display: inline-flex; width: fit-content; min-height: 44px; align-items: center; margin-top: auto; padding-top: 10px; color: var(--gold-deep); font-size: 0.76rem; font-weight: 600; }
 .hupai-work-content > a::after { content: "↗"; margin-left: 7px; font-size: 1rem; }
 .hupai-evidence-note { margin: 14px 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.65; text-align: right; }
 
@@ -696,6 +691,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .section-heading { grid-template-columns: 2.5fr 5fr 4.5fr; }
   .experience-list article { grid-template-columns: 1.4fr 2.6fr 4fr; }
   .experience-list article > strong { grid-column: 2 / -1; }
+  .hupai-work-grid,
   .personal-work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
@@ -720,8 +716,6 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hupai-account-evidence > *:nth-child(5) { border-top: 1px solid var(--line); }
   .hupai-account-evidence > *:nth-child(4) { border-left: 0; }
   .hupai-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hupai-work-card:first-child { grid-column: 1 / -1; }
-  .hupai-work-card:first-child .hupai-work-image-link { aspect-ratio: 4 / 3; }
   .personal-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case-list { grid-template-columns: 1fr; }
   .case-card { min-height: 390px; }
@@ -831,10 +825,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .account-results span { font-size: 0.66rem; }
   .hupai-work-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }
   .hupai-work-card { border-radius: 20px; }
-  .hupai-work-card:first-child { grid-column: auto; }
-  .hupai-work-card:first-child .hupai-work-image-link,
-  .hupai-work-card:not(:first-child) .hupai-work-image-link,
-  .hupai-work-video { aspect-ratio: 4 / 5; }
+  .hupai-work-image-link { aspect-ratio: 3 / 4; }
   .hupai-work-content { padding: 20px 18px; }
   .hupai-work-content h4 { font-size: clamp(1.55rem, 7vw, 1.95rem); }
   .personal-work-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }

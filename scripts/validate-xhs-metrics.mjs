@@ -8,6 +8,9 @@ const hupaiIds = [
   "66ab4132000000002701f16e",
   "69a16f6f0000000015038c2e",
   "6a4a0ea7000000001702df31",
+  "699e5ebc000000001a029468",
+  "68088f68000000001c03efac",
+  "6819d3b60000000021003550",
 ];
 const personalIds = ["montage", "angle", "narrative-montage", "composition", "color", "sound"];
 
@@ -29,7 +32,7 @@ assert.match(snapshot.hupai.likesAndSaves, /^\d+(?:\.\d+)?\s*万$/);
 assert.deepEqual(Object.keys(snapshot.hupai.works).sort(), [...hupaiIds].sort());
 for (const id of hupaiIds) {
   const metrics = snapshot.hupai.works[id];
-  for (const field of ["likes", "saves", "comments", "shares"]) {
+  for (const field of ["likes", "saves"]) {
     positiveInteger(metrics[field], `hupai.works.${id}.${field}`);
   }
 }
