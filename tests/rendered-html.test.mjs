@@ -70,6 +70,8 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /粤港澳大湾区/);
   assert.match(html, /求职中/);
   assert.match(html, /虎派眼镜/);
+  assert.doesNotMatch(html, /class="section-heading"/);
+  assert.doesNotMatch(html, /01 \/ Flagship experience|2024\.05 — 至今|负责小红书主账号全链路运营/);
 
   assert.match(html, /3W\+/);
   assert.match(html, /月均到店新客 GMV/);
@@ -441,6 +443,7 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
   assert.match(css, /\.hupai-evidence\s*\{[\s\S]*?margin-top:\s*clamp\(52px,\s*6vw,\s*88px\)/);
+  assert.match(css, /\.flagship-section\s+\.hupai-evidence\s*\{[\s\S]*?margin-top:\s*0/);
   assert.match(css, /\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:/);
   assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?align-items:\s*stretch/);

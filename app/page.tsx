@@ -307,18 +307,6 @@ export default function Home() {
 
         <section id="hupai" className="flagship-section section-shell">
           <div className="container-wide">
-            <div className="section-heading" data-reveal>
-              <div>
-                <p className="eyebrow">01 / Flagship experience</p>
-                <p className="section-date">2024.05 — 至今</p>
-              </div>
-              <div className="section-title-block">
-                <p>小红书运营 / 新媒体运营</p>
-                <h2>虎派眼镜</h2>
-              </div>
-              <p className="section-summary">负责小红书主账号全链路运营，并协同员工矩阵与多平台投流，把内容种草延伸到咨询、客资与到店成交。</p>
-            </div>
-
             <HupaiPortfolio />
             <div className="hupai-case-bridge" data-reveal>
               <p>上方是可核实的作品样本</p>

@@ -279,7 +279,8 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 
 .section-shell { scroll-margin-top: var(--header-height); padding: clamp(88px, 9vw, 140px) 0; }
 
-.flagship-section { background: var(--surface); }
+.flagship-section { background: var(--surface); padding-top: clamp(48px, 5vw, 72px); }
+.flagship-section .hupai-evidence { margin-top: 0; }
 .section-heading { display: grid; grid-template-columns: 2.5fr 5.5fr 4fr; gap: clamp(30px, 4vw, 70px); align-items: end; }
 .section-date { margin: 32px 0 0; color: var(--muted); font: 500 0.78rem/1 "Manrope", sans-serif; letter-spacing: 0.08em; }
 .section-title-block > p { margin: 0 0 10px; color: var(--muted); font-size: 0.88rem; letter-spacing: 0.05em; }
@@ -795,6 +796,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .proof-item strong { font-size: clamp(1.55rem, 7vw, 1.8rem); }
   .proof-item span { margin-top: 6px; font-size: 0.69rem; line-height: 1.35; }
   .section-shell { padding: 78px 0; }
+  .flagship-section { padding-top: 44px; }
   .section-heading { grid-template-columns: 1fr; }
   .section-date { margin-top: 15px; }
   .section-title-block,
