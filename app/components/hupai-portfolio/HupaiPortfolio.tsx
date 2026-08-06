@@ -141,7 +141,7 @@ function HupaiPanel({ isActive }: { isActive: boolean }) {
         ))}
       </div>
 
-      <p className="hupai-evidence-note">{`公开数据快照日期：${hupaiAccount.snapshotDate}。互动数据来自笔记公开页面。`}</p>
+      <p className="hupai-evidence-note">{`每日同步数据 · 最近更新：${hupaiAccount.snapshotDate}。互动数据来自笔记公开页面。`}</p>
     </div>
   );
 }
@@ -261,7 +261,7 @@ function PersonalPanel({ isActive }: { isActive: boolean }) {
         ))}
       </div>
 
-      <p className="hupai-evidence-note">创作后台快照数据：{personalAccount.snapshotDate}。互动指标来自创作后台快照，作品链接指向可核验的小红书笔记。</p>
+      <p className="hupai-evidence-note">每日同步数据 · 最近更新：{personalAccount.snapshotDate}。互动指标来自创作后台，作品链接指向可核验的小红书笔记。</p>
     </div>
   );
 }

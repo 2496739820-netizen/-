@@ -1,3 +1,5 @@
+import metricSnapshot from "./xhs-metrics.json";
+
 export type WorkMetric = {
   label: "点赞" | "收藏" | "评论" | "分享";
   value: number;
@@ -36,13 +38,36 @@ export type VideoWork = WorkBase & {
 
 export type HupaiWork = ImageWork | VideoWork;
 
+function verifiedCount(value: number, label: string) {
+  if (!Number.isSafeInteger(value) || value < 0) {
+    throw new Error(`Invalid Xiaohongshu metric: ${label}`);
+  }
+  return value;
+}
+
+function hupaiMetrics(
+  id: keyof typeof metricSnapshot.hupai.works,
+): readonly WorkMetric[] {
+  const metrics = metricSnapshot.hupai.works[id];
+  return [
+    { label: "点赞", value: verifiedCount(metrics.likes, `${id}.likes`) },
+    { label: "收藏", value: verifiedCount(metrics.saves, `${id}.saves`) },
+    { label: "评论", value: verifiedCount(metrics.comments, `${id}.comments`) },
+    { label: "分享", value: verifiedCount(metrics.shares, `${id}.shares`) },
+  ];
+}
+
+if (!/^\d{4}-\d{2}-\d{2}$/.test(metricSnapshot.snapshotDate)) {
+  throw new Error("Invalid Xiaohongshu snapshot date");
+}
+
 export const hupaiAccount = {
   name: "虎.派.眼.镜",
   profileUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77",
-  followers: "3604粉丝",
-  likesAndSaves: "1.7 万获赞与收藏",
+  followers: `${metricSnapshot.hupai.followers}粉丝`,
+  likesAndSaves: `${metricSnapshot.hupai.likesAndSaves}获赞与收藏`,
   responsibility: "2024.05 至今负责拍摄与运营",
-  snapshotDate: "2026-07-27",
+  snapshotDate: metricSnapshot.snapshotDate,
 } as const;
 
 export const hupaiWorks = [
@@ -60,12 +85,7 @@ export const hupaiWorks = [
       height: 836,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(100vw - 36px), 46vw",
     },
-    metrics: [
-      { label: "点赞", value: 127 },
-      { label: "收藏", value: 147 },
-      { label: "评论", value: 48 },
-      { label: "分享", value: 49 },
-    ],
+    metrics: hupaiMetrics("66ab4132000000002701f16e"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/66ab4132000000002701f16e?xsec_token=ABEeK9YoIEUOgOkE4q1JH-OKccXDsClT4TRJ5iKOhFNDU=&xsec_source=pc_user",
     kind: "image",
   },
@@ -83,12 +103,7 @@ export const hupaiWorks = [
       height: 1440,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
-    metrics: [
-      { label: "点赞", value: 81 },
-      { label: "收藏", value: 88 },
-      { label: "评论", value: 11 },
-      { label: "分享", value: 21 },
-    ],
+    metrics: hupaiMetrics("69a16f6f0000000015038c2e"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/69a16f6f0000000015038c2e?xsec_token=ABC4b86owzt-0c7_p14sVnKM-n96xBIIkilpXe_F8N7Fs=&xsec_source=pc_user",
     kind: "image",
   },
@@ -106,12 +121,7 @@ export const hupaiWorks = [
       height: 1440,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
-    metrics: [
-      { label: "点赞", value: 22 },
-      { label: "收藏", value: 9 },
-      { label: "评论", value: 10 },
-      { label: "分享", value: 2 },
-    ],
+    metrics: hupaiMetrics("6a4a0ea7000000001702df31"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/6a4a0ea7000000001702df31?xsec_token=ABnzVHeGextP6DN1kzXFSpnScK6rFQLXuq4uJk_qLhtSI=&xsec_source=pc_user",
     kind: "video",
     video: {
@@ -149,20 +159,37 @@ export type VerifiedPersonalWork = PersonalWorkBase & {
 
 export type PersonalWork = VerifiedPersonalWork;
 
+function personalMetrics(
+  id: keyof typeof metricSnapshot.personal.works,
+): readonly PersonalWorkMetric[] {
+  const metrics = metricSnapshot.personal.works[id];
+  return [
+    { label: "观看", value: verifiedCount(metrics.views, `${id}.views`) },
+    { label: "评论", value: verifiedCount(metrics.comments, `${id}.comments`) },
+    { label: "点赞", value: verifiedCount(metrics.likes, `${id}.likes`) },
+    { label: "收藏", value: verifiedCount(metrics.saves, `${id}.saves`) },
+    { label: "分享", value: verifiedCount(metrics.shares, `${id}.shares`) },
+  ];
+}
+
+const personalMetricRows = Object.values(metricSnapshot.personal.works);
+const formatCompactWan = (value: number) => `${(value / 10_000).toFixed(1)}万`;
+const formatInteger = new Intl.NumberFormat("en-US").format;
+
 export const personalAccount = {
   name: "白夜下",
   profileUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2",
-  followers: "3,336",
-  likesAndSaves: "6.7 万",
-  publishedNotes: 21,
+  followers: new Intl.NumberFormat("en-US").format(metricSnapshot.personal.followers),
+  likesAndSaves: metricSnapshot.personal.likesAndSaves,
+  publishedNotes: metricSnapshot.personal.publishedNotes,
   positioning: "影视后期 · 视听语言知识",
-  snapshotDate: "2026-08-06",
+  snapshotDate: metricSnapshot.snapshotDate,
 } as const;
 
 export const personalResults = {
-  maxViews: "18.2万",
-  maxLikes: "8,064",
-  maxSaves: "5,274",
+  maxViews: formatCompactWan(Math.max(...personalMetricRows.map((work) => work.views))),
+  maxLikes: formatInteger(Math.max(...personalMetricRows.map((work) => work.likes))),
+  maxSaves: formatInteger(Math.max(...personalMetricRows.map((work) => work.saves))),
 } as const;
 
 export const personalWorks = [
@@ -180,13 +207,7 @@ export const personalWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
     noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/647db32c0000000013031980?xsec_token=ABbaHzlJQptzx5VrubvwXml86zehbe6aapWjXRQqYPnmw=&xsec_source=pc_user",
-    metrics: [
-      { label: "观看", value: 182133 },
-      { label: "评论", value: 34 },
-      { label: "点赞", value: 8064 },
-      { label: "收藏", value: 5274 },
-      { label: "分享", value: 772 },
-    ],
+    metrics: personalMetrics("montage"),
   },
   {
     id: "angle",
@@ -202,13 +223,7 @@ export const personalWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
     noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/643fe1770000000013006cc9?xsec_token=ABBzLeiu105MXIoqKcgKnOV0rJ-MCQoGYlW7tgPQ3VGgQ=&xsec_source=pc_user",
-    metrics: [
-      { label: "观看", value: 150094 },
-      { label: "评论", value: 83 },
-      { label: "点赞", value: 6865 },
-      { label: "收藏", value: 4546 },
-      { label: "分享", value: 545 },
-    ],
+    metrics: personalMetrics("angle"),
   },
   {
     id: "narrative-montage",
@@ -224,13 +239,7 @@ export const personalWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 28vw",
     },
     noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/646b256600000000270020c6?xsec_token=ABDr-5_4PCHKqMb3WHSQAQiBGTi5Q7XW7l-_uO4g1fV5I=&xsec_source=pc_user",
-    metrics: [
-      { label: "观看", value: 92688 },
-      { label: "评论", value: 14 },
-      { label: "点赞", value: 3108 },
-      { label: "收藏", value: 1957 },
-      { label: "分享", value: 277 },
-    ],
+    metrics: personalMetrics("narrative-montage"),
   },
   {
     id: "composition",
@@ -245,13 +254,7 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
-    metrics: [
-      { label: "观看", value: 42877 },
-      { label: "评论", value: 8 },
-      { label: "点赞", value: 1642 },
-      { label: "收藏", value: 1069 },
-      { label: "分享", value: 135 },
-    ],
+    metrics: personalMetrics("composition"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/648be41400000000120331f6?xsec_token=ABJ955dld8d1iw9N0tKjikVkdwV0sPZHuHMsMuDb9GF_k=&xsec_source=pc_user",
   },
   {
@@ -267,13 +270,7 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
-    metrics: [
-      { label: "观看", value: 21247 },
-      { label: "评论", value: 0 },
-      { label: "点赞", value: 849 },
-      { label: "收藏", value: 587 },
-      { label: "分享", value: 107 },
-    ],
+    metrics: personalMetrics("color"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/65471a96000000001e02976e?xsec_token=ABeeWLisrAeO0pWYAZOvDfmsMldP02WS2-lun8QjT_5I0=&xsec_source=pc_user",
   },
   {
@@ -289,13 +286,7 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
-    metrics: [
-      { label: "观看", value: 7308 },
-      { label: "评论", value: 0 },
-      { label: "点赞", value: 369 },
-      { label: "收藏", value: 315 },
-      { label: "分享", value: 44 },
-    ],
+    metrics: personalMetrics("sound"),
     noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/654222d8000000001e022020?xsec_token=ABwOpukjnvkxsrKOWbs-TlyJe6n_gp9o0oIPA8aCdYnz8=&xsec_source=pc_user",
   },
 ] as const satisfies readonly PersonalWork[];

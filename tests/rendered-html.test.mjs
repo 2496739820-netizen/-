@@ -133,18 +133,18 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.match(html, /小红书内容作品/);
   assert.match(html, /虎\.派\.眼\.镜/);
   assert.match(html, /https:\/\/www\.xiaohongshu\.com\/user\/profile\/5fed68f20000000001009f77/);
-  assert.match(html, /<span>粉丝<\/span><strong>3604粉丝<\/strong>/);
-  assert.doesNotMatch(html, /<span>关注<\/span><strong>3604粉丝<\/strong>/);
-  assert.match(html, /3604\s*粉丝/);
+  assert.match(html, /<span>粉丝<\/span><strong>3646粉丝<\/strong>/);
+  assert.doesNotMatch(html, /<span>关注<\/span><strong>3646粉丝<\/strong>/);
+  assert.match(html, /3646\s*粉丝/);
   assert.match(html, /1\.7\s*万获赞与收藏/);
-  assert.match(html, /公开数据快照日期：2026-07-27/);
+  assert.match(html, /每日同步数据 · 最近更新：2026-08-06/);
   assert.match(html, /林德伯格 全系列干货讲解/);
   assert.match(html, /日系 美系 欧系/);
   assert.match(html, /林德伯格 6537/);
   assert.match(html, /林德伯格 \| 最新全系列干货讲解🔥/);
   assert.match(html, /日系 - 美系 - 欧系，一个多元的眼镜宇宙！/);
   assert.match(html, /客订分享！林德伯格6537\+蔡司鎏金膜~/);
-  for (const metric of ["127", "147", "48", "49", "81", "88", "11", "21", "22", "9", "10", "2"]) {
+  for (const metric of ["128", "150", "48", "50", "82", "90", "11", "21", "39", "20", "10"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   for (const noteId of noteIds) assert.match(html, new RegExp(noteId));
@@ -184,7 +184,7 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /2026-08-06/);
   assert.match(html, />21</);
   assert.match(html, /18\.2万/);
-  assert.match(html, /8,064/);
+  assert.match(html, /8,065/);
   assert.match(html, /5,274/);
   assert.doesNotMatch(html, />96</);
   assert.match(html, /表现蒙太奇/);
@@ -195,7 +195,7 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /声音设计/);
   assert.equal((html.match(/class="personal-work-card"/g) ?? []).length, 6);
   assert.doesNotMatch(html, /系列展示 \/ 待补完整数据/);
-  for (const metric of ["182,133", "8,064", "150,094", "6,865", "92,688", "3,108", "42,877", "1,642", "21,247", "849", "7,308", "369"]) {
+  for (const metric of ["182,135", "8,065", "150,095", "6,865", "92,689", "3,108", "42,879", "1,642", "21,250", "849", "7,309", "369"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   const personalNoteIds = [
@@ -209,7 +209,7 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.equal((html.match(new RegExp(personalProfileUrl, "g")) ?? []).length, 13);
   for (const noteId of personalNoteIds) assert.match(html, new RegExp(noteId));
   assert.equal((html.match(/>查看原笔记</g) ?? []).length, 9);
-  assert.match(html, /创作后台快照数据/);
+  assert.match(html, /每日同步数据 · 最近更新/);
   assert.doesNotMatch(html, /backend-note-manager\.png/);
   assert.doesNotMatch(html, /15815347183/);
 });
@@ -311,16 +311,27 @@ test("ships the verified portfolio assets and removes the unrelated video experi
 });
 
 test("ships typed Hupai evidence data and browser-playable source assets", async () => {
-  const [data, component, lindbergSeries, universeCover, videoCover, preview] = await Promise.all([
+  const [data, component, snapshotRaw, lindbergSeries, universeCover, videoCover, preview] = await Promise.all([
     readFile(new URL("../app/components/hupai-portfolio/hupai-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/hupai-portfolio/xhs-metrics.json", import.meta.url), "utf8"),
     readFile(new URL("../public/hupai/lindberg-series-evidence.png", import.meta.url)),
     readFile(new URL("../public/hupai/eyewear-universe-cover.webp", import.meta.url)),
     readFile(new URL("../public/hupai/lindberg-6537-cover.webp", import.meta.url)),
     readFile(new URL("../public/hupai/lindberg-6537-preview.mp4", import.meta.url)),
   ]);
 
-  assert.match(data, /snapshotDate: "2026-07-27"/);
+  const snapshot = JSON.parse(snapshotRaw);
+  assert.equal(snapshot.schemaVersion, 1);
+  assert.equal(snapshot.snapshotDate, "2026-08-06");
+  assert.equal(snapshot.hupai.followers, 3646);
+  assert.deepEqual(snapshot.hupai.works["6a4a0ea7000000001702df31"], {
+    likes: 39,
+    saves: 20,
+    comments: 20,
+    shares: 10,
+  });
+  assert.match(data, /metricSnapshot\.snapshotDate/);
   assert.match(data, /id: "6a4a0ea7000000001702df31"/);
   assert.equal((data.match(/noteUrl: "[^"]*xsec_source=pc_user"/g) ?? []).length, 9);
   assert.doesNotMatch(data, /noteUrl: "https:\/\/www\.xiaohongshu\.com\/explore\//);
@@ -342,10 +353,11 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
 });
 
 test("ships six verified personal Xiaohongshu cards, covers, and tab behavior", async () => {
-  const [data, component, css, montage, angle, narrativeMontage, composition, color, sound] = await Promise.all([
+  const [data, component, css, snapshotRaw, montage, angle, narrativeMontage, composition, color, sound] = await Promise.all([
     readFile(new URL("../app/components/hupai-portfolio/hupai-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/hupai-portfolio/xhs-metrics.json", import.meta.url), "utf8"),
     readFile(new URL("../public/personal-xhs/01-montage.webp", import.meta.url)),
     readFile(new URL("../public/personal-xhs/02-angle.webp", import.meta.url)),
     readFile(new URL("../public/personal-xhs/03-narrative-montage.webp", import.meta.url)),
@@ -354,19 +366,21 @@ test("ships six verified personal Xiaohongshu cards, covers, and tab behavior", 
     readFile(new URL("../public/personal-xhs/06-sound.webp", import.meta.url)),
   ]);
 
-  assert.match(data, /publishedNotes: 21/);
-  assert.doesNotMatch(data, /publishedNotes: 96/);
-  assert.match(data, /maxViews: "18\.2万"/);
-  assert.match(data, /maxLikes: "8,064"/);
-  assert.match(data, /maxSaves: "5,274"/);
+  const snapshot = JSON.parse(snapshotRaw);
+  assert.equal(snapshot.personal.publishedNotes, 21);
+  assert.notEqual(snapshot.personal.publishedNotes, 96);
+  assert.equal(snapshot.personal.works.montage.views, 182135);
+  assert.equal(snapshot.personal.works.montage.likes, 8065);
+  assert.match(data, /formatCompactWan/);
+  assert.match(data, /maxLikes: formatInteger/);
+  assert.match(data, /maxSaves: formatInteger/);
   assert.match(data, /"观看"/);
   assert.match(data, /"评论"/);
   assert.match(data, /"点赞"/);
   assert.match(data, /"收藏"/);
   assert.match(data, /"分享"/);
-  for (const metric of [182133, 34, 8064, 5274, 772, 150094, 83, 6865, 4546, 545, 92688, 14, 3108, 1957, 277, 42877, 8, 1642, 1069, 135, 21247, 0, 849, 587, 107, 7308, 369, 315, 44]) {
-    assert.match(data, new RegExp(`value: ${metric}`));
-  }
+  assert.match(data, /metrics: personalMetrics\("montage"\)/);
+  assert.match(data, /metrics: personalMetrics\("sound"\)/);
   for (const asset of ["01-montage.webp", "02-angle.webp", "03-narrative-montage.webp"]) {
     assert.match(data, new RegExp(`/personal-xhs/${asset.replace(".", "\\.")}`));
   }
