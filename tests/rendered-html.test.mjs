@@ -162,6 +162,48 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.ok(html.indexOf("小红书内容作品") < html.indexOf('class="case-list"'));
 });
 
+test("server-renders an accessible dual-account Xiaohongshu evidence module", async () => {
+  const response = await render();
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const personalProfileUrl = "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2";
+
+  assert.match(html, /role="tablist"[^>]*aria-label="切换运营账号"/);
+  assert.match(html, /<button(?=[^>]*\bid="hupai-account-tab")(?=[^>]*\brole="tab")(?=[^>]*\baria-controls="hupai-account-panel")(?=[^>]*\baria-selected="true")[^>]*>/);
+  assert.match(html, /<button(?=[^>]*\bid="personal-account-tab")(?=[^>]*\brole="tab")(?=[^>]*\baria-controls="personal-account-panel")(?=[^>]*\baria-selected="false")[^>]*>/);
+  assert.match(html, /<div(?=[^>]*\bid="hupai-account-panel")(?=[^>]*\brole="tabpanel")(?=[^>]*\baria-labelledby="hupai-account-tab")[^>]*>/);
+  assert.match(html, /<div(?=[^>]*\bid="personal-account-panel")(?=[^>]*\brole="tabpanel")(?=[^>]*\baria-labelledby="personal-account-tab")(?=[^>]*\bhidden)[^>]*>/);
+
+  assert.match(html, /白夜下/);
+  assert.match(html, new RegExp(personalProfileUrl));
+  assert.match(html, /<span>粉丝<\/span><strong>3,336<\/strong>/);
+  assert.match(html, /<span>获赞与收藏<\/span><strong>6\.7 万<\/strong>/);
+  assert.match(html, /影视后期 · 视听语言知识/);
+  assert.match(html, /2026-08-06/);
+  assert.match(html, />21</);
+  assert.match(html, /18\.2万/);
+  assert.match(html, /8,064/);
+  assert.match(html, /5,273/);
+  assert.doesNotMatch(html, />96</);
+  assert.match(html, /表现蒙太奇/);
+  assert.match(html, /角度/);
+  assert.match(html, /叙事蒙太奇/);
+  for (const metric of ["182127", "8064", "5273", "772", "150082", "83", "6864", "4546", "92687", "3108", "1957", "277"]) {
+    assert.match(html, new RegExp(`>${metric}<`));
+  }
+  const personalNoteUrls = [
+    "https://www.xiaohongshu.com/explore/647db32c0000000013031980",
+    "https://www.xiaohongshu.com/explore/643fe1770000000013006cc9",
+    "https://www.xiaohongshu.com/explore/646b256600000000270020c6",
+  ];
+  assert.equal((html.match(new RegExp(personalProfileUrl, "g")) ?? []).length, 1);
+  for (const url of personalNoteUrls) assert.match(html, new RegExp(url));
+  assert.equal((html.match(/>查看原笔记</g) ?? []).length, 6);
+  assert.match(html, /创作后台快照数据/);
+  assert.doesNotMatch(html, /backend-note-manager\.png/);
+  assert.doesNotMatch(html, /15815347183/);
+});
+
 test("ships the verified portfolio assets and removes the unrelated video experience", async () => {
   const [page, layout, css, resume, portrait, avatar, og, contactQr, cardModel, lanyardTexture, cardBase] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
@@ -286,6 +328,51 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
   assert.equal(videoCover.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(videoCover.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(preview.subarray(4, 8).toString("ascii"), "ftyp");
+});
+
+test("ships verified personal Xiaohongshu data, covers, and tab behavior", async () => {
+  const [data, component, css, montage, angle, composition] = await Promise.all([
+    readFile(new URL("../app/components/hupai-portfolio/hupai-data.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/personal-xhs/01-montage.webp", import.meta.url)),
+    readFile(new URL("../public/personal-xhs/02-angle.webp", import.meta.url)),
+    readFile(new URL("../public/personal-xhs/03-narrative-montage.webp", import.meta.url)),
+  ]);
+
+  assert.match(data, /publishedNotes: 21/);
+  assert.doesNotMatch(data, /publishedNotes: 96/);
+  assert.match(data, /maxViews: "18\.2万"/);
+  assert.match(data, /maxLikes: "8,064"/);
+  assert.match(data, /maxSaves: "5,273"/);
+  assert.match(data, /"观看"/);
+  assert.match(data, /"评论"/);
+  assert.match(data, /"点赞"/);
+  assert.match(data, /"收藏"/);
+  assert.match(data, /"分享"/);
+  for (const metric of [182127, 34, 8064, 5273, 772, 150082, 83, 6864, 4546, 545, 92687, 14, 3108, 1957, 277]) {
+    assert.match(data, new RegExp(`value: ${metric}`));
+  }
+  for (const asset of ["01-montage.webp", "02-angle.webp", "03-narrative-montage.webp"]) {
+    assert.match(data, new RegExp(`/personal-xhs/${asset.replace(".", "\\.")}`));
+  }
+  assert.match(component, /useState\("hupai"\)/);
+  assert.match(component, /event\.key === "ArrowRight"/);
+  assert.match(component, /event\.key === "ArrowLeft"/);
+  assert.match(component, /event\.key === "Home"/);
+  assert.match(component, /event\.key === "End"/);
+  assert.match(component, /selectTab\(nextIndex\)/);
+  assert.match(component, /tabRefs\.current\[index\]\?\.focus\(\)/);
+  assert.match(component, /inert=/);
+  assert.doesNotMatch(`${data}${component}`, /backend-note-manager\.png|15815347183/);
+
+  for (const cover of [montage, angle, composition]) {
+    assert.equal(cover.subarray(0, 4).toString("ascii"), "RIFF");
+    assert.equal(cover.subarray(8, 12).toString("ascii"), "WEBP");
+  }
+  assert.match(css, /\.account-tabs\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(css, /\.account-tab\s*\{[\s\S]*?min-height:\s*44px/);
+  assert.match(css, /@media \(max-width: 620px\)\s*\{[\s\S]*?\.personal-work-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
 });
 
 test("styles Hupai work evidence as a responsive editorial proof module", async () => {
