@@ -183,7 +183,7 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, />21</);
   assert.match(html, /18\.2万/);
   assert.match(html, /8,064/);
-  assert.match(html, /5,273/);
+  assert.match(html, /5,274/);
   assert.doesNotMatch(html, />96</);
   assert.match(html, /表现蒙太奇/);
   assert.match(html, /角度/);
@@ -192,10 +192,8 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /色彩/);
   assert.match(html, /声音设计/);
   assert.equal((html.match(/class="personal-work-card"/g) ?? []).length, 6);
-  assert.equal((html.match(/系列展示 \/ 待补完整数据/g) ?? []).length, 3);
-  assert.match(html, />1,642</);
-  assert.doesNotMatch(html, />42,877<|>21,247</);
-  for (const metric of ["182,127", "8,064", "150,082", "6,864", "92,687", "3,108"]) {
+  assert.doesNotMatch(html, /系列展示 \/ 待补完整数据/);
+  for (const metric of ["182,133", "8,064", "150,094", "6,865", "92,688", "3,108", "42,877", "1,642", "21,247", "849", "7,308", "369"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   const personalNoteUrls = [
@@ -203,9 +201,13 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
     "https://www.xiaohongshu.com/explore/643fe1770000000013006cc9",
     "https://www.xiaohongshu.com/explore/646b256600000000270020c6",
   ];
-  assert.equal((html.match(new RegExp(personalProfileUrl, "g")) ?? []).length, 1);
+  assert.equal((html.match(new RegExp(personalProfileUrl, "g")) ?? []).length, 7);
   for (const url of personalNoteUrls) assert.match(html, new RegExp(url));
-  assert.equal((html.match(/>查看原笔记</g) ?? []).length, 6);
+  for (const noteId of ["648be41400000000120331f6", "65471a96000000001e02976e", "654222d8000000001e022020"]) {
+    assert.match(html, new RegExp(noteId));
+  }
+  assert.equal((html.match(/xsec_source=pc_user/g) ?? []).length, 6);
+  assert.equal((html.match(/>查看原笔记</g) ?? []).length, 9);
   assert.match(html, /创作后台快照数据/);
   assert.doesNotMatch(html, /backend-note-manager\.png/);
   assert.doesNotMatch(html, /15815347183/);
@@ -337,7 +339,7 @@ test("ships typed Hupai evidence data and browser-playable source assets", async
   assert.equal(preview.subarray(4, 8).toString("ascii"), "ftyp");
 });
 
-test("ships verified and series personal Xiaohongshu cards, covers, and tab behavior", async () => {
+test("ships six verified personal Xiaohongshu cards, covers, and tab behavior", async () => {
   const [data, component, css, montage, angle, narrativeMontage, composition, color, sound] = await Promise.all([
     readFile(new URL("../app/components/hupai-portfolio/hupai-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/hupai-portfolio/HupaiPortfolio.tsx", import.meta.url), "utf8"),
@@ -354,13 +356,13 @@ test("ships verified and series personal Xiaohongshu cards, covers, and tab beha
   assert.doesNotMatch(data, /publishedNotes: 96/);
   assert.match(data, /maxViews: "18\.2万"/);
   assert.match(data, /maxLikes: "8,064"/);
-  assert.match(data, /maxSaves: "5,273"/);
+  assert.match(data, /maxSaves: "5,274"/);
   assert.match(data, /"观看"/);
   assert.match(data, /"评论"/);
   assert.match(data, /"点赞"/);
   assert.match(data, /"收藏"/);
   assert.match(data, /"分享"/);
-  for (const metric of [182127, 34, 8064, 5273, 772, 150082, 83, 6864, 4546, 545, 92687, 14, 3108, 1957, 277]) {
+  for (const metric of [182133, 34, 8064, 5274, 772, 150094, 83, 6865, 4546, 545, 92688, 14, 3108, 1957, 277, 42877, 8, 1642, 1069, 135, 21247, 0, 849, 587, 107, 7308, 369, 315, 44]) {
     assert.match(data, new RegExp(`value: ${metric}`));
   }
   for (const asset of ["01-montage.webp", "02-angle.webp", "03-narrative-montage.webp"]) {
@@ -370,11 +372,14 @@ test("ships verified and series personal Xiaohongshu cards, covers, and tab beha
     assert.match(data, new RegExp(`/personal-xhs/${asset.replace(".", "\\.")}`));
   }
   const personalWorksData = data.slice(data.indexOf("export const personalWorks"));
-  assert.equal((personalWorksData.match(/kind: "verified"/g) ?? []).length, 3);
-  assert.equal((personalWorksData.match(/kind: "series"/g) ?? []).length, 3);
-  assert.equal((personalWorksData.match(/noteUrl: "https:\/\/www\.xiaohongshu\.com\/explore\//g) ?? []).length, 3);
-  assert.match(personalWorksData, /title: "构图"[\s\S]*?\{ label: "点赞", value: 1642 \}/);
-  assert.match(personalWorksData, /系列展示 \/ 待补完整数据/);
+  assert.equal((personalWorksData.match(/kind: "verified"/g) ?? []).length, 6);
+  assert.equal((personalWorksData.match(/kind: "series"/g) ?? []).length, 0);
+  assert.equal((personalWorksData.match(/noteUrl: "https:\/\/www\.xiaohongshu\.com\//g) ?? []).length, 6);
+  for (const noteId of ["648be41400000000120331f6", "65471a96000000001e02976e", "654222d8000000001e022020"]) {
+    assert.match(personalWorksData, new RegExp(noteId));
+  }
+  assert.equal((personalWorksData.match(/xsec_source=pc_user/g) ?? []).length, 3);
+  assert.doesNotMatch(personalWorksData, /系列展示 \/ 待补完整数据/);
   assert.match(component, /personal-work-metric-icon/);
   assert.match(component, /ViewMetricIcon/);
   assert.match(component, /useState\("hupai"\)/);

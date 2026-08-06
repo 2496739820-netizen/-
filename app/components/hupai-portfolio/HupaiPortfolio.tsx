@@ -171,9 +171,7 @@ function PersonalMetricIcon({ label }: { label: PersonalWorkMetric["label"] }) {
 }
 
 function PersonalMetrics({ work }: { work: PersonalWork }) {
-  const visibleMetrics = work.kind === "verified"
-    ? work.metrics.filter((metric) => metric.label === "观看" || metric.label === "点赞")
-    : work.metrics;
+  const visibleMetrics = work.metrics.filter((metric) => metric.label === "观看" || metric.label === "点赞");
 
   if (visibleMetrics.length === 0) return null;
 
@@ -228,52 +226,36 @@ function PersonalPanel({ isActive }: { isActive: boolean }) {
       <div className="personal-work-grid">
         {personalWorks.map((work) => (
           <article className="personal-work-card" key={work.id}>
-            {work.kind === "verified" ? (
-              <a
-                className="personal-work-image"
-                href={work.noteUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`在小红书打开《${work.title}》原笔记`}
-              >
-                <span className="personal-work-format-tag">{work.format}</span>
-                <Image
-                  src={work.image.src}
-                  alt={work.image.alt}
-                  width={work.image.width}
-                  height={work.image.height}
-                  sizes={work.image.sizes}
-                  loading="lazy"
-                />
-              </a>
-            ) : (
-              <div className="personal-work-image">
-                <span className="personal-work-format-tag">{work.format}</span>
-                <Image
-                  src={work.image.src}
-                  alt={work.image.alt}
-                  width={work.image.width}
-                  height={work.image.height}
-                  sizes={work.image.sizes}
-                  loading="lazy"
-                />
-              </div>
-            )}
+            <a
+              className="personal-work-image"
+              href={work.noteUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`在小红书打开《${work.title}》原笔记`}
+            >
+              <span className="personal-work-format-tag">{work.format}</span>
+              <Image
+                src={work.image.src}
+                alt={work.image.alt}
+                width={work.image.width}
+                height={work.image.height}
+                sizes={work.image.sizes}
+                loading="lazy"
+              />
+            </a>
             <div className="personal-work-content">
               <p>{work.format}</p>
               <h4>{work.title}</h4>
               <p>{work.capability}</p>
               <PersonalMetrics work={work} />
-              {work.kind === "verified" ? (
-                <a
-                  href={work.noteUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`查看《${work.title}》原笔记`}
-                >
-                  查看原笔记
-                </a>
-              ) : <p className="personal-series-status">{work.status}</p>}
+              <a
+                href={work.noteUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`查看《${work.title}》原笔记`}
+              >
+                查看原笔记
+              </a>
             </div>
           </article>
         ))}

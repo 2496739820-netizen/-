@@ -147,12 +147,7 @@ export type VerifiedPersonalWork = PersonalWorkBase & {
   noteUrl: string;
 };
 
-export type SeriesPersonalWork = PersonalWorkBase & {
-  kind: "series";
-  status: "系列展示 / 待补完整数据";
-};
-
-export type PersonalWork = VerifiedPersonalWork | SeriesPersonalWork;
+export type PersonalWork = VerifiedPersonalWork;
 
 export const personalAccount = {
   name: "白夜下",
@@ -167,7 +162,7 @@ export const personalAccount = {
 export const personalResults = {
   maxViews: "18.2万",
   maxLikes: "8,064",
-  maxSaves: "5,273",
+  maxSaves: "5,274",
 } as const;
 
 export const personalWorks = [
@@ -186,10 +181,10 @@ export const personalWorks = [
     },
     noteUrl: "https://www.xiaohongshu.com/explore/647db32c0000000013031980",
     metrics: [
-      { label: "观看", value: 182127 },
+      { label: "观看", value: 182133 },
       { label: "评论", value: 34 },
       { label: "点赞", value: 8064 },
-      { label: "收藏", value: 5273 },
+      { label: "收藏", value: 5274 },
       { label: "分享", value: 772 },
     ],
   },
@@ -208,9 +203,9 @@ export const personalWorks = [
     },
     noteUrl: "https://www.xiaohongshu.com/explore/643fe1770000000013006cc9",
     metrics: [
-      { label: "观看", value: 150082 },
+      { label: "观看", value: 150094 },
       { label: "评论", value: 83 },
-      { label: "点赞", value: 6864 },
+      { label: "点赞", value: 6865 },
       { label: "收藏", value: 4546 },
       { label: "分享", value: 545 },
     ],
@@ -230,7 +225,7 @@ export const personalWorks = [
     },
     noteUrl: "https://www.xiaohongshu.com/explore/646b256600000000270020c6",
     metrics: [
-      { label: "观看", value: 92687 },
+      { label: "观看", value: 92688 },
       { label: "评论", value: 14 },
       { label: "点赞", value: 3108 },
       { label: "收藏", value: 1957 },
@@ -239,7 +234,7 @@ export const personalWorks = [
   },
   {
     id: "composition",
-    kind: "series",
+    kind: "verified",
     title: "构图",
     format: "电影视听语言",
     capability: "从画面组织入手，拆解构图如何服务叙事重点。",
@@ -251,13 +246,17 @@ export const personalWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: [
+      { label: "观看", value: 42877 },
+      { label: "评论", value: 8 },
       { label: "点赞", value: 1642 },
+      { label: "收藏", value: 1069 },
+      { label: "分享", value: 135 },
     ],
-    status: "系列展示 / 待补完整数据",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/648be41400000000120331f6?xsec_token=ABJ955dld8d1iw9N0tKjikVkdwV0sPZHuHMsMuDb9GF_k=&xsec_source=pc_user",
   },
   {
     id: "color",
-    kind: "series",
+    kind: "verified",
     title: "色彩",
     format: "电影视听语言",
     capability: "以色彩关系为线索，提炼电影画面的情绪表达。",
@@ -268,12 +267,18 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
-    metrics: [],
-    status: "系列展示 / 待补完整数据",
+    metrics: [
+      { label: "观看", value: 21247 },
+      { label: "评论", value: 0 },
+      { label: "点赞", value: 849 },
+      { label: "收藏", value: 587 },
+      { label: "分享", value: 107 },
+    ],
+    noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/65471a96000000001e02976e?xsec_token=ABeeWLisrAeO0pWYAZOvDfmsMldP02WS2-lun8QjT_5I0=&xsec_source=pc_user",
   },
   {
     id: "sound",
-    kind: "series",
+    kind: "verified",
     title: "声音设计",
     format: "电影视听语言",
     capability: "从声音层次切入，解析画面之外的叙事信息。",
@@ -284,7 +289,13 @@ export const personalWorks = [
       height: 853,
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
-    metrics: [],
-    status: "系列展示 / 待补完整数据",
+    metrics: [
+      { label: "观看", value: 7308 },
+      { label: "评论", value: 0 },
+      { label: "点赞", value: 369 },
+      { label: "收藏", value: 315 },
+      { label: "分享", value: 44 },
+    ],
+    noteUrl: "https://www.xiaohongshu.com/user/profile/61ffe9a000000000100092c2/654222d8000000001e022020?xsec_token=ABwOpukjnvkxsrKOWbs-TlyJe6n_gp9o0oIPA8aCdYnz8=&xsec_source=pc_user",
   },
 ] as const satisfies readonly PersonalWork[];
