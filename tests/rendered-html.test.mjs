@@ -138,18 +138,18 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.match(html, /小红书内容作品/);
   assert.match(html, /虎\.派\.眼\.镜/);
   assert.match(html, /https:\/\/www\.xiaohongshu\.com\/user\/profile\/5fed68f20000000001009f77/);
-  assert.match(html, /<span>粉丝<\/span><strong>3646粉丝<\/strong>/);
-  assert.doesNotMatch(html, /<span>关注<\/span><strong>3646粉丝<\/strong>/);
-  assert.match(html, /3646\s*粉丝/);
+  assert.match(html, /<span>粉丝<\/span><strong>3654粉丝<\/strong>/);
+  assert.doesNotMatch(html, /<span>关注<\/span><strong>3654粉丝<\/strong>/);
+  assert.match(html, /3654\s*粉丝/);
   assert.match(html, /1\.7\s*万获赞与收藏/);
-  assert.match(html, /每日同步数据 · 最近更新：2026-08-06/);
+  assert.match(html, /每日同步数据 · 最近更新：2026-08-08/);
   assert.match(html, /林德伯格 全系列干货讲解/);
   assert.match(html, /日系 美系 欧系/);
   assert.match(html, /林德伯格 6537/);
   assert.match(html, /林德伯格 \| 最新全系列干货讲解🔥/);
   assert.match(html, /日系 - 美系 - 欧系，一个多元的眼镜宇宙！/);
   assert.match(html, /客订分享！林德伯格6537\+蔡司鎏金膜~/);
-  for (const metric of ["128", "150", "82", "90", "39", "20", "110", "72", "232", "196", "229", "242"]) {
+  for (const metric of ["128", "150", "82", "90", "40", "22", "110", "72", "232", "196", "229", "242"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   for (const noteId of noteIds) assert.match(html, new RegExp(noteId));
@@ -183,10 +183,10 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /<span>粉丝<\/span><strong>3,336<\/strong>/);
   assert.match(html, /<span>获赞与收藏<\/span><strong>6\.7 万<\/strong>/);
   assert.match(html, /影视后期 · 视听语言知识/);
-  assert.match(html, /2026-08-06/);
+  assert.match(html, /2026-08-08/);
   assert.match(html, />21</);
   assert.match(html, /18\.2万/);
-  assert.match(html, /8,065/);
+  assert.match(html, /8,066/);
   assert.match(html, /5,274/);
   assert.doesNotMatch(html, />96</);
   assert.match(html, /表现蒙太奇/);
@@ -197,7 +197,7 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /声音设计/);
   assert.equal((html.match(/class="personal-work-card"/g) ?? []).length, 6);
   assert.doesNotMatch(html, /系列展示 \/ 待补完整数据/);
-  for (const metric of ["182,135", "8,065", "150,095", "6,865", "92,689", "3,108", "42,879", "1,642", "21,250", "849", "7,309", "369"]) {
+  for (const metric of ["182,155", "8,066", "150,104", "6,865", "92,692", "3,108", "42,880", "1,642", "21,250", "849", "7,309", "369"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   const personalNoteIds = [
@@ -327,13 +327,13 @@ test("ships typed Hupai evidence data and complete original note covers", async 
 
   const snapshot = JSON.parse(snapshotRaw);
   assert.equal(snapshot.schemaVersion, 1);
-  assert.equal(snapshot.snapshotDate, "2026-08-06");
-  assert.equal(snapshot.hupai.followers, 3646);
+  assert.equal(snapshot.snapshotDate, "2026-08-08");
+  assert.equal(snapshot.hupai.followers, 3654);
   assert.deepEqual(snapshot.hupai.works["6a4a0ea7000000001702df31"], {
-    likes: 39,
-    saves: 20,
-    comments: 20,
-    shares: 10,
+    likes: 40,
+    saves: 22,
+    comments: 25,
+    shares: 11,
   });
   assert.deepEqual(snapshot.hupai.works["699e5ebc000000001a029468"], {
     likes: 110,
@@ -388,8 +388,8 @@ test("ships six verified personal Xiaohongshu cards, covers, and tab behavior", 
   const snapshot = JSON.parse(snapshotRaw);
   assert.equal(snapshot.personal.publishedNotes, 21);
   assert.notEqual(snapshot.personal.publishedNotes, 96);
-  assert.equal(snapshot.personal.works.montage.views, 182135);
-  assert.equal(snapshot.personal.works.montage.likes, 8065);
+  assert.equal(snapshot.personal.works.montage.views, 182155);
+  assert.equal(snapshot.personal.works.montage.likes, 8066);
   assert.match(data, /formatCompactWan/);
   assert.match(data, /maxLikes: formatInteger/);
   assert.match(data, /maxSaves: formatInteger/);
