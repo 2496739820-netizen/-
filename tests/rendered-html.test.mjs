@@ -278,6 +278,9 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(css, /@media \(max-width: 620px\)/);
   assert.match(css, /\.radar-accessible-list \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.case-card \{ min-height: 0; border-radius: 22px/);
+  assert.match(css, /\.case-card h3 \{ max-width: 11em; min-height: 4\.05em; margin: clamp\(42px, 3vw, 54px\) 0 28px/);
+  assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.case-card h3 \{ min-height: 0; margin-top: 28px; \}/);
+  assert.doesNotMatch(css, /\.case-card h3 \{[^}]*margin: auto 0 28px/);
   assert.match(css, /\.proof-item \{ min-height: 84px/);
   assert.match(css, /\.experience-list article > strong \{[\s\S]*?border-top: 1px solid var\(--line\)/);
   assert.match(css, /--paper: #f4f0e7/);
