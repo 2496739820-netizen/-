@@ -681,6 +681,80 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 @keyframes static-hardware-turn { from { opacity: 0; transform: translateX(-50%) rotateY(-120deg); } to { opacity: 1; transform: translateX(-50%) rotateY(0); } }
 @keyframes static-badge-drop { 0% { opacity: 0; transform: translateX(-50%) translateY(-150px) rotateZ(-7deg); } 68% { opacity: 1; transform: translateX(-50%) translateY(8px) rotateZ(2.5deg); } 100% { opacity: 1; transform: translateX(-50%) translateY(0) rotateZ(0); } }
 
+@media (min-width: 901px) {
+  .contact-modal-shell {
+    --static-card-width: min(13.8vw, 212px, 28vh);
+    --static-card-height: min(19.63vw, 302px, 39.85vh);
+    --static-card-top: clamp(250px, 40svh, 380px);
+  }
+  .static-lanyard {
+    top: var(--contact-anchor-y);
+    left: var(--contact-card-x);
+    width: max(40px, calc(var(--contact-anchor-x) - var(--contact-card-x) + 20px));
+    height: calc(var(--static-card-top) - var(--contact-anchor-y) - 12px);
+  }
+  .static-lanyard i { width: 40px; }
+  .static-lanyard b { top: calc(35% - 20px); height: 40px; }
+  .static-lanyard u { width: 40px; }
+  .static-lanyard em { inset: 6px 0; font-size: 0.38rem; }
+  .static-lanyard span { left: 20px; bottom: -8px; width: 16px; height: 16px; border-width: 3px; }
+  .static-clip {
+    top: calc(var(--static-card-top) - 22px);
+    width: 28px;
+    height: 37px;
+  }
+  .static-clip i { top: -8px; width: 17px; height: 14px; border-width: 3px; }
+  .static-clip b { top: 7px; right: 4px; width: 20px; }
+  .static-badge {
+    top: var(--static-card-top);
+    width: var(--static-card-width);
+    filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.22));
+  }
+  .badge-face { border-radius: 10px; padding: 14px 12px 12px; }
+  .badge-front { padding: 12px 12px 11px; }
+  .badge-edition { font-size: 0.48rem; letter-spacing: 0.1em; }
+  .badge-identity { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: 8px; margin-top: 8px; }
+  .badge-avatar { border-width: 2px; border-radius: 8px; }
+  .badge-role { font-size: 0.58rem; line-height: 1.28; }
+  .badge-name { margin-top: 4px; font-size: clamp(1.15rem, 1.4vw, 1.35rem); letter-spacing: 0.03em; }
+  .badge-name-en { margin-top: 3px; font-size: 0.5rem; }
+  .badge-region { margin-top: 4px; font-size: 0.52rem; }
+  .badge-divider { margin-top: 8px; }
+  .badge-contact-grid { gap: 7px; margin-top: 8px; }
+  .badge-contact-grid small { margin-bottom: 3px; font-size: 0.48rem; }
+  .badge-contact-grid strong { font-size: 0.78rem; }
+  .badge-contact-grid a:last-child strong { font-size: 0.58rem; }
+  .badge-section-label { margin-top: 8px; font-size: 0.55rem; }
+  .badge-capabilities { gap: 5px 6px; margin-top: 6px; }
+  .badge-capabilities span { padding: 5px 4px; font-size: 0.52rem; line-height: 1.15; }
+  .badge-back { padding: 14px 12px 12px; }
+  .badge-back-head { font-size: 0.46rem; }
+  .badge-qr-wrap { width: 88%; margin-top: 14px; border-radius: 10px; padding: 4px; }
+  .badge-back-copy { margin-top: 12px; }
+  .badge-back-copy h3 { font-size: 1.05rem; }
+  .badge-back-copy p { font-size: 0.62rem; }
+  .badge-back > small { font-size: 0.52rem; }
+  .contact-modal-shell[data-contact-mode="static"] .contact-modal-controls {
+    top: min(calc(100svh - 104px), calc(var(--static-card-top) + var(--static-card-height) + 24px));
+    bottom: auto;
+    width: min(240px, calc(100vw - 24px));
+  }
+  .contact-modal-shell[data-contact-mode="static"] .badge-flip-button {
+    min-width: 168px;
+    min-height: 44px;
+    gap: 16px;
+    padding: 0 16px;
+    font-size: 0.78rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  }
+  .contact-modal-shell[data-contact-mode="static"] .contact-modal-controls p {
+    max-width: 22em;
+    margin-top: 8px;
+    font-size: 0.64rem;
+    text-align: center;
+  }
+}
+
 @media (max-width: 1120px) {
   .container-wide,
   .nav-inner { width: min(calc(100% - 48px), 1420px); }

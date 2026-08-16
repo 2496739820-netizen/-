@@ -164,7 +164,13 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
         if (event.target === event.currentTarget) handleClose();
       }}
     >
-      <div ref={dialogRef} className="contact-modal-shell" tabIndex={-1} style={modalStyle}>
+      <div
+        ref={dialogRef}
+        className="contact-modal-shell"
+        data-contact-mode={mode}
+        tabIndex={-1}
+        style={modalStyle}
+      >
         <h2 id="contact-dialog-title" className="sr-only">联系庄澍凯</h2>
         <button ref={closeRef} className="contact-modal-close" type="button" onClick={handleClose} aria-label="关闭联系工牌" autoFocus>
           <span aria-hidden="true" />

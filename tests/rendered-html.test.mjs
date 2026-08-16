@@ -545,6 +545,7 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(modal, /viewportWidth < 768 \? 0\.5 : 0\.68/);
   assert.match(modal, /const y = -Math\.max\(18, viewportHeight \* 0\.025\)/);
   assert.match(modal, /--contact-anchor-x/);
+  assert.match(modal, /data-contact-mode=\{mode\}/);
   assert.match(modal, /anchorXRatio/);
   assert.match(modal, /markSceneReady/);
   assert.match(modal, /工牌内容已显示　拖拽交互加载中/);
@@ -675,6 +676,11 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.doesNotMatch(css, /url\("\/contact-lanyard\.png"\)/);
   assert.match(css, /\.badge-contact-grid/);
   assert.match(css, /width: min\(28vw, 330px, 48vh\)/);
+  assert.match(css, /@media \(min-width: 901px\)\s*\{[\s\S]*?--static-card-width: min\(13\.8vw, 212px, 28vh\)/);
+  assert.match(css, /@media \(min-width: 901px\)\s*\{[\s\S]*?\.static-badge \{[\s\S]*?width: var\(--static-card-width\)/);
+  assert.match(css, /@media \(min-width: 901px\)\s*\{[\s\S]*?\.static-lanyard \{[\s\S]*?width: max\(40px/);
+  assert.match(css, /@media \(min-width: 901px\)\s*\{[\s\S]*?\[data-contact-mode="static"\] \.contact-modal-controls/);
+  assert.match(css, /@media \(max-width: 900px\)\s*\{[\s\S]*?\.static-badge \{ width: min\(76vw, 320px, 46vh\)/);
   assert.match(css, /\.badge-contact-grid \{[^}]*grid-template-columns: 1fr/);
   assert.match(css, /\.badge-avatar \{[^}]*aspect-ratio: 3 \/ 4/);
   assert.match(css, /\.badge-role \{[^}]*color: #d1b681/);
