@@ -238,7 +238,6 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .radar-heading { position: relative; z-index: 2; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
 .radar-heading span { color: var(--gold-deep); font: 600 0.64rem/1 "Manrope", sans-serif; letter-spacing: 0.15em; text-transform: uppercase; }
 .radar-heading h2 { margin: 7px 0 0; font-family: "Noto Serif SC", serif; font-size: clamp(1.45rem, 1.9vw, 2rem); font-weight: 500; letter-spacing: -0.02em; }
-.radar-heading p { max-width: 11em; margin: 0; color: var(--muted); font-size: 0.7rem; text-align: right; }
 .radar-visual { position: relative; z-index: 1; max-width: 480px; margin: 4px auto -4px; }
 .radar-chart { display: block; width: 100%; height: auto; overflow: visible; transform: scale(0.94); transform-origin: center; }
 .radar-grid polygon,
@@ -314,7 +313,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 
 .hupai-account-evidence {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) repeat(2, minmax(0, 0.82fr)) minmax(0, 1.45fr) minmax(0, 0.94fr);
+  grid-template-columns: minmax(0, 1.15fr) repeat(2, minmax(0, 0.82fr)) minmax(0, 1.45fr);
   gap: 0;
   overflow: hidden;
   margin-top: 26px;
@@ -413,7 +412,6 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .hupai-work-content > a:focus-visible::after,
 .personal-work-content > a:hover::after,
 .personal-work-content > a:focus-visible::after { transform: translateX(2px); }
-.hupai-evidence-note { margin: 14px 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.65; text-align: right; }
 
 .personal-work-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(10px, 1vw, 16px); align-items: stretch; margin-top: 22px; }
 .personal-work-card:nth-child(3n + 2) { background: rgba(220, 224, 211, 0.52); }
@@ -838,10 +836,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hero-proof { margin-top: 24px; }
   .section-heading { grid-template-columns: 1fr 2fr; }
   .section-summary { grid-column: 2; }
-  .hupai-account-evidence { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .hupai-account-evidence > *:nth-child(4),
-  .hupai-account-evidence > *:nth-child(5) { border-top: 1px solid var(--line); }
-  .hupai-account-evidence > *:nth-child(4) { border-left: 0; }
+  .hupai-account-evidence { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hupai-account-evidence > *:nth-child(3),
+  .hupai-account-evidence > *:nth-child(4) { border-top: 1px solid var(--line); }
+  .hupai-account-evidence > *:nth-child(3) { border-left: 0; }
   .hupai-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .personal-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case-list { grid-template-columns: 1fr; }
@@ -878,7 +876,6 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hero-status { margin-top: 21px; }
   .radar-card { border-radius: 22px; padding: 20px 16px 16px; }
   .radar-heading { flex-direction: column; align-items: flex-start; gap: 8px; padding-inline: 2px; }
-  .radar-heading p { max-width: none; font-size: 0.7rem; line-height: 1.5; text-align: left; }
   .radar-heading h2 { font-size: 1.72rem; }
   .radar-visual { margin: 2px auto -8px; }
   .radar-chart { transform: scale(0.94); }
@@ -942,8 +939,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hupai-account-evidence > * { min-height: 74px; padding: 14px; }
   .hupai-account-evidence > *:nth-child(2) { border-left: 0; }
   .hupai-account-evidence > *:nth-child(3) { border-left: 1px solid var(--line); }
-  .hupai-account-evidence > *:nth-child(4) { border-left: 0; }
-  .hupai-account-evidence > *:nth-child(5) { border-left: 1px solid var(--line); }
+  .hupai-account-evidence > *:nth-child(4) { grid-column: 1 / -1; border-left: 0; }
   .hupai-account-evidence > *:nth-child(n + 2) { border-top: 1px solid var(--line); }
   .hupai-account-evidence > a { grid-column: 1 / -1; min-height: 66px; }
   .account-results { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px; }
@@ -964,7 +960,6 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .personal-work-image { aspect-ratio: 4 / 5; }
   .personal-work-content { padding: 20px 18px; }
   .personal-work-content h4 { font-size: clamp(1.55rem, 7vw, 1.95rem); }
-  .hupai-evidence-note { margin-top: 12px; text-align: left; }
   .hupai-case-bridge { grid-template-columns: 1fr; gap: 5px; margin-top: 42px; margin-bottom: 32px; }
   .hupai-case-bridge::after { display: none; }
   .case-list { gap: 12px; margin-top: 42px; }

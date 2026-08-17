@@ -101,7 +101,6 @@ function CapabilityRadar() {
           <span>Capability prescription</span>
           <h2 id="radar-title">能力处方</h2>
         </div>
-        <p>基于虎派门店实操与影像履历</p>
       </figcaption>
 
       <div className="radar-visual">

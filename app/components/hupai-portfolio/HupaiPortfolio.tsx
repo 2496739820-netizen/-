@@ -80,7 +80,6 @@ function HupaiPanel({ isActive }: { isActive: boolean }) {
         <div><span>粉丝</span><strong>{hupaiAccount.followers}</strong></div>
         <div><span>获赞与收藏</span><strong>{hupaiAccount.likesAndSaves}</strong></div>
         <div><span>负责范围</span><strong>{hupaiAccount.responsibility}</strong></div>
-        <div><span>数据快照</span><strong>{hupaiAccount.snapshotDate}</strong></div>
       </div>
 
       <div className="account-results" aria-label="虎派眼镜门店业务结果">
@@ -129,7 +128,6 @@ function HupaiPanel({ isActive }: { isActive: boolean }) {
         ))}
       </div>
 
-      <p className="hupai-evidence-note">{`每日同步数据 · 最近更新：${hupaiAccount.snapshotDate}。互动数据来自笔记公开页面。`}</p>
     </div>
   );
 }
@@ -201,7 +199,6 @@ function PersonalPanel({ isActive }: { isActive: boolean }) {
         <div><span>粉丝</span><strong>{personalAccount.followers}</strong></div>
         <div><span>获赞与收藏</span><strong>{personalAccount.likesAndSaves}</strong></div>
         <div><span>内容定位</span><strong>{personalAccount.positioning}</strong></div>
-        <div><span>数据快照</span><strong>{personalAccount.snapshotDate}</strong></div>
       </div>
 
       <div className="account-results" aria-label="白夜下个人账号内容结果">
@@ -249,7 +246,6 @@ function PersonalPanel({ isActive }: { isActive: boolean }) {
         ))}
       </div>
 
-      <p className="hupai-evidence-note">每日同步数据 · 最近更新：{personalAccount.snapshotDate}。互动指标来自创作后台，作品链接指向可核验的小红书笔记。</p>
     </div>
   );
 }
