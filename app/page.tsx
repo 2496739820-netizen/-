@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CapabilityRadar } from "./components/CapabilityRadar";
 import { ContactBadgeModal } from "./components/contact-badge/ContactBadgeModal";
 import { HupaiPortfolio } from "./components/hupai-portfolio/HupaiPortfolio";
 
@@ -9,15 +10,6 @@ const metrics = [
   { value: "8W+", label: "月度最高 GMV" },
   { value: "60+", label: "月均有效客资" },
   { value: "30%", label: "约贡献门店总业绩" },
-];
-
-const capabilities = [
-  { label: "内容策划", score: 8 },
-  { label: "账号运营", score: 8 },
-  { label: "到店转化", score: 8 },
-  { label: "影像制作", score: 10 },
-  { label: "数据复盘", score: 8 },
-  { label: "平台投流", score: 9 },
 ];
 
 const caseStories = [
@@ -92,81 +84,6 @@ const navigation = [
   { id: "method", label: "运营方法" },
   { id: "experience", label: "过往经历" },
 ];
-
-function CapabilityRadar() {
-  return (
-    <figure className="radar-card" aria-labelledby="radar-title">
-      <figcaption className="radar-heading">
-        <div>
-          <span>Capability prescription</span>
-          <h2 id="radar-title">能力处方</h2>
-        </div>
-      </figcaption>
-
-      <div className="radar-visual">
-        <svg
-          className="radar-chart"
-          viewBox="0 0 520 410"
-          role="img"
-          aria-labelledby="radar-svg-title radar-svg-desc"
-        >
-          <title id="radar-svg-title">庄澍凯新媒体运营能力雷达图</title>
-          <desc id="radar-svg-desc">
-            内容策划八分、账号运营八分、到店转化八分、影像制作十分、数据复盘八分、平台投流九分。
-          </desc>
-          <g className="radar-plot">
-            <g className="radar-grid" aria-hidden="true">
-              <polygon points="260,162 297,183.5 297,226.5 260,248 223,226.5 223,183.5" />
-              <polygon points="260,119 334.5,162 334.5,248 260,291 185.5,248 185.5,162" />
-              <polygon points="260,76 372.6,140 372.6,270 260,334 147.4,270 147.4,140" />
-              <line x1="260" y1="205" x2="260" y2="76" />
-              <line x1="260" y1="205" x2="372.6" y2="140" />
-              <line x1="260" y1="205" x2="372.6" y2="270" />
-              <line x1="260" y1="205" x2="260" y2="334" />
-              <line x1="260" y1="205" x2="147.4" y2="270" />
-              <line x1="260" y1="205" x2="147.4" y2="140" />
-            </g>
-            <polygon
-              className="radar-area"
-              points="260,102 350.1,153 350.1,257 260,334 169.9,257 158.7,146.5"
-            />
-            <polyline
-              className="radar-stroke"
-              points="260,102 350.1,153 350.1,257 260,334 169.9,257 158.7,146.5 260,102"
-            />
-            <g className="radar-dots" aria-hidden="true">
-              <circle cx="260" cy="102" r="5" />
-              <circle cx="350.1" cy="153" r="5" />
-              <circle cx="350.1" cy="257" r="5" />
-              <circle cx="260" cy="334" r="5" />
-              <circle cx="169.9" cy="257" r="5" />
-              <circle cx="158.7" cy="146.5" r="5" />
-            </g>
-          </g>
-          <g className="radar-labels" aria-hidden="true">
-            <text x="260" y="42" textAnchor="middle"><tspan>内容策划</tspan><tspan className="radar-score" dx="6">8</tspan></text>
-            <text x="392" y="126" textAnchor="start"><tspan>账号运营</tspan><tspan className="radar-score" dx="6">8</tspan></text>
-            <text x="392" y="288" textAnchor="start"><tspan>到店转化</tspan><tspan className="radar-score" dx="6">8</tspan></text>
-            <text x="260" y="382" textAnchor="middle"><tspan>影像制作</tspan><tspan className="radar-score" dx="6">10</tspan></text>
-            <text x="128" y="288" textAnchor="end"><tspan>数据复盘</tspan><tspan className="radar-score" dx="6">8</tspan></text>
-            <text x="128" y="126" textAnchor="end"><tspan>平台投流</tspan><tspan className="radar-score" dx="6">9</tspan></text>
-          </g>
-        </svg>
-        <span className="radar-seal" aria-hidden="true">ZSK</span>
-      </div>
-
-      <ul className="radar-accessible-list">
-        {capabilities.map((capability) => (
-          <li key={capability.label}>
-            <span>{capability.label}</span>
-            <strong>{capability.score}/10</strong>
-          </li>
-        ))}
-      </ul>
-      <p className="radar-note">分值表示与目标岗位相关的相对能力重心，不代表标准化测评。</p>
-    </figure>
-  );
-}
 
 export default function Home() {
   const rootRef = useRef<HTMLDivElement>(null);

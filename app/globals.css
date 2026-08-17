@@ -245,9 +245,20 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .radar-grid polygon:last-of-type { stroke: rgba(105, 85, 56, 0.3); }
 .radar-area { fill: rgba(138, 115, 73, 0.22); transform-origin: 260px 205px; animation: radar-open 1.1s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .radar-stroke { fill: none; stroke: var(--gold-deep); stroke-width: 2.5; stroke-linejoin: round; stroke-dasharray: 820; stroke-dashoffset: 820; animation: radar-draw 1.4s 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.radar-dots circle { fill: var(--surface); stroke: var(--gold-deep); stroke-width: 2.5; opacity: 0; animation: radar-dot 0.35s 1.25s ease forwards; }
-.radar-labels text { fill: var(--ink-soft); font: 500 14px/1 "Noto Sans SC", sans-serif; letter-spacing: 0.04em; }
-.radar-labels .radar-score { fill: var(--gold-deep); font: 600 11px/1 "Manrope", sans-serif; baseline-shift: 3px; }
+.radar-axis { opacity: 1; transition: opacity 0.2s ease; }
+.radar-axis-line { stroke: var(--gold); stroke-width: 1.8; opacity: 0; transition: opacity 0.2s ease, stroke-width 0.2s ease; }
+.radar-point { fill: var(--surface); stroke: var(--gold-deep); stroke-width: 2.5; opacity: 0; transform-box: fill-box; transform-origin: center; animation: radar-dot 0.35s 1.25s ease forwards; }
+.radar-pulse-ring { fill: none; stroke: var(--gold); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; pointer-events: none; }
+.radar-axis-label { fill: var(--ink-soft); font: 500 14px/1 "Noto Sans SC", sans-serif; letter-spacing: 0.04em; transition: fill 0.2s ease; cursor: pointer; }
+.radar-axis-label .radar-score { fill: var(--gold-deep); font: 600 11px/1 "Manrope", sans-serif; baseline-shift: 3px; }
+.radar-axis-target { fill: transparent; cursor: pointer; outline: none; }
+.radar-axis[data-dimmed] { opacity: 0.46; }
+.radar-axis[data-active] .radar-axis-line { stroke: var(--gold-deep); stroke-width: 2.6; opacity: 0.92; }
+.radar-axis[data-active] .radar-point { fill: var(--gold-deep); stroke: var(--surface); stroke-width: 3; }
+.radar-axis[data-active] .radar-axis-label { fill: var(--ink); font-weight: 600; }
+.radar-axis[data-active] .radar-score { fill: var(--gold-deep); }
+.radar-axis-target:focus-visible { fill: rgba(138, 115, 73, 0.12); stroke: var(--gold-deep); stroke-width: 1.5; }
+.radar-axis[data-pulsing] .radar-pulse-ring { animation: radar-capability-pulse 0.54s ease-out 1; }
 .radar-seal { position: absolute; top: 50%; left: 50%; display: grid; width: 45px; height: 45px; place-items: center; transform: translate(-50%, -50%); border-radius: 50%; background: var(--surface); color: var(--gold-deep); font: 600 0.65rem/1 "Manrope", sans-serif; letter-spacing: 0.12em; box-shadow: 0 6px 20px rgba(51, 44, 34, 0.12); }
 .radar-accessible-list { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .radar-note { position: relative; z-index: 2; margin: 2px 0 0; color: var(--muted); font-size: 0.64rem; text-align: center; }
@@ -255,6 +266,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 @keyframes radar-open { from { opacity: 0; transform: scale(0.15); } to { opacity: 1; transform: scale(1); } }
 @keyframes radar-draw { to { stroke-dashoffset: 0; } }
 @keyframes radar-dot { to { opacity: 1; } }
+@keyframes radar-capability-pulse { 0% { opacity: 0; transform: scale(0.75); } 42% { opacity: 0.9; } 100% { opacity: 0; transform: scale(2.4); } }
 
 .hero-proof {
   display: grid;
@@ -880,7 +892,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .radar-visual { margin: 2px auto -8px; }
   .radar-chart { transform: scale(0.94); }
   .radar-plot { transform: scale(1.28); transform-origin: 260px 205px; }
-  .radar-labels { display: none; }
+  .radar-axis-label { display: none; }
   .radar-seal { width: 42px; height: 42px; }
   .radar-accessible-list {
     position: relative;
@@ -899,8 +911,12 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
     white-space: normal;
   }
   .radar-accessible-list li {
+    min-width: 0;
+  }
+  .radar-accessible-list button {
     display: flex;
-    min-height: 38px;
+    width: 100%;
+    min-height: 44px;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
@@ -909,8 +925,11 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
     background: rgba(244, 240, 231, 0.58);
     padding: 0 12px;
     color: var(--ink-soft);
-    font-size: 0.72rem;
+    font: 500 0.72rem/1 "Noto Sans SC", sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
+  .radar-accessible-list button[aria-pressed="true"] { border-color: rgba(105, 85, 56, 0.42); background: rgba(220, 224, 211, 0.68); color: var(--ink); }
   .radar-accessible-list strong { color: var(--gold-deep); font: 600 0.7rem/1 "Manrope", sans-serif; }
   .radar-note { padding-inline: 2px; font-size: 0.64rem; line-height: 1.5; text-align: left; }
   .hero-proof { grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 18px; padding: 7px; }
@@ -1031,7 +1050,8 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .intro,
   [data-reveal] { opacity: 1 !important; transform: none !important; }
   .radar-stroke { stroke-dashoffset: 0; }
-  .radar-dots circle { opacity: 1; }
+  .radar-point { opacity: 1; animation: none !important; }
+  .radar-pulse-ring { animation: none !important; }
   .contact-modal-backdrop,
   .static-badge,
   .badge-loading span { animation: none !important; transition: none !important; }

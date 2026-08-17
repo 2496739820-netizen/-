@@ -66,6 +66,9 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /数据复盘/);
   assert.match(html, /平台投流/);
   assert.match(html, /相对能力重心/);
+  assert.match(html, /aria-label="能力点选"/);
+  assert.match(html, /aria-label="影像制作 10 分"/);
+  assert.match(html, /aria-pressed="false"/);
   assert.match(html, /高端眼镜门店/);
   assert.match(html, /粤港澳大湾区/);
   assert.match(html, /求职中/);
@@ -219,8 +222,9 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
 });
 
 test("ships the verified portfolio assets and removes the unrelated video experience", async () => {
-  const [page, layout, css, resume, portrait, avatar, og, contactQr, cardModel, lanyardTexture, cardBase] = await Promise.all([
+  const [page, radar, layout, css, resume, portrait, avatar, og, contactQr, cardModel, lanyardTexture, cardBase] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/CapabilityRadar.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../public/zhuang-shukai-resume.pdf", import.meta.url)),
@@ -236,25 +240,29 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(page, /高端眼镜门店　新媒体运营/);
   assert.doesNotMatch(page, /高端眼镜门店 · 新媒体运营/);
   assert.match(page, /href="\/zhuang-shukai-resume\.pdf"/);
-  assert.match(page, /function CapabilityRadar/);
-  assert.match(page, /className="radar-chart"/);
-  assert.match(page, /className="radar-seal"[^>]*>ZSK<\/span>/);
-  assert.doesNotMatch(page, /className="radar-seal"[^>]*>ZS<\/span>/);
+  assert.match(page, /import \{ CapabilityRadar \} from "\.\/components\/CapabilityRadar"/);
+  assert.match(radar, /export function CapabilityRadar/);
+  assert.match(radar, /className="radar-chart"/);
+  assert.match(radar, /className="radar-seal"[^>]*>ZSK<\/span>/);
+  assert.doesNotMatch(radar, /className="radar-seal"[^>]*>ZS<\/span>/);
   assert.match(page, /className="hero-proof/);
   assert.match(page, /className="brand-avatar"/);
   assert.doesNotMatch(page, /src="\/zhuang-shukai-portrait\.jpg"/);
   assert.match(page, /\{ id: "top", label: "能力概览" \}/);
-  assert.match(page, /内容策划.{0,30}score: 8/s);
-  assert.match(page, /账号运营.{0,30}score: 8/s);
-  assert.match(page, /到店转化.{0,30}score: 8/s);
-  assert.match(page, /影像制作.{0,30}score: 10/s);
-  assert.match(page, /数据复盘.{0,30}score: 8/s);
-  assert.match(page, /平台投流.{0,30}score: 9/s);
-  assert.match(page, /points="260,102 350\.1,153 350\.1,257 260,334 169\.9,257 158\.7,146\.5"/);
-  assert.match(page, /points="260,102 350\.1,153 350\.1,257 260,334 169\.9,257 158\.7,146\.5 260,102"/);
-  assert.match(page, /内容策划八分、账号运营八分、到店转化八分、影像制作十分、数据复盘八分、平台投流九分/);
+  assert.match(radar, /内容策划.{0,120}score: 8/s);
+  assert.match(radar, /账号运营.{0,120}score: 8/s);
+  assert.match(radar, /到店转化.{0,120}score: 8/s);
+  assert.match(radar, /影像制作.{0,120}score: 10/s);
+  assert.match(radar, /数据复盘.{0,120}score: 8/s);
+  assert.match(radar, /平台投流.{0,120}score: 9/s);
+  assert.match(radar, /points="260,102 350\.1,153 350\.1,257 260,334 169\.9,257 158\.7,146\.5"/);
+  assert.match(radar, /points="260,102 350\.1,153 350\.1,257 260,334 169\.9,257 158\.7,146\.5 260,102"/);
+  assert.match(radar, /内容策划八分、账号运营八分、到店转化八分、影像制作十分、数据复盘八分、平台投流九分/);
+  assert.match(radar, /aria-pressed=\{selectedIndex === index\}/);
+  assert.match(radar, /window\.setTimeout\(\(\) => setPulseIndex\(3\), 1_700\)/);
+  assert.match(radar, /window\.setTimeout\(\(\) => setPulseIndex\(5\), 2_350\)/);
   assert.match(page, /data-nav=/);
-  assert.match(page, /相对能力重心/);
+  assert.match(radar, /相对能力重心/);
   assert.doesNotMatch(page, /loading="lazy"/);
   assert.doesNotMatch(page, /hero\.mp4|<video\b|currentTime|\.play\(/i);
   assert.doesNotMatch(page, /15815347183/);
@@ -274,6 +282,11 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(css, /\.radar-chart/);
   assert.match(css, /max-width: 480px/);
   assert.match(css, /@keyframes radar-open/);
+  assert.match(css, /\.radar-axis\[data-active\]/);
+  assert.match(css, /\.radar-axis\[data-dimmed\]/);
+  assert.match(css, /\.radar-pulse-ring/);
+  assert.match(css, /@keyframes radar-capability-pulse/);
+  assert.match(css, /\.radar-accessible-list button\s*\{[\s\S]*?min-height:\s*44px/);
   assert.match(css, /\.hero-proof/);
   assert.match(css, /\.brand-avatar/);
   assert.match(css, /url\("\/brand-avatar\.png"\)/);
