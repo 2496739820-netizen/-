@@ -450,7 +450,13 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /\.hupai-account-evidence\s*\{[\s\S]*?grid-template-columns:/);
   assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /\.hupai-work-grid\s*\{[\s\S]*?align-items:\s*stretch/);
-  assert.match(css, /\.hupai-work-card\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex-direction:\s*column/);
+  assert.match(css, /\.hupai-work-card,[\s\S]*?\.personal-work-card\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex-direction:\s*column/);
+  assert.match(css, /\.hupai-work-card,[\s\S]*?\.personal-work-card\s*\{[\s\S]*?transition:[^;}]*transform[^;}]*box-shadow[^;}]*border-color/);
+  assert.match(css, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)\s*\{[\s\S]*?\.hupai-work-card:hover,[\s\S]*?\.hupai-work-card:focus-within,[\s\S]*?\.personal-work-card:hover,[\s\S]*?\.personal-work-card:focus-within\s*\{[\s\S]*?transform:\s*translateY\(-4px\)\s+scale\(1\.01\)/);
+  assert.match(css, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)\s*\{[\s\S]*?\.hupai-work-card:focus-within,[\s\S]*?\.personal-work-card:focus-within\s*\{[\s\S]*?box-shadow:/);
+  assert.match(css, /@media \(hover:\s*none\),\s*\(pointer:\s*coarse\)\s*\{[\s\S]*?\.hupai-work-card:hover,[\s\S]*?\.personal-work-card:focus-within\s*\{[\s\S]*?box-shadow:\s*none;[\s\S]*?transform:\s*none/);
+  assert.match(css, /\.hupai-work-card:active,[\s\S]*?\.personal-work-card:active\s*\{[\s\S]*?transform:\s*translateY\(-1px\)\s+scale\(1\.005\)/);
+  assert.match(css, /\.hupai-work-content\s*>\s*a::after,[\s\S]*?\.personal-work-content\s*>\s*a::after\s*\{[\s\S]*?transition:\s*transform/);
   assert.match(css, /\.hupai-work-content\s*\{[\s\S]*?display:\s*flex;[\s\S]*?flex:\s*1;[\s\S]*?flex-direction:\s*column/);
   assert.match(css, /\.hupai-work-content\s*>\s*a\s*\{[\s\S]*?width:\s*fit-content;[\s\S]*?margin-top:\s*auto;[\s\S]*?padding-top:\s*10px/);
   assert.match(css, /\.hupai-work-image-link\s*\{[\s\S]*?aspect-ratio:\s*3\s*\/\s*4/);
@@ -474,6 +480,7 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /\.hupai-evidence-note\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /\.hupai-case-bridge\s*\{[\s\S]*?font-size:\s*0\.75rem/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-image-link:hover\s+img\s*\{[\s\S]*?transform:\s*none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-card:hover,[\s\S]*?\.personal-work-card:focus-within[\s\S]*?transform:\s*none/);
   assert.doesNotMatch(css, /#ff2442/i);
 });
 
