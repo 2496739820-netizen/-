@@ -502,6 +502,16 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.doesNotMatch(css, /#ff2442/i);
 });
 
+test("gives the four operating method cards the restrained work-card interaction", async () => {
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(css, /\.process-list li\s*\{[\s\S]*?border:\s*1px solid transparent;[\s\S]*?transition:[^;}]*transform[^;}]*box-shadow[^;}]*border-color[^;}]*background-color/);
+  assert.match(css, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)\s*\{[\s\S]*?\.process-list li:hover\s*\{[\s\S]*?transform:\s*translateY\(-4px\)\s+scale\(1\.01\)/);
+  assert.match(css, /\.process-list li:active\s*\{[\s\S]*?transform:\s*translateY\(-1px\)\s+scale\(1\.005\)/);
+  assert.match(css, /@media \(hover:\s*none\),\s*\(pointer:\s*coarse\)\s*\{[\s\S]*?\.process-list li:hover\s*\{[\s\S]*?box-shadow:\s*none;[\s\S]*?transform:\s*none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.process-list li:hover,[\s\S]*?\.process-list li:active\s*\{[\s\S]*?transform:\s*none !important/);
+});
+
 test("applies the selected interaction icons to every Hupai work metric", async () => {
   const iconDirectory = new URL("../design/icon-previews/hupai-interaction-editorial/", import.meta.url);
   const selectedDirectory = new URL("../design/icon-previews/hupai-interaction-editorial-selected/", import.meta.url);
