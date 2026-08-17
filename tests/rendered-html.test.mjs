@@ -259,6 +259,8 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(radar, /points="260,102 350\.1,153 350\.1,257 260,334 169\.9,257 158\.7,146\.5 260,102"/);
   assert.match(radar, /内容策划八分、账号运营八分、到店转化八分、影像制作十分、数据复盘八分、平台投流九分/);
   assert.match(radar, /aria-pressed=\{selectedIndex === index\}/);
+  assert.match(radar, /className="radar-axis-line" x1="260" y1="205" x2=\{x\} y2=\{y\}/);
+  assert.doesNotMatch(radar, /axisEnd/);
   assert.match(radar, /window\.setTimeout\(\(\) => setPulseIndex\(3\), 1_700\)/);
   assert.match(radar, /window\.setTimeout\(\(\) => setPulseIndex\(5\), 2_350\)/);
   assert.match(page, /data-nav=/);

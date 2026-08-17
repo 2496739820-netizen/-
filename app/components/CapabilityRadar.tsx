@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 const capabilities = [
-  { label: "内容策划", score: 8, point: [260, 102], labelPoint: [260, 42], anchor: "middle", axisEnd: [260, 76] },
-  { label: "账号运营", score: 8, point: [350.1, 153], labelPoint: [392, 126], anchor: "start", axisEnd: [372.6, 140] },
-  { label: "到店转化", score: 8, point: [350.1, 257], labelPoint: [392, 288], anchor: "start", axisEnd: [372.6, 270] },
-  { label: "影像制作", score: 10, point: [260, 334], labelPoint: [260, 382], anchor: "middle", axisEnd: [260, 334] },
-  { label: "数据复盘", score: 8, point: [169.9, 257], labelPoint: [128, 288], anchor: "end", axisEnd: [147.4, 270] },
-  { label: "平台投流", score: 9, point: [158.7, 146.5], labelPoint: [128, 126], anchor: "end", axisEnd: [147.4, 140] },
+  { label: "内容策划", score: 8, point: [260, 102], labelPoint: [260, 42], anchor: "middle" },
+  { label: "账号运营", score: 8, point: [350.1, 153], labelPoint: [392, 126], anchor: "start" },
+  { label: "到店转化", score: 8, point: [350.1, 257], labelPoint: [392, 288], anchor: "start" },
+  { label: "影像制作", score: 10, point: [260, 334], labelPoint: [260, 382], anchor: "middle" },
+  { label: "数据复盘", score: 8, point: [169.9, 257], labelPoint: [128, 288], anchor: "end" },
+  { label: "平台投流", score: 9, point: [158.7, 146.5], labelPoint: [128, 126], anchor: "end" },
 ] as const;
 
 type CapabilityIndex = number | null;
@@ -87,7 +87,6 @@ export function CapabilityRadar() {
               const isPulsing = pulseIndex === index;
               const [x, y] = capability.point;
               const [labelX, labelY] = capability.labelPoint;
-              const [axisX, axisY] = capability.axisEnd;
 
               return (
                 <g
@@ -99,7 +98,7 @@ export function CapabilityRadar() {
                   onPointerEnter={() => setHoveredIndex(index)}
                   onPointerLeave={() => setHoveredIndex(null)}
                 >
-                  <line className="radar-axis-line" x1="260" y1="205" x2={axisX} y2={axisY} />
+                  <line className="radar-axis-line" x1="260" y1="205" x2={x} y2={y} />
                   <circle className="radar-point" cx={x} cy={y} r="5" />
                   <circle className="radar-pulse-ring" cx={x} cy={y} r="8" aria-hidden="true" />
                   <text className="radar-axis-label" x={labelX} y={labelY} textAnchor={capability.anchor}>
