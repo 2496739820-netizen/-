@@ -602,6 +602,18 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .contact-modal-close span:last-child { transform: rotate(-45deg); }
 .contact-modal-close:hover { background: var(--surface); }
 
+.contact-scene-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.contact-scene-layer.is-ready {
+  opacity: 1;
+  pointer-events: auto;
+}
 .contact-badge-canvas { position: absolute; inset: 0; z-index: 1; touch-action: none; }
 .contact-badge-canvas canvas { display: block; touch-action: none; }
 .badge-drag-hint {
@@ -1078,6 +1090,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .radar-point { opacity: 1; animation: none !important; }
   .radar-pulse-ring { animation: none !important; }
   .contact-modal-backdrop,
+  .contact-scene-layer,
   .static-badge,
   .badge-loading span { animation: none !important; transition: none !important; }
   .hupai-work-image-link:hover img { transform: none !important; }

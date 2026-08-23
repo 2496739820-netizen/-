@@ -583,6 +583,8 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(modal, /data-contact-mode=\{mode\}/);
   assert.match(modal, /anchorXRatio/);
   assert.match(modal, /markSceneReady/);
+  assert.match(modal, /className=\{`contact-scene-layer \$\{sceneReady \? "is-ready" : ""\}`\}/);
+  assert.match(modal, /aria-hidden=\{!sceneReady\}/);
   assert.match(modal, /工牌内容已显示　拖拽交互加载中/);
   assert.doesNotMatch(modal, /disabled=\{mode === "checking"/);
   assert.match(modal, /onDismiss=\{handleClose\}/);
@@ -698,6 +700,8 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(focusTrap, /document\.body\.style\.overflow = "hidden"/);
   assert.match(focusTrap, /returnFocusElement\?\.focus\(\)/);
   assert.match(css, /\.contact-modal-backdrop/);
+  assert.match(css, /\.contact-scene-layer \{[^}]*opacity: 0;[^}]*pointer-events: none;[^}]*transition: opacity/);
+  assert.match(css, /\.contact-scene-layer\.is-ready \{[^}]*opacity: 1;[^}]*pointer-events: auto/);
   assert.match(css, /min-height: 50px/);
   assert.match(css, /background: rgba\(38, 35, 30, 0\.48\)/);
   assert.match(css, /\.badge-flip-button \{ min-width: min\(220px, 100%\); min-height: 52px/);
@@ -725,6 +729,7 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /\.badge-face \{[^}]*background: #050505/);
   assert.match(css, /@keyframes static-badge-drop/);
   assert.match(css, /\.badge-drag-hint\.is-hidden/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.contact-scene-layer,[\s\S]*?transition: none !important/);
 
   const dependencies = JSON.parse(packageJson).dependencies;
   for (const dependency of ["three", "@react-three/fiber", "@react-three/drei", "@react-three/rapier", "meshline", "qrcode"]) {

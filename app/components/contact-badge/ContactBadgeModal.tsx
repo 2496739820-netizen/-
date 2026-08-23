@@ -184,16 +184,21 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
           }}
         >
           {mode === "3d" && Scene && (
-            <SceneErrorBoundary onError={useStaticFallback}>
-              <Scene
-                isFlipped={isFlipped}
-                onReady={markSceneReady}
-                onSceneError={useStaticFallback}
-                onDismiss={handleClose}
-                anchorXRatio={anchor.x / Math.max(1, window.innerWidth)}
-                anchorYRatio={anchor.y / Math.max(1, window.innerHeight)}
-              />
-            </SceneErrorBoundary>
+            <div
+              className={`contact-scene-layer ${sceneReady ? "is-ready" : ""}`}
+              aria-hidden={!sceneReady}
+            >
+              <SceneErrorBoundary onError={useStaticFallback}>
+                <Scene
+                  isFlipped={isFlipped}
+                  onReady={markSceneReady}
+                  onSceneError={useStaticFallback}
+                  onDismiss={handleClose}
+                  anchorXRatio={anchor.x / Math.max(1, window.innerWidth)}
+                  anchorYRatio={anchor.y / Math.max(1, window.innerHeight)}
+                />
+              </SceneErrorBoundary>
+            </div>
           )}
           {(mode === "static" || mode === "checking" || mode === "loading" || !sceneReady) && (
             <StaticBadgeFallback isFlipped={isFlipped} />
