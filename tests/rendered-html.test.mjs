@@ -585,7 +585,10 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(modal, /markSceneReady/);
   assert.match(modal, /className=\{`contact-scene-layer \$\{sceneReady \? "is-ready" : ""\}`\}/);
   assert.match(modal, /aria-hidden=\{!sceneReady\}/);
-  assert.match(modal, /工牌内容已显示　拖拽交互加载中/);
+  assert.match(modal, /\{mode === "static" && \([\s\S]*?<StaticBadgeFallback isFlipped=\{isFlipped\} \/>/);
+  assert.match(modal, /\{mode !== "static" && !sceneReady && \([\s\S]*?className="badge-loading"[\s\S]*?3D 工牌加载中/);
+  assert.doesNotMatch(modal, /mode === "static" \|\| mode === "checking" \|\| mode === "loading" \|\| !sceneReady/);
+  assert.match(modal, /3D 工牌加载中/);
   assert.doesNotMatch(modal, /disabled=\{mode === "checking"/);
   assert.match(modal, /onDismiss=\{handleClose\}/);
 
@@ -617,7 +620,9 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(scene, /attachmentOffset\.set\(0, 1\.45, 0\)\.applyQuaternion\(cardQuaternion\)/);
   assert.match(scene, /\.add\(attachmentOffset\)/);
   assert.match(scene, /targets\[1\]\.lerpVectors\(targets\[0\], targets\[3\], 0\.34\)/);
-  assert.match(scene, /<LanyardLine anchor=\{anchor\} card=\{card\} \/>/);
+  assert.match(scene, /readiness\.current\.card\s*&&\s*readiness\.current\.band/);
+  assert.match(scene, /onTextureReady=\{markCardReady\}/);
+  assert.match(scene, /<LanyardLine anchor=\{anchor\} card=\{card\} onTextureReady=\{markBandReady\} \/>/);
   assert.match(scene, /lineWidth: 0\.48/);
   assert.match(scene, /createPersonalBandTexture/);
   assert.match(scene, /ZHUANG SHUKAI/);
@@ -702,6 +707,8 @@ test("implements the accessible, lazy-loaded physical contact badge", async () =
   assert.match(css, /\.contact-modal-backdrop/);
   assert.match(css, /\.contact-scene-layer \{[^}]*opacity: 0;[^}]*pointer-events: none;[^}]*transition: opacity/);
   assert.match(css, /\.contact-scene-layer\.is-ready \{[^}]*opacity: 1;[^}]*pointer-events: auto/);
+  assert.match(css, /\.badge-loading \{[^}]*left: var\(--contact-card-x\);[^}]*transform: translate\(-50%, -50%\)/);
+  assert.match(css, /\.badge-loading span \{[^}]*width: 8px;[^}]*height: 8px;[^}]*border-radius: 50%/);
   assert.match(css, /min-height: 50px/);
   assert.match(css, /background: rgba\(38, 35, 30, 0\.48\)/);
   assert.match(css, /\.badge-flip-button \{ min-width: min\(220px, 100%\); min-height: 52px/);

@@ -671,26 +671,25 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 
 .badge-loading {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: var(--contact-card-x);
   z-index: 2;
-  display: grid;
-  place-content: start center;
-  justify-items: center;
-  gap: 17px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: rgba(255, 255, 255, 0.72);
-  padding-top: calc(var(--contact-anchor-y) + 30px);
-  transform: translateX(calc(var(--contact-card-x) - 50vw));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 .badge-loading span {
-  width: 66px;
-  height: 92px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 10px;
-  background: rgba(6, 6, 6, 0.88);
-  box-shadow: 0 15px 38px rgba(0, 0, 0, 0.22);
-  animation: badge-loading-sway 1.4s ease-in-out infinite alternate;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d1b681;
+  box-shadow: 0 0 0 5px rgba(209, 182, 129, 0.15);
+  animation: badge-loading-pulse 1.15s ease-in-out infinite;
 }
-.badge-loading p { margin: 0; font-size: 0.76rem; letter-spacing: 0.1em; }
+.badge-loading p { margin: 0; color: rgba(255, 255, 255, 0.74); font-size: 0.72rem; letter-spacing: 0.1em; white-space: nowrap; }
 
 .static-badge-scene {
   position: absolute;
@@ -774,7 +773,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .badge-back > small { position: relative; z-index: 1; margin-top: auto; color: #878787; font-size: 0.65rem; }
 
 @keyframes contact-backdrop-in { from { opacity: 0; } }
-@keyframes badge-loading-sway { to { transform: rotate(3deg) translateY(4px); } }
+@keyframes badge-loading-pulse { 50% { opacity: 0.38; transform: scale(0.72); } }
 @keyframes static-lanyard-drop { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes static-lanyard-width { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes static-hardware-turn { from { opacity: 0; transform: translateX(-50%) rotateY(-120deg); } to { opacity: 1; transform: translateX(-50%) rotateY(0); } }

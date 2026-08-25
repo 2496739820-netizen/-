@@ -94,9 +94,11 @@ async function waitForBandFonts() {
 function LanyardLine({
   anchor,
   card,
+  onTextureReady,
 }: {
   anchor: React.RefObject<RapierRigidBody | null>;
   card: React.RefObject<RapierRigidBody | null>;
+  onTextureReady: () => void;
 }) {
   const { size } = useThree();
   const [bandTexture, setBandTexture] = useState<THREE.CanvasTexture | null>(null);
@@ -136,15 +138,19 @@ function LanyardLine({
         return;
       }
       setBandTexture(texture);
+      onTextureReady();
     };
     void prepareTexture().catch(() => {
-      if (!cancelled) setBandTexture(null);
+      if (!cancelled) {
+        setBandTexture(null);
+        onTextureReady();
+      }
     });
     return () => {
       cancelled = true;
       texture?.dispose();
     };
-  }, []);
+  }, [onTextureReady]);
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => bandMaterial.dispose(), [bandMaterial]);
 
@@ -221,6 +227,20 @@ function SuspendedBadge({
   const pointerDirection = useMemo(() => new THREE.Vector3(), []);
   const cardPosition = useMemo(() => new THREE.Vector3(), []);
   const targetPosition = useMemo(() => new THREE.Vector3(), []);
+  const readiness = useRef({ card: false, band: false, reported: false });
+  const markReady = useCallback((part: "card" | "band") => {
+    readiness.current[part] = true;
+    if (
+      readiness.current.card &&
+      readiness.current.band &&
+      !readiness.current.reported
+    ) {
+      readiness.current.reported = true;
+      onReady();
+    }
+  }, [onReady]);
+  const markCardReady = useCallback(() => markReady("card"), [markReady]);
+  const markBandReady = useCallback(() => markReady("band"), [markReady]);
   const anchorX = (anchorXRatio - 0.5) * viewport.width;
   const anchorY = viewport.height / 2 - anchorYRatio * viewport.height;
   const swingDirection = anchorX >= 0 ? -1 : 1;
@@ -344,14 +364,14 @@ function SuspendedBadge({
         <BadgeCard
           isFlipped={isFlipped}
           isMobile={isMobile}
-          onTextureReady={onReady}
+          onTextureReady={markCardReady}
           onTextureError={onSceneError}
           onPointerDown={startDrag}
           onPointerMove={moveCard}
           onPointerUp={stopDrag}
         />
       </RigidBody>
-      <LanyardLine anchor={anchor} card={card} />
+      <LanyardLine anchor={anchor} card={card} onTextureReady={markBandReady} />
     </>
   );
 }

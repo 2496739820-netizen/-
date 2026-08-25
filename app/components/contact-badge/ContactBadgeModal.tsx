@@ -200,8 +200,14 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
               </SceneErrorBoundary>
             </div>
           )}
-          {(mode === "static" || mode === "checking" || mode === "loading" || !sceneReady) && (
+          {mode === "static" && (
             <StaticBadgeFallback isFlipped={isFlipped} />
+          )}
+          {mode !== "static" && !sceneReady && (
+            <div className="badge-loading" role="status" aria-live="polite">
+              <span aria-hidden="true" />
+              <p>3D 工牌加载中</p>
+            </div>
           )}
         </div>
 
@@ -217,7 +223,7 @@ export function ContactBadgeModal({ open, onClose, triggerRef }: ContactBadgeMod
           </button>
           <p aria-live="polite">
             {mode === "checking" || mode === "loading" || (mode === "3d" && !sceneReady)
-              ? "工牌内容已显示　拖拽交互加载中"
+              ? "3D 工牌加载中"
               : mode === "static"
                 ? "轻点按钮查看联系方式"
                 : isFlipped
