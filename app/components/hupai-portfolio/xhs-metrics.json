@@ -1,28 +1,28 @@
 {
   "schemaVersion": 1,
-  "snapshotDate": "2026-08-18",
-  "updatedAt": "2026-08-18T09:07:00+08:00",
+  "snapshotDate": "2026-08-26",
+  "updatedAt": "2026-08-26T21:06:32+08:00",
   "hupai": {
-    "followers": 3691,
+    "followers": 3720,
     "likesAndSaves": "1.7 万",
     "works": {
       "66ab4132000000002701f16e": {
-        "likes": 128,
-        "saves": 150,
+        "likes": 129,
+        "saves": 151,
         "comments": 48,
         "shares": 51
       },
       "69a16f6f0000000015038c2e": {
-        "likes": 82,
-        "saves": 90,
+        "likes": 83,
+        "saves": 92,
         "comments": 11,
         "shares": 21
       },
       "6a4a0ea7000000001702df31": {
-        "likes": 62,
-        "saves": 33,
-        "comments": 55,
-        "shares": 14
+        "likes": 75,
+        "saves": 38,
+        "comments": 70,
+        "shares": 17
       },
       "699e5ebc000000001a029468": {
         "likes": 110,
@@ -39,40 +39,40 @@
     }
   },
   "personal": {
-    "followers": 3332,
-    "likesAndSaves": "6.7 万",
+    "followers": 3328,
+    "likesAndSaves": "6.8 万",
     "publishedNotes": 21,
     "works": {
       "montage": {
-        "views": 182208,
+        "views": 182249,
         "comments": 34,
         "likes": 8067,
         "saves": 5273,
         "shares": 772
       },
       "angle": {
-        "views": 150146,
+        "views": 150186,
         "comments": 83,
         "likes": 6864,
         "saves": 4543,
         "shares": 545
       },
       "narrative-montage": {
-        "views": 92712,
+        "views": 92730,
         "comments": 14,
         "likes": 3107,
-        "saves": 1957,
+        "saves": 1958,
         "shares": 277
       },
       "composition": {
-        "views": 42886,
+        "views": 42893,
         "comments": 8,
         "likes": 1642,
         "saves": 1069,
         "shares": 135
       },
       "color": {
-        "views": 21254,
+        "views": 21259,
         "comments": 0,
         "likes": 850,
         "saves": 587,
