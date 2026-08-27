@@ -142,9 +142,9 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.match(html, /小红书内容作品/);
   assert.match(html, /虎\.派\.眼\.镜/);
   assert.match(html, /https:\/\/www\.xiaohongshu\.com\/user\/profile\/5fed68f20000000001009f77/);
-  assert.match(html, /<span>粉丝<\/span><strong>3720粉丝<\/strong>/);
-  assert.doesNotMatch(html, /<span>关注<\/span><strong>3720粉丝<\/strong>/);
-  assert.match(html, /3720\s*粉丝/);
+  assert.match(html, /<span>粉丝<\/span><strong>3725粉丝<\/strong>/);
+  assert.doesNotMatch(html, /<span>关注<\/span><strong>3725粉丝<\/strong>/);
+  assert.match(html, /3725\s*粉丝/);
   assert.match(html, /1\.7\s*万获赞与收藏/);
   assert.doesNotMatch(html, /每日同步数据/);
   assert.doesNotMatch(html, /数据快照/);
@@ -154,7 +154,7 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
   assert.match(html, /林德伯格 \| 最新全系列干货讲解🔥/);
   assert.match(html, /日系 - 美系 - 欧系，一个多元的眼镜宇宙！/);
   assert.match(html, /客订分享！林德伯格6537\+蔡司鎏金膜~/);
-  for (const metric of ["129", "151", "83", "92", "75", "38", "110", "72", "232", "196", "229", "242"]) {
+  for (const metric of ["129", "151", "83", "92", "78", "41", "111", "74", "232", "196", "230", "243"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   for (const noteId of noteIds) assert.match(html, new RegExp(noteId));
@@ -191,8 +191,8 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.doesNotMatch(html, /数据快照/);
   assert.match(html, />21</);
   assert.match(html, /18\.2万/);
-  assert.match(html, /8,067/);
-  assert.match(html, /5,273/);
+  assert.match(html, /8,068/);
+  assert.match(html, /5,274/);
   assert.doesNotMatch(html, />96</);
   assert.match(html, /表现蒙太奇/);
   assert.match(html, /角度/);
@@ -202,7 +202,7 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /声音设计/);
   assert.equal((html.match(/class="personal-work-card"/g) ?? []).length, 6);
   assert.doesNotMatch(html, /系列展示 \/ 待补完整数据/);
-  for (const metric of ["182,249", "8,067", "150,186", "6,864", "92,730", "3,107", "42,893", "1,642", "21,259", "850", "7,310", "369"]) {
+  for (const metric of ["182,256", "8,068", "150,188", "6,864", "92,732", "3,107", "42,893", "1,642", "21,259", "850", "7,310", "369"]) {
     assert.match(html, new RegExp(`>${metric}<`));
   }
   const personalNoteIds = [
@@ -347,25 +347,31 @@ test("ships typed Hupai evidence data and complete original note covers", async 
 
   const snapshot = JSON.parse(snapshotRaw);
   assert.equal(snapshot.schemaVersion, 1);
-  assert.equal(snapshot.snapshotDate, "2026-08-26");
-  assert.equal(snapshot.hupai.followers, 3720);
+  assert.equal(snapshot.snapshotDate, "2026-08-27");
+  assert.equal(snapshot.hupai.followers, 3725);
   assert.deepEqual(snapshot.hupai.works["6a4a0ea7000000001702df31"], {
-    likes: 75,
-    saves: 38,
-    comments: 70,
+    likes: 78,
+    saves: 41,
+    comments: 71,
     shares: 17,
   });
   assert.deepEqual(snapshot.hupai.works["699e5ebc000000001a029468"], {
-    likes: 110,
-    saves: 72,
+    likes: 111,
+    saves: 74,
+    comments: 75,
+    shares: 29,
   });
   assert.deepEqual(snapshot.hupai.works["68088f68000000001c03efac"], {
     likes: 232,
     saves: 196,
+    comments: 164,
+    shares: 79,
   });
   assert.deepEqual(snapshot.hupai.works["6819d3b60000000021003550"], {
-    likes: 229,
-    saves: 242,
+    likes: 230,
+    saves: 243,
+    comments: 180,
+    shares: 72,
   });
   assert.match(data, /metricSnapshot\.snapshotDate/);
   assert.match(data, /id: "6a4a0ea7000000001702df31"/);
@@ -408,8 +414,8 @@ test("ships six verified personal Xiaohongshu cards, covers, and tab behavior", 
   const snapshot = JSON.parse(snapshotRaw);
   assert.equal(snapshot.personal.publishedNotes, 21);
   assert.notEqual(snapshot.personal.publishedNotes, 96);
-  assert.equal(snapshot.personal.works.montage.views, 182249);
-  assert.equal(snapshot.personal.works.montage.likes, 8067);
+  assert.equal(snapshot.personal.works.montage.views, 182256);
+  assert.equal(snapshot.personal.works.montage.likes, 8068);
   assert.match(data, /formatCompactWan/);
   assert.match(data, /maxLikes: formatInteger/);
   assert.match(data, /maxSaves: formatInteger/);
