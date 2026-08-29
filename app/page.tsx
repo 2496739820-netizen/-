@@ -90,7 +90,11 @@ export default function Home() {
   const headerRef = useRef<HTMLElement>(null);
   const contactTriggerRef = useRef<HTMLButtonElement>(null);
   const [contactOpen, setContactOpen] = useState(false);
+  const [scrollCaseStep, setScrollCaseStep] = useState(0);
+  const [hoveredCaseStep, setHoveredCaseStep] = useState<number | null>(null);
+  const [keyboardCaseStep, setKeyboardCaseStep] = useState<number | null>(null);
   const closeContact = useCallback(() => setContactOpen(false), []);
+  const activeCaseStep = keyboardCaseStep ?? hoveredCaseStep ?? scrollCaseStep;
 
   useEffect(() => {
     const root = rootRef.current;
@@ -122,6 +126,8 @@ export default function Home() {
         (section): section is { id: string; element: HTMLElement } =>
           section.element !== null,
       );
+    const caseList = root.querySelector<HTMLElement>(".case-list");
+    const caseCards = Array.from(root.querySelectorAll<HTMLElement>(".case-card"));
 
     let frame = 0;
     const renderScroll = () => {
@@ -141,9 +147,36 @@ export default function Home() {
         if (active) link.setAttribute("aria-current", "location");
         else link.removeAttribute("aria-current");
       });
+
+      if (caseList && caseCards.length) {
+        const listRect = caseList.getBoundingClientRect();
+        let nextStep = 0;
+
+        if (window.matchMedia("(max-width: 900px)").matches) {
+          const readingY = window.innerHeight * 0.46;
+          nextStep = caseCards.reduce((closestIndex, card, index) => {
+            const cardRect = card.getBoundingClientRect();
+            const cardCenter = cardRect.top + cardRect.height / 2;
+            const closestRect = caseCards[closestIndex].getBoundingClientRect();
+            const closestCenter = closestRect.top + closestRect.height / 2;
+            return Math.abs(cardCenter - readingY) < Math.abs(closestCenter - readingY)
+              ? index
+              : closestIndex;
+          }, 0);
+        } else {
+          const entryLine = window.innerHeight * 0.8;
+          const exitLine = window.innerHeight * 0.2;
+          const travel = Math.max(1, listRect.height + entryLine - exitLine);
+          const progress = Math.min(1, Math.max(0, (entryLine - listRect.top) / travel));
+          nextStep = Math.min(caseCards.length - 1, Math.round(progress * (caseCards.length - 1)));
+        }
+
+        setScrollCaseStep((currentStep) => currentStep === nextStep ? currentStep : nextStep);
+      }
     };
 
     const onScroll = () => {
+      setHoveredCaseStep(null);
       if (!frame) frame = window.requestAnimationFrame(renderScroll);
     };
 
@@ -229,9 +262,38 @@ export default function Home() {
               <p>下方是可复用的运营方法</p>
             </div>
 
-            <div className="case-list">
+            <ol
+              className="case-progress"
+              data-active-step={activeCaseStep}
+              aria-label="虎派运营方法步骤"
+            >
               {caseStories.map((story, index) => (
-                <article className="case-card" data-reveal key={story.number} style={{ "--delay": `${index * 0.07}s` } as React.CSSProperties}>
+                <li
+                  className={index === activeCaseStep ? "is-active" : index < activeCaseStep ? "is-reached" : undefined}
+                  aria-current={index === activeCaseStep ? "step" : undefined}
+                  key={story.number}
+                >
+                  <span>{story.number}</span>
+                  <p>{story.kicker}</p>
+                </li>
+              ))}
+            </ol>
+
+            <div className="case-list" data-active-step={activeCaseStep}>
+              {caseStories.map((story, index) => (
+                <article
+                  className={`case-card${index === activeCaseStep ? " is-active" : ""}`}
+                  aria-current={index === activeCaseStep ? "step" : undefined}
+                  key={story.number}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType === "mouse") setHoveredCaseStep(index);
+                  }}
+                  onPointerLeave={() => setHoveredCaseStep(null)}
+                  onFocus={() => setKeyboardCaseStep(index)}
+                  onBlur={() => setKeyboardCaseStep(null)}
+                  style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
+                  tabIndex={0}
+                >
                   <div className="case-card-top"><span>{story.number}</span><p>{story.kicker}</p></div>
                   <h3>{story.title}</h3>
                   <p className="case-copy">{story.copy}</p>

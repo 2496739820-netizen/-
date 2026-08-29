@@ -298,11 +298,49 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .section-title-block h2 { margin: 0; font-family: "Noto Serif SC", serif; font-size: clamp(2.6rem, 3.6vw, 3.75rem); font-weight: var(--display-weight); line-height: 1.08; letter-spacing: 0.06em; }
 .section-summary { margin: 0; color: var(--ink-soft); font-size: 0.98rem; line-height: 1.9; }
 
-.case-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: clamp(48px, 5vw, 72px); }
+.case-progress {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: clamp(46px, 4.5vw, 66px) 0 22px;
+  padding: 0;
+  list-style: none;
+}
+.case-progress::before,
+.case-progress::after {
+  position: absolute;
+  top: 15px;
+  left: 16.667%;
+  height: 1px;
+  content: "";
+}
+.case-progress::before { right: 16.667%; background: var(--line); }
+.case-progress::after { background: var(--gold-deep); transition: right 0.38s cubic-bezier(0.22, 1, 0.36, 1); }
+.case-progress[data-active-step="0"]::after { right: 83.333%; }
+.case-progress[data-active-step="1"]::after { right: 50%; }
+.case-progress[data-active-step="2"]::after { right: 16.667%; }
+.case-progress li { position: relative; z-index: 1; display: grid; justify-items: center; gap: 9px; color: var(--muted); }
+.case-progress li > span {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  font: 600 0.64rem/1 "Manrope", sans-serif;
+  letter-spacing: 0.06em;
+  transition: border-color 0.28s ease, background-color 0.28s ease, color 0.28s ease, box-shadow 0.28s ease;
+}
+.case-progress li > p { margin: 0; font-size: 0.73rem; font-weight: 600; letter-spacing: 0.08em; transition: color 0.28s ease; }
+.case-progress li.is-reached > span { border-color: rgba(105, 85, 56, 0.42); color: var(--gold-deep); }
+.case-progress li.is-active { color: var(--ink); }
+.case-progress li.is-active > span { border-color: var(--gold-deep); background: var(--gold-deep); box-shadow: 0 5px 14px rgba(105, 85, 56, 0.18); color: var(--surface); }
+
+.case-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 0; }
 .case-card { display: flex; min-height: 470px; flex-direction: column; border-radius: var(--radius); background: var(--paper); padding: clamp(25px, 2.7vw, 40px); transition: transform 0.28s ease, box-shadow 0.28s ease; }
 .case-card:nth-child(2) { background: var(--sage); }
 .case-card:nth-child(3) { background: var(--paper-deep); }
-.case-card:hover { transform: translateY(-5px); box-shadow: 0 18px 44px rgba(59, 50, 37, 0.09); }
 .case-card-top { display: flex; align-items: center; justify-content: space-between; color: var(--gold-deep); font: 600 0.72rem/1 "Manrope", "Noto Sans SC", sans-serif; letter-spacing: 0.12em; text-transform: uppercase; }
 .case-card-top p { margin: 0; }
 .case-card h3 { max-width: 11em; min-height: 4.05em; margin: clamp(42px, 3vw, 54px) 0 28px; font-family: "Noto Serif SC", serif; font-size: clamp(2rem, 2.8vw, 3.1rem); font-weight: 500; line-height: 1.35; letter-spacing: -0.045em; }
@@ -527,6 +565,24 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 
 [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease var(--delay, 0s), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0s); }
 [data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+.case-list .case-card {
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition:
+    opacity 0.34s ease,
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.34s ease,
+    outline-color 0.34s ease;
+}
+.case-list .case-card:not(.is-active) { opacity: 0.74; transform: translateY(4px) scale(0.988); box-shadow: none; }
+.case-list .case-card.is-active {
+  z-index: 1;
+  opacity: 1;
+  outline-color: rgba(105, 85, 56, 0.2);
+  transform: translateY(-7px) scale(1.012);
+  box-shadow: 0 22px 52px rgba(59, 50, 37, 0.11);
+}
+.case-card:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 4px; }
 .intro { opacity: 0; transform: translateY(16px); }
 .site-root[data-ready="true"] .intro { animation: intro-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0s) forwards; }
 @keyframes intro-in { to { opacity: 1; transform: translateY(0); } }
@@ -891,6 +947,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hupai-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .personal-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case-list { grid-template-columns: 1fr; }
+  .case-progress { margin-top: 42px; }
   .case-card { min-height: 390px; }
   .case-card h3 { min-height: 0; margin-top: 28px; }
   .method-layout { grid-template-columns: 1fr; gap: 58px; }
@@ -1017,7 +1074,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .personal-work-content h4 { font-size: clamp(1.55rem, 7vw, 1.95rem); }
   .hupai-case-bridge { grid-template-columns: 1fr; gap: 5px; margin-top: 42px; margin-bottom: 32px; }
   .hupai-case-bridge::after { display: none; }
-  .case-list { gap: 12px; margin-top: 42px; }
+  .case-progress { margin: 36px 0 18px; }
+  .case-progress li { gap: 7px; }
+  .case-progress li > p { font-size: 0.66rem; letter-spacing: 0.04em; }
+  .case-list { gap: 12px; margin-top: 0; }
   .case-card { min-height: 0; border-radius: 22px; padding: 22px 20px 20px; }
   .case-card h3 { max-width: none; margin: 20px 0 13px; font-size: clamp(1.6rem, 7vw, 1.85rem); line-height: 1.3; }
   .case-copy { font-size: 0.88rem; line-height: 1.8; }
@@ -1099,8 +1159,13 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .personal-work-card:hover,
   .personal-work-card:focus-within,
   .personal-work-card:active,
+  .case-list .case-card,
   .process-list li:hover,
   .process-list li:active { transform: none !important; }
+  .case-list .case-card:not(.is-active) { opacity: 0.82; }
+  .case-progress::after,
+  .case-progress li > span,
+  .case-progress li > p { transition: none !important; }
   .hupai-work-content > a::after,
   .personal-work-content > a::after { transform: none !important; }
 }
