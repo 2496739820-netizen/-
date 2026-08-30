@@ -178,7 +178,7 @@ test("server-renders verifiable Hupai Xiaohongshu work evidence", async () => {
     assert.ok(imageLinks[index].includes(noteId), `cover ${index + 1} must link to ${noteId}`);
     assert.ok(imageLinks[index].includes("xsec_token="), `cover ${index + 1} must retain its access token`);
   }
-  assert.ok(html.indexOf("上方是可核实的作品样本") < html.indexOf('class="case-list"'));
+  assert.doesNotMatch(html, /上方是可核实的作品样本|下方是可复用的运营方法/);
   assert.ok(html.indexOf("小红书内容作品") < html.indexOf('class="case-list"'));
 });
 
@@ -499,7 +499,7 @@ test("styles Hupai work evidence as a responsive editorial proof module", async 
   assert.match(css, /\.hupai-work-metrics dt\s*\{[\s\S]*?display:\s*flex;[\s\S]*?justify-content:\s*flex-start;[\s\S]*?gap:\s*4px/);
   assert.match(css, /\.hupai-work-metrics dd\s*\{[\s\S]*?font:\s*600\s+0\.98rem[\s\S]*?letter-spacing:\s*-0\.03em;[\s\S]*?text-align:\s*left;[\s\S]*?font-variant-numeric:\s*tabular-nums/);
   assert.doesNotMatch(css, /\.hupai-evidence-note\s*\{/);
-  assert.match(css, /\.hupai-case-bridge\s*\{[\s\S]*?font-size:\s*0\.75rem/);
+  assert.doesNotMatch(css, /\.hupai-case-bridge/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-image-link:hover\s+img\s*\{[\s\S]*?transform:\s*none/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.hupai-work-card:hover,[\s\S]*?\.personal-work-card:focus-within[\s\S]*?transform:\s*none/);
   assert.doesNotMatch(css, /#ff2442/i);

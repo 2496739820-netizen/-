@@ -257,10 +257,6 @@ export default function Home() {
         <section id="hupai" className="flagship-section section-shell">
           <div className="container-wide">
             <HupaiPortfolio />
-            <div className="hupai-case-bridge" data-reveal>
-              <p>上方是可核实的作品样本</p>
-              <p>下方是可复用的运营方法</p>
-            </div>
 
             <ol
               className="case-progress"
