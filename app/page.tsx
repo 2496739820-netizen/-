@@ -299,7 +299,6 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <p className="data-note" data-reveal>页面数据来自简历工作成果汇总，具体统计口径可在沟通中进一步说明。</p>
           </div>
         </section>
 

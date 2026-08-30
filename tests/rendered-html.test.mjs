@@ -88,7 +88,7 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /月均有效客资/);
   assert.match(html, /30%/);
   assert.match(html, /约贡献门店总业绩/);
-  assert.match(html, /具体统计口径可在沟通中进一步说明/);
+  assert.doesNotMatch(html, /具体统计口径可在沟通中进一步说明/);
 
   assert.match(html, /种草、测评与门店探店/);
   assert.match(html, /员工账号矩阵/);
@@ -311,6 +311,9 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   assert.match(css, /\.case-card \{ min-height: 0; border-radius: 22px/);
   assert.match(css, /\.case-card h3 \{ max-width: 11em; min-height: 4\.05em; margin: clamp\(42px, 3vw, 54px\) 0 28px/);
   assert.match(css, /\.case-progress\[data-active-step="2"\]::after \{ right: 16\.667%; \}/);
+  assert.match(css, /margin: clamp\(80px, 7vw, 110px\) 0 22px/);
+  assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.case-progress \{ margin: 56px 0 18px; \}/);
+  assert.doesNotMatch(css, /\.data-note/);
   assert.match(css, /\.case-list \.case-card\.is-active[\s\S]*?translateY\(-7px\) scale\(1\.012\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.case-list \.case-card,[\s\S]*?transform: none !important/);
   assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.case-card h3 \{ min-height: 0; margin-top: 28px; \}/);

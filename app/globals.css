@@ -302,7 +302,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: clamp(46px, 4.5vw, 66px) 0 22px;
+  margin: clamp(80px, 7vw, 110px) 0 22px;
   padding: 0;
   list-style: none;
 }
@@ -347,8 +347,6 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .case-copy { margin: 0; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.9; }
 .case-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 28px; }
 .case-tags span { border-radius: 999px; background: rgba(255, 253, 248, 0.52); padding: 6px 11px; color: var(--muted); font-size: 0.72rem; }
-.data-note { margin: 24px 0 0; color: var(--muted); font-size: 0.76rem; text-align: right; }
-
 .hupai-evidence { margin-top: clamp(52px, 6vw, 88px); }
 .hupai-evidence a { min-height: 44px; }
 .hupai-evidence-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
@@ -941,7 +939,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hupai-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .personal-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case-list { grid-template-columns: 1fr; }
-  .case-progress { margin-top: 42px; }
+  .case-progress { margin-top: 64px; }
   .case-card { min-height: 390px; }
   .case-card h3 { min-height: 0; margin-top: 28px; }
   .method-layout { grid-template-columns: 1fr; gap: 58px; }
@@ -1066,7 +1064,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .personal-work-image { aspect-ratio: 4 / 5; }
   .personal-work-content { padding: 20px 18px; }
   .personal-work-content h4 { font-size: clamp(1.55rem, 7vw, 1.95rem); }
-  .case-progress { margin: 36px 0 18px; }
+  .case-progress { margin: 56px 0 18px; }
   .case-progress li { gap: 7px; }
   .case-progress li > p { font-size: 0.66rem; letter-spacing: 0.04em; }
   .case-list { gap: 12px; margin-top: 0; }
@@ -1074,7 +1072,6 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .case-card h3 { max-width: none; margin: 20px 0 13px; font-size: clamp(1.6rem, 7vw, 1.85rem); line-height: 1.3; }
   .case-copy { font-size: 0.88rem; line-height: 1.8; }
   .case-tags { margin-top: 18px; }
-  .data-note { text-align: left; }
   .method-heading h2,
   .experience-heading h2,
   .site-footer h2 { font-size: clamp(2rem, 8.6vw, 2.65rem); line-height: 1.24; letter-spacing: -0.015em; }
