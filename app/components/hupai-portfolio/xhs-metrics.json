@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "snapshotDate": "2026-08-27",
-  "updatedAt": "2026-08-27T20:29:00+08:00",
+  "snapshotDate": "2026-08-31",
+  "updatedAt": "2026-08-31T09:09:28+08:00",
   "hupai": {
-    "followers": 3725,
+    "followers": 3742,
     "likesAndSaves": "1.7 万",
     "works": {
       "66ab4132000000002701f16e": {
@@ -19,15 +19,15 @@
         "shares": 21
       },
       "6a4a0ea7000000001702df31": {
-        "likes": 78,
-        "saves": 41,
-        "comments": 71,
-        "shares": 17
+        "likes": 81,
+        "saves": 48,
+        "comments": 78,
+        "shares": 19
       },
       "699e5ebc000000001a029468": {
         "likes": 111,
         "saves": 74,
-        "comments": 75,
+        "comments": 73,
         "shares": 29
       },
       "68088f68000000001c03efac": {
@@ -50,21 +50,21 @@
     "publishedNotes": 21,
     "works": {
       "montage": {
-        "views": 182256,
+        "views": 182275,
         "comments": 34,
-        "likes": 8068,
-        "saves": 5274,
+        "likes": 8069,
+        "saves": 5273,
         "shares": 772
       },
       "angle": {
-        "views": 150188,
+        "views": 150194,
         "comments": 83,
-        "likes": 6864,
-        "saves": 4543,
+        "likes": 6865,
+        "saves": 4542,
         "shares": 545
       },
       "narrative-montage": {
-        "views": 92732,
+        "views": 92737,
         "comments": 14,
         "likes": 3107,
         "saves": 1958,
@@ -78,9 +78,9 @@
         "shares": 135
       },
       "color": {
-        "views": 21259,
+        "views": 21261,
         "comments": 0,
-        "likes": 850,
+        "likes": 851,
         "saves": 587,
         "shares": 107
       },
