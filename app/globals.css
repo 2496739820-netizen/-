@@ -186,7 +186,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 
 .hero-copy { max-width: 610px; padding: 28px 0; }
 .hero-main > .intro:last-child { width: 100%; max-width: 600px; justify-self: end; }
-.hero-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 13px; margin: 27px 0 22px; font-family: "Noto Serif SC", serif; font-size: clamp(1.25rem, 1.5vw, 1.55rem); font-weight: 600; letter-spacing: 0.08em; }
+.hero-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 13px; margin: 27px 0 22px; font-family: "Noto Serif SC", serif; font-size: clamp(1.4rem, 1.7vw, 1.75rem); font-weight: 600; letter-spacing: 0.08em; }
 .hero-name span { color: var(--muted); font: 500 0.67rem/1 "Manrope", sans-serif; letter-spacing: 0.16em; text-transform: uppercase; }
 
 .hero-copy h1 {
