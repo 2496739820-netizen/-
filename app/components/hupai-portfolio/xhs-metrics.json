@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "snapshotDate": "2026-09-10",
-  "updatedAt": "2026-09-10T09:05:00+08:00",
+  "snapshotDate": "2026-09-14",
+  "updatedAt": "2026-09-14T09:08:37+08:00",
   "hupai": {
-    "followers": 3759,
+    "followers": 3769,
     "likesAndSaves": "1.7 万",
     "works": {
       "66ab4132000000002701f16e": {
@@ -14,13 +14,13 @@
       },
       "69a16f6f0000000015038c2e": {
         "likes": 84,
-        "saves": 92,
+        "saves": 93,
         "comments": 11,
         "shares": 22
       },
       "6a4a0ea7000000001702df31": {
         "likes": 81,
-        "saves": 49,
+        "saves": 50,
         "comments": 82,
         "shares": 21
       },
@@ -31,54 +31,54 @@
         "shares": 29
       },
       "68088f68000000001c03efac": {
-        "likes": 232,
+        "likes": 233,
         "saves": 196,
         "comments": 164,
         "shares": 79
       },
       "6819d3b60000000021003550": {
         "likes": 230,
-        "saves": 242,
+        "saves": 241,
         "comments": 180,
         "shares": 72
       }
     }
   },
   "personal": {
-    "followers": 3324,
+    "followers": 3322,
     "likesAndSaves": "6.8 万",
     "publishedNotes": 21,
     "works": {
       "montage": {
-        "views": 182338,
+        "views": 182365,
         "comments": 34,
         "likes": 8068,
-        "saves": 5273,
+        "saves": 5271,
         "shares": 772
       },
       "angle": {
-        "views": 150266,
+        "views": 150303,
         "comments": 83,
         "likes": 6866,
-        "saves": 4542,
+        "saves": 4543,
         "shares": 545
       },
       "narrative-montage": {
-        "views": 92784,
+        "views": 92793,
         "comments": 14,
         "likes": 3108,
         "saves": 1958,
         "shares": 277
       },
       "composition": {
-        "views": 42901,
+        "views": 42904,
         "comments": 8,
         "likes": 1642,
         "saves": 1068,
         "shares": 135
       },
       "color": {
-        "views": 21266,
+        "views": 21268,
         "comments": 0,
         "likes": 851,
         "saves": 587,
