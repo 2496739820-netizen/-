@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "validate:xhs": "node scripts/validate-xhs-metrics.mjs",
-    "test": "pnpm run validate:xhs && pnpm run build && node --test tests/rendered-html.test.mjs",
+    "test": "pnpm run validate:xhs && node --test tests/standing-capability-layout.test.mjs && pnpm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint ."
   },
   "dependencies": {

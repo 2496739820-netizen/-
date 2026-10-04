@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { CapabilityRadar } from "./CapabilityRadar";
+import { calculateStandingLayout, standingSource } from "./standing-capability-layout";
 
 export function StandingCapability() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -22,33 +23,26 @@ export function StandingCapability() {
       delete stage.dataset.standingReady;
       const baseline = card.getBoundingClientRect();
       const compact = window.innerWidth <= 620;
-      const cardWidth = baseline.width * (compact ? 0.8 : 0.75);
       const copy = document.querySelector(".hero-copy")?.getBoundingClientRect();
       const gutter = window.innerWidth > 900 && copy
         ? Math.max(0, baseline.left - copy.right - 24)
         : baseline.left;
-      const extra = Math.max(0, Math.min(30, gutter - 8));
-      const headerHeight = document.querySelector(".site-header")?.getBoundingClientRect().height || 86;
-      // Measured alpha bounds and forearm contact in the 1024 × 1536 source.
-      const scale = Math.max(0, Math.min(
-        (baseline.width - cardWidth + extra) / (610 - 122),
-        (baseline.height - 12) / (1519 - 314),
-        (baseline.top + window.scrollY - headerHeight - 8) / (314 - 24),
-      ));
-      const cardLeft = baseline.width - cardWidth;
+      const placement = calculateStandingLayout({ width: baseline.width, height: baseline.height, compact, gutter });
       const values = {
-        "flow-height": baseline.height,
-        "card-width": cardWidth,
-        "card-left": cardLeft,
-        "card-height": compact ? baseline.height : Math.min(baseline.height, Math.max(baseline.height * 0.88, 1205 * scale + 12)),
-        "image-width": 1024 * scale,
-        "image-left": cardLeft - 610 * scale,
-        "image-top": -314 * scale,
+        "flow-height": placement.flowHeight,
+        "card-width": placement.cardWidth,
+        "card-left": placement.cardLeft,
+        "card-height": placement.cardHeight,
+        "image-width": placement.imageWidth,
+        "image-left": placement.imageLeft,
+        "image-top": placement.imageTop,
       };
       Object.entries(values).forEach(([name, value]) => {
         stage.style.setProperty(`--standing-${name}`, `${value}px`);
       });
       stage.dataset.standingReady = "true";
+      // The shoe baseline follows the rendered border box, never the card shadow.
+      stage.style.setProperty("--standing-image-top", `${card.getBoundingClientRect().height - standingSource.soleY * placement.scale}px`);
       const chartWidth = card.querySelector(".radar-chart")?.getBoundingClientRect().width;
       if (chartWidth) {
         stage.style.setProperty("--standing-label-size", `${12 * 520 / chartWidth}px`);
@@ -83,12 +77,12 @@ export function StandingCapability() {
   }, []);
 
   return (
-    <div ref={stageRef} className="hero-capability-stage" data-character-layout="standing-left">
+    <div ref={stageRef} className="hero-capability-stage" data-character-layout="shoulder-left">
       <CapabilityRadar />
       <Image
         ref={imageRef}
         className="hero-standing-character"
-        src="/zhuang-shukai-standing-left.png"
+        src="/zhuang-shukai-shoulder-left.png"
         width={1024}
         height={1536}
         alt=""

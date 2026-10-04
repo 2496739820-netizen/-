@@ -63,8 +63,8 @@ test("server-renders the high-end eyewear new-media portfolio", async () => {
   assert.match(html, /接到门店成交/);
   assert.doesNotMatch(html, /把线上内容，|接到门店成交。/);
   assert.match(html, /能力处方/);
-  assert.match(html, /data-character-layout="standing-left"/);
-  assert.match(html, /src="\/zhuang-shukai-standing-left\.png"/);
+  assert.match(html, /data-character-layout="shoulder-left"/);
+  assert.match(html, /src="\/zhuang-shukai-shoulder-left\.png"/);
   assert.match(html, /内容策划/);
   assert.match(html, /账号运营/);
   assert.match(html, /到店转化/);
@@ -260,8 +260,8 @@ test("ships the verified portfolio assets and removes the unrelated video experi
   const standing = await readFile(new URL("../app/components/StandingCapability.tsx", import.meta.url), "utf8");
   assert.match(standing, /import \{ CapabilityRadar \} from "\.\/CapabilityRadar"/);
   assert.match(standing, /<CapabilityRadar \/>/);
-  assert.match(standing, /src="\/zhuang-shukai-standing-left\.png"/);
-  await access(new URL("../public/zhuang-shukai-standing-left.png", import.meta.url));
+  assert.match(standing, /src="\/zhuang-shukai-shoulder-left\.png"/);
+  await access(new URL("../public/zhuang-shukai-shoulder-left.png", import.meta.url));
   assert.match(radar, /export function CapabilityRadar/);
   assert.match(radar, /className="radar-chart"/);
   assert.match(radar, /className="radar-seal"[^>]*>ZSK<\/span>/);
