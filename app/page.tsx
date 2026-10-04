@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CapabilityRadar } from "./components/CapabilityRadar";
+import { StandingCapability } from "./components/StandingCapability";
 import { ContactBadgeModal } from "./components/contact-badge/ContactBadgeModal";
 import { HupaiPortfolio } from "./components/hupai-portfolio/HupaiPortfolio";
 
@@ -241,7 +241,7 @@ export default function Home() {
               </div>
 
               <div className="intro" style={{ "--delay": ".12s" } as React.CSSProperties}>
-                <CapabilityRadar />
+                <StandingCapability />
               </div>
             </div>
 

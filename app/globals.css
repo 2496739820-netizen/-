@@ -234,6 +234,22 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 }
 
 .radar-card::after { content: ""; position: absolute; right: -70px; bottom: -90px; width: 220px; height: 220px; border-radius: 50%; background: rgba(220, 224, 211, 0.36); pointer-events: none; }
+.hero-capability-stage { position: relative; }
+.hero-standing-character { display: none; pointer-events: none; user-select: none; }
+.hero-capability-stage[data-standing-ready="true"] { height: var(--standing-flow-height); }
+.hero-capability-stage[data-standing-ready="true"] > .radar-card {
+  width: var(--standing-card-width); min-height: var(--standing-card-height);
+  margin-left: var(--standing-card-left); display: flex; flex-direction: column; overflow: clip;
+}
+.hero-capability-stage[data-standing-ready="true"] .radar-visual { width: 100%; margin-block: auto; }
+.hero-capability-stage[data-standing-ready="true"] .radar-axis-label { font-size: var(--standing-label-size); letter-spacing: 0; }
+.hero-capability-stage[data-standing-ready="true"] .radar-score { font-size: var(--standing-score-size); }
+.hero-capability-stage[data-standing-ready="true"] .radar-heading span { font-size: .58rem; letter-spacing: .1em; }
+.hero-capability-stage[data-standing-ready="true"] .hero-standing-character {
+  display: block; position: absolute; z-index: 3;
+  left: var(--standing-image-left); top: var(--standing-image-top);
+  width: var(--standing-image-width); height: auto; max-width: none;
+}
 
 .radar-heading { position: relative; z-index: 2; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
 .radar-heading span { color: var(--gold-deep); font: 600 0.64rem/1 "Manrope", sans-serif; letter-spacing: 0.15em; text-transform: uppercase; }
@@ -971,7 +987,13 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
   .hero-actions { gap: 8px; margin-top: 24px; }
   .button { min-height: 50px; flex: 1 1 0; gap: 14px; padding: 0 16px; white-space: nowrap; }
   .hero-status { margin-top: 21px; }
+  .hero-main:has(.hero-capability-stage[data-standing-ready="true"]) .hero-status { margin-left: clamp(72px, 20vw, 124px); }
   .radar-card { border-radius: 22px; padding: 20px 16px 16px; }
+  .hero-capability-stage[data-standing-ready="true"] > .radar-card { padding: 20px 12px 16px; }
+  .hero-capability-stage[data-standing-ready="true"] .radar-heading span { font-size: .49rem; letter-spacing: .06em; }
+  .hero-capability-stage[data-standing-ready="true"] .radar-heading h2 { font-size: 1.5rem; }
+  .hero-capability-stage[data-standing-ready="true"] .radar-accessible-list { margin: 0 0 14px; gap: 6px; }
+  .hero-capability-stage[data-standing-ready="true"] .radar-accessible-list button { padding-inline: 8px; gap: 4px; }
   .radar-heading { flex-direction: column; align-items: flex-start; gap: 8px; padding-inline: 2px; }
   .radar-heading h2 { font-size: 1.72rem; }
   .radar-visual { margin: 2px auto -8px; }
