@@ -1,7 +1,7 @@
 // Measured opaque silhouette and shoulder anchor in the transparent production PNG.
 export const standingSource = {
   width: 1024, height: 1536, left: 264, top: 36,
-  shoulderX: 718, shoulderY: 320, soleY: 1420,
+  shoulderX: 720, shoulderY: 320, soleY: 1412,
 };
 
 export function calculateStandingLayout({ width, height, compact, gutter }: {

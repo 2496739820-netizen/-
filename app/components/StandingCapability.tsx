@@ -77,12 +77,12 @@ export function StandingCapability() {
   }, []);
 
   return (
-    <div ref={stageRef} className="hero-capability-stage" data-character-layout="shoulder-left">
+    <div ref={stageRef} className="hero-capability-stage" data-character-layout="shoulder-left" data-character-variant="small-feet">
       <CapabilityRadar />
       <Image
         ref={imageRef}
         className="hero-standing-character"
-        src="/zhuang-shukai-shoulder-left.png"
+        src="/zhuang-shukai-shoulder-small-feet.png"
         width={1024}
         height={1536}
         alt=""
