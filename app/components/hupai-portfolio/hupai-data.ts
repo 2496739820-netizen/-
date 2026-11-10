@@ -75,7 +75,7 @@ export const hupaiWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("66ab4132000000002701f16e"),
-    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/66ab4132000000002701f16e?xsec_token=ABEeK9YoIEUOgOkE4q1JH-OKccXDsClT4TRJ5iKOhFNDU=&xsec_source=pc_user",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/66ab4132000000002701f16e?xsec_token=ABEeK9YoIEUOgOkE4q1JH-OPqO8auuL0sFDVFrplcg9MQ=&xsec_source=pc_user",
     kind: "image",
   },
   {
@@ -93,7 +93,7 @@ export const hupaiWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("69a16f6f0000000015038c2e"),
-    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/69a16f6f0000000015038c2e?xsec_token=ABC4b86owzt-0c7_p14sVnKM-n96xBIIkilpXe_F8N7Fs=&xsec_source=pc_user",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/69a16f6f0000000015038c2e?xsec_token=ABC4b86owzt-0c7_p14sVnKOVNV2rlCJ8SgWRKFPdjh0k=&xsec_source=pc_user",
     kind: "image",
   },
   {
@@ -111,7 +111,7 @@ export const hupaiWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("6a4a0ea7000000001702df31"),
-    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/6a4a0ea7000000001702df31?xsec_token=ABnzVHeGextP6DN1kzXFSpnScK6rFQLXuq4uJk_qLhtSI=&xsec_source=pc_user",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/6a4a0ea7000000001702df31?xsec_token=ABnzVHeGextP6DN1kzXFSpnSNdXW5zXmWmRAxOc1yv7Y8=&xsec_source=pc_user",
     kind: "image",
   },
   {
@@ -129,7 +129,7 @@ export const hupaiWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("699e5ebc000000001a029468"),
-    noteUrl: "https://www.xiaohongshu.com/explore/699e5ebc000000001a029468?xsec_token=WBkYQ8QnaGG-W0sL_oyQTO6lrLlVfKltmRINjS5PshBOQ=&xsec_source=pc_ad",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/699e5ebc000000001a029468?xsec_token=ABpAS8sYi4qMHMhVZFmoBjRzg34F6qZklqOiLpg6PJ6Nw=&xsec_source=pc_user",
     kind: "image",
   },
   {
@@ -147,7 +147,7 @@ export const hupaiWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("68088f68000000001c03efac"),
-    noteUrl: "https://www.xiaohongshu.com/explore/68088f68000000001c03efac?xsec_token=WB-O-k9HdSnmToF2MOcVIJqtDtrb9AdAKuXk3M32SODcQ=&xsec_source=pc_ad",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/68088f68000000001c03efac?xsec_token=ABCl5ZdHEM1qgmy7DhDs1t4Q8ogp6__Bzf6OE0BY2HA0E=&xsec_source=pc_user",
     kind: "image",
   },
   {
@@ -165,7 +165,7 @@ export const hupaiWorks = [
       sizes: "(max-width: 620px) calc(100vw - 24px), (max-width: 900px) calc(50vw - 25px), 15vw",
     },
     metrics: hupaiMetrics("6819d3b60000000021003550"),
-    noteUrl: "https://www.xiaohongshu.com/explore/6819d3b60000000021003550?xsec_token=WBKR3uEQ5rGUus7gMb1Yt9Wi_KGg94qqChmPtBSL6ZVnc=&xsec_source=pc_ad",
+    noteUrl: "https://www.xiaohongshu.com/user/profile/5fed68f20000000001009f77/6819d3b60000000021003550?xsec_token=ABYCCgekz2WlE5tOiddnbVjlYUqAKuOQ923nqwtnOXDWk=&xsec_source=pc_user",
     kind: "image",
   },
 ] as const satisfies readonly HupaiWork[];

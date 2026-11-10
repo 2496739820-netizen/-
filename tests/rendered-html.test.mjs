@@ -204,7 +204,8 @@ test("server-renders an accessible dual-account Xiaohongshu evidence module", as
   assert.match(html, /影视后期 · 视听语言知识/);
   assert.doesNotMatch(html, /数据快照/);
   assert.match(html, new RegExp(`>${metricSnapshot.personal.publishedNotes}<`));
-  assert.match(html, /18\.2万/);
+  const maxPersonalViews = Math.max(...Object.values(metricSnapshot.personal.works).map((work) => work.views));
+  assert.ok(html.includes(`${(maxPersonalViews / 10_000).toFixed(1)}万`));
   assert.match(html, new RegExp(formatInteger(metricSnapshot.personal.works.montage.likes)));
   assert.match(html, new RegExp(formatInteger(metricSnapshot.personal.works.montage.saves)));
   assert.doesNotMatch(html, />96</);
